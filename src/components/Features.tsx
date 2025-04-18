@@ -32,7 +32,7 @@ const Features = ({ onSelectOption }: FeaturesProps) => {
   ];
 
   return (
-    <div className="py-24 bg-gradient-to-b from-indigo-100 to-white relative" id="features">
+    <div className="py-32 bg-gradient-to-b from-indigo-100 to-white relative" id="features">
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-8 bg-[linear-gradient(90deg,#ff71ce,#01cdfe,#05ffa1,#b967ff,#fffb96)]"></div>
       
@@ -40,8 +40,8 @@ const Features = ({ onSelectOption }: FeaturesProps) => {
       <Star className="absolute bottom-12 right-[10%] w-6 h-6 text-yellow-400 animate-pulse" />
       <Sparkles className="absolute top-1/2 right-[5%] w-10 h-10 text-pink-400 animate-ping" style={{ animationDuration: '4s' }} />
       
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-20">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="text-center mb-24">
           <div className="inline-block bg-white p-8 border-4 border-black transform -rotate-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] mb-8">
             <h2 className="text-4xl md:text-5xl font-bold text-indigo-900 font-pixel">Power Features</h2>
           </div>
@@ -50,7 +50,7 @@ const Features = ({ onSelectOption }: FeaturesProps) => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-24">
           {features.map((feature, index) => (
             <Card key={index} className="bg-white p-8 rounded-lg border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all transform rotate-0 hover:rotate-1">
               <div className="mb-6 p-4 bg-indigo-100 inline-block rounded-full border-2 border-black">{feature.icon}</div>
@@ -60,8 +60,8 @@ const Features = ({ onSelectOption }: FeaturesProps) => {
           ))}
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          <Card className="bg-indigo-100 p-8 rounded-lg border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <Card className="bg-indigo-100 p-8 rounded-lg border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all relative overflow-hidden transform hover:rotate-1">
             <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-pink-400 animate-ping" />
             <h3 className="text-3xl font-bold mb-6 text-indigo-900 font-pixel">Create a New LinkedIn Post</h3>
             <p className="text-lg text-indigo-700 mb-8">
@@ -76,7 +76,7 @@ const Features = ({ onSelectOption }: FeaturesProps) => {
             </Button>
           </Card>
           
-          <Card className="bg-pink-100 p-8 rounded-lg border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all relative overflow-hidden">
+          <Card className="bg-pink-100 p-8 rounded-lg border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all relative overflow-hidden transform hover:rotate-1">
             <Star className="absolute -top-2 -right-2 w-8 h-8 text-yellow-400 animate-pulse" />
             <h3 className="text-3xl font-bold mb-6 text-indigo-900 font-pixel">Enhance Your Existing Post</h3>
             <p className="text-lg text-indigo-700 mb-8">

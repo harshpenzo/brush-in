@@ -30,7 +30,7 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
         </nav>
         
         <Button 
-          onClick={onScrollToFeatures}
+          onClick={() => onScrollToFeatures()}
           className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white border-2 border-white font-pixel text-sm px-4 py-2 rounded shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
         >
           Press Start

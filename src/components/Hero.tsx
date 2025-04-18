@@ -33,7 +33,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       <Sparkles className="absolute top-[60%] left-[85%] w-6 h-6 text-pink-400 animate-ping" style={{ animationDuration: '3s' }} />
       <Sparkles className="absolute top-[70%] left-[10%] w-6 h-6 text-pink-400 animate-ping" style={{ animationDuration: '2.5s', animationDelay: '0.7s' }} />
       
-      <div className="text-center space-y-8 max-w-4xl relative z-10">
+      <div className="text-center space-y-8 max-w-4xl relative z-10 mb-20">
         <div className="bg-white inline-block p-8 relative border-4 border-black transform rotate-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)]">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-center font-pixel leading-relaxed mb-4">
             <span className="text-indigo-900">Meet </span>
@@ -51,7 +51,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
           <Button 
             size="lg" 
             className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white border-2 border-black font-pixel text-lg px-8 py-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-            onClick={onScrollToFeatures}
+            onClick={() => onSelectOption("create")}
           >
             <Zap className="mr-2 h-5 w-5" />
             EXPLORE FEATURES
@@ -60,8 +60,8 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       </div>
       
       <div 
-        className="absolute bottom-28 cursor-pointer transition-transform duration-300 z-20 animate-bounce"
-        onClick={onScrollToFeatures}
+        className="absolute bottom-12 cursor-pointer transition-transform duration-300 z-20 animate-bounce"
+        onClick={() => onSelectOption("create")}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
