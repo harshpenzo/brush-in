@@ -1,261 +1,240 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Wand2, RefreshCw, Loader2 } from "lucide-react";
 
 interface PostFormProps {
   onGenerate: (post: string) => void;
   onOptimize: (post: string) => void;
+  initialMode?: "create" | "optimize";
 }
 
-const PostForm = ({ onGenerate, onOptimize }: PostFormProps) => {
+const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormProps) => {
+  const [mode, setMode] = useState<"create" | "optimize">(initialMode);
   const [topic, setTopic] = useState("");
-  const [industry, setIndustry] = useState("");
   const [tone, setTone] = useState("professional");
   const [keywords, setKeywords] = useState("");
-  const [currentPost, setCurrentPost] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [existingPost, setExistingPost] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
+  // Update mode when initialMode prop changes
+  useEffect(() => {
+    setMode(initialMode);
+  }, [initialMode]);
+
   const handleGenerate = () => {
-    if (!topic || !industry) {
+    if (!topic) {
       toast({
-        title: "Missing information",
-        description: "Please provide a topic and industry",
+        title: "Topic required",
+        description: "Please enter a topic for your post",
         variant: "destructive",
       });
       return;
     }
 
-    setIsLoading(true);
+    setIsGenerating(true);
+    
+    // Simulate API call
     setTimeout(() => {
-      const generatedPost = generatePost(topic, industry, tone, keywords);
+      const generatedPost = generateSamplePost(topic, tone, keywords);
       onGenerate(generatedPost);
-      setIsLoading(false);
-    }, 1000);
+      setIsGenerating(false);
+      
+      toast({
+        title: "Post generated",
+        description: "Your LinkedIn post has been created successfully.",
+      });
+    }, 1500);
   };
 
   const handleOptimize = () => {
-    if (!currentPost) {
+    if (!existingPost) {
       toast({
-        title: "Missing content",
-        description: "Please provide the post you want to optimize",
+        title: "Post required",
+        description: "Please enter your existing post to optimize",
         variant: "destructive",
       });
       return;
     }
 
-    setIsLoading(true);
+    setIsGenerating(true);
+    
+    // Simulate API call
     setTimeout(() => {
-      const optimizedPost = optimizePost(currentPost, keywords);
+      const optimizedPost = optimizeSamplePost(existingPost);
       onOptimize(optimizedPost);
-      setIsLoading(false);
-    }, 1000);
+      setIsGenerating(false);
+      
+      toast({
+        title: "Post optimized",
+        description: "Your LinkedIn post has been enhanced for better engagement.",
+      });
+    }, 1500);
+  };
+
+  // Sample post generation function (would be replaced with actual API call)
+  const generateSamplePost = (topic: string, tone: string, keywords: string) => {
+    const keywordsList = keywords ? keywords.split(",").map(k => k.trim()) : [];
+    const keywordsText = keywordsList.length > 0 ? ` including ${keywordsList.join(", ")}` : "";
+    
+    const posts = [
+      `🔥 Excited to share my thoughts on ${topic}!\n\nIn today's fast-paced professional environment, it's crucial to understand the impact of ${topic} on our industry${keywordsText}.\n\nI've seen firsthand how ${topic} can transform business outcomes when implemented correctly.\n\nWhat's your experience with ${topic}? Have you found success implementing this in your organization?\n\n#ProfessionalDevelopment #${topic.replace(/\s+/g, "")} #IndustryInsights`,
+      
+      `I've been reflecting on ${topic} lately, and wanted to share some insights...\n\nThree key takeaways about ${topic} that every professional should know:\n\n1️⃣ It drives meaningful engagement across teams\n2️⃣ It can significantly improve operational efficiency${keywordsText}\n3️⃣ When implemented properly, it leads to measurable ROI\n\nHas anyone else experienced similar results with ${topic}? Would love to hear your thoughts!\n\n#${topic.replace(/\s+/g, "")} #ProfessionalGrowth #BestPractices`,
+      
+      `💡 Just completed an intensive deep-dive on ${topic}!\n\nThe most surprising thing I learned? The correlation between ${topic} and overall business success is stronger than ever before${keywordsText}.\n\nIf you're not exploring how ${topic} can benefit your organization, you might be leaving opportunities on the table.\n\nDM me if you'd like to discuss how this could apply to your specific situation.\n\n#${topic.replace(/\s+/g, "")} #Innovation #GrowthMindset`
+    ];
+    
+    return posts[Math.floor(Math.random() * posts.length)];
+  };
+
+  // Sample post optimization function (would be replaced with actual API call)
+  const optimizeSamplePost = (post: string) => {
+    // Add hashtags if not present
+    let optimized = post;
+    
+    if (!optimized.includes("#")) {
+      const topics = ["ProfessionalDevelopment", "Innovation", "Leadership", "GrowthMindset", "LinkedIn"];
+      const randomTags = Array(3).fill(0).map(() => topics[Math.floor(Math.random() * topics.length)]);
+      const uniqueTags = [...new Set(randomTags)];
+      
+      optimized += `\n\n#${uniqueTags.join(" #")}`;
+    }
+    
+    // Add engagement question if not present
+    if (!optimized.includes("?")) {
+      optimized += "\n\nWhat are your thoughts on this? I'd love to hear your perspective!";
+    }
+    
+    // Add emoji if not present
+    if (!/[\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25B6}\u{23F8}-\u{23FA}]/u.test(optimized)) {
+      const emojis = ["🚀", "💡", "🔥", "⭐", "📈", "💪", "🎯"];
+      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+      optimized = randomEmoji + " " + optimized;
+    }
+    
+    return optimized;
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="pt-6">
-          <h2 className="text-lg font-semibold mb-4">Generate a New Post</h2>
+    <Card>
+      <CardContent className="pt-6">
+        <div className="flex gap-2 mb-6">
+          <Button
+            type="button"
+            variant={mode === "create" ? "default" : "outline"}
+            onClick={() => setMode("create")}
+            className={mode === "create" ? "bg-[#0077B5] hover:bg-[#0077B5]/90" : ""}
+          >
+            Create Post
+          </Button>
+          <Button
+            type="button"
+            variant={mode === "optimize" ? "default" : "outline"}
+            onClick={() => setMode("optimize")}
+            className={mode === "optimize" ? "bg-[#0077B5] hover:bg-[#0077B5]/90" : ""}
+          >
+            Optimize Post
+          </Button>
+        </div>
+
+        {mode === "create" ? (
           <div className="space-y-4">
             <div>
               <Label htmlFor="topic">Topic</Label>
               <Input
                 id="topic"
-                placeholder="E.g., Leadership, Innovation, Industry News"
+                placeholder="e.g. Leadership, Industry Trends, Work-Life Balance"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
               />
             </div>
             
             <div>
-              <Label htmlFor="industry">Industry</Label>
-              <Input
-                id="industry"
-                placeholder="E.g., Tech, Finance, Healthcare"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-              />
-            </div>
-            
-            <div>
               <Label htmlFor="tone">Tone</Label>
-              <Select value={tone} onValueChange={setTone}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select tone" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="conversational">Conversational</SelectItem>
-                  <SelectItem value="inspirational">Inspirational</SelectItem>
-                  <SelectItem value="educational">Educational</SelectItem>
-                  <SelectItem value="storytelling">Storytelling</SelectItem>
-                </SelectContent>
-              </Select>
+              <select
+                id="tone"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+              >
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="inspirational">Inspirational</option>
+                <option value="educational">Educational</option>
+                <option value="storytelling">Storytelling</option>
+              </select>
             </div>
             
             <div>
-              <Label htmlFor="keywords">Keywords (optional, comma separated)</Label>
+              <Label htmlFor="keywords">Keywords (comma separated)</Label>
               <Input
                 id="keywords"
-                placeholder="E.g., trends, best practices, skills"
+                placeholder="e.g. innovation, strategy, growth"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
               />
             </div>
             
             <Button 
-              onClick={handleGenerate} 
-              className="w-full"
-              disabled={isLoading}
+              onClick={handleGenerate}
+              className="w-full bg-[#0077B5] hover:bg-[#0077B5]/90"
+              disabled={isGenerating}
             >
-              {isLoading ? "Generating..." : "Generate Post"}
+              {isGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="mr-2 h-4 w-4" />
+                  Generate Post
+                </>
+              )}
             </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="pt-6">
-          <h2 className="text-lg font-semibold mb-4">Optimize Existing Post</h2>
+        ) : (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="current-post">Your Current Post</Label>
+              <Label htmlFor="existingPost">Your Existing Post</Label>
               <Textarea
-                id="current-post"
-                placeholder="Paste your LinkedIn post here for optimization"
-                className="min-h-[150px]"
-                value={currentPost}
-                onChange={(e) => setCurrentPost(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="optimize-keywords">Target Keywords (optional)</Label>
-              <Input
-                id="optimize-keywords"
-                placeholder="E.g., engagement, connections, opportunities"
-                value={keywords}
-                onChange={(e) => setKeywords(e.target.value)}
+                id="existingPost"
+                placeholder="Paste your LinkedIn post here for optimization..."
+                rows={8}
+                value={existingPost}
+                onChange={(e) => setExistingPost(e.target.value)}
               />
             </div>
             
             <Button 
-              onClick={handleOptimize} 
-              className="w-full"
-              disabled={isLoading}
+              onClick={handleOptimize}
+              className="w-full bg-[#0077B5] hover:bg-[#0077B5]/90"
+              disabled={isGenerating}
             >
-              {isLoading ? "Optimizing..." : "Optimize Post"}
+              {isGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Optimizing...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Optimize Post
+                </>
+              )}
             </Button>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        )}
+      </CardContent>
+    </Card>
   );
-};
-
-// Helper functions to generate content
-const generatePost = (topic: string, industry: string, tone: string, keywords: string) => {
-  const keywordsList = keywords ? keywords.split(",").map(k => k.trim()) : [];
-  
-  // Template library based on tone
-  const templates = {
-    professional: [
-      `As a ${industry} professional, I've been reflecting on the importance of ${topic}. ${keywordsList.length > 0 ? `\n\nThree key aspects that stand out:\n\n1. ${keywordsList[0] || 'Strategy'}\n2. ${keywordsList[1] || 'Implementation'}\n3. ${keywordsList[2] || 'Results'}\n\n` : ''}What strategies have worked for you in this area?\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')} #ProfessionalDevelopment`,
-      `I recently came across a fascinating insight about ${topic} in the ${industry} sector. ${keywordsList.length > 0 ? `It highlights the connection between ${keywordsList.join(' and ')}.` : ''}\n\nHas anyone else observed this trend? I'd appreciate your thoughts.\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')}`
-    ],
-    conversational: [
-      `Hey LinkedIn family! 👋 I've been thinking about ${topic} in ${industry} lately. ${keywordsList.length > 0 ? `\n\nSome thoughts:\n• ${keywordsList.join('\n• ')}\n\n` : ''}What's your take on this? Drop your thoughts below! 💭\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')}`,
-      `Question for my network: How do you approach ${topic} in your ${industry} work? ${keywordsList.length > 0 ? `\n\nI'm especially interested in hearing about ${keywordsList.join(', ')}!` : ''}\n\nLet's learn from each other! 🤝\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')}`
-    ],
-    inspirational: [
-      `Today I'm reflecting on how ${topic} has transformed the ${industry} landscape. ${keywordsList.length > 0 ? `\n\nRemember:\n✨ ${keywordsList.join('\n✨ ')}\n\n` : ''}The possibilities are endless when we embrace change and innovation.\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')} #Inspiration`,
-      `Success in ${industry} isn't just about ${topic}—it's about perseverance and vision. ${keywordsList.length > 0 ? `\n\nKey principles I live by:\n🌟 ${keywordsList.join('\n🌟 ')}` : ''}\n\nWhat principles guide your professional journey?\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')} #Success`
-    ],
-    educational: [
-      `Did you know? Recent studies on ${topic} in ${industry} reveal fascinating insights. ${keywordsList.length > 0 ? `\n\nKey findings:\n📊 ${keywordsList.join('\n📊 ')}\n\n` : ''}What implications do you see for our field?\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')} #Learning`,
-      `I recently explored the evolution of ${topic} in ${industry}, and here's what I learned: ${keywordsList.length > 0 ? `\n\nImportant concepts:\n📚 ${keywordsList.join('\n📚 ')}\n\n` : ''}Does this align with your experience?\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')} #ProfessionalDevelopment`
-    ],
-    storytelling: [
-      `When I first encountered ${topic} in my ${industry} career, I was skeptical. ${keywordsList.length > 0 ? `\n\nThe journey taught me:\n🔹 ${keywordsList.join('\n🔹 ')}\n\n` : ''}Now I can't imagine working without these insights.\n\nHave you had a similar experience?\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')} #ProfessionalJourney`,
-      `Last week, I faced a challenge with ${topic} while working on a ${industry} project. ${keywordsList.length > 0 ? `\n\nMy approach involved:\n1️⃣ ${keywordsList.join('\n2️⃣ ')}\n\n` : ''}The outcome exceeded expectations and taught me valuable lessons.\n\nWhat's your approach to similar challenges?\n\n#${industry.replace(/\s+/g, '')} #${topic.replace(/\s+/g, '')} #ProblemSolving`
-    ]
-  };
-
-  // Select random template from the appropriate tone category
-  const toneTemplates = templates[tone as keyof typeof templates] || templates.professional;
-  const randomTemplate = toneTemplates[Math.floor(Math.random() * toneTemplates.length)];
-  
-  return randomTemplate;
-};
-
-const optimizePost = (post: string, keywords: string) => {
-  const keywordsList = keywords ? keywords.split(",").map(k => k.trim()) : [];
-  
-  // Simple optimization: Add an engaging opener, incorporate keywords, enhance formatting, add hashtags
-  let optimized = post;
-  
-  // Add an engaging hook if the post doesn't seem to have one
-  if (!optimized.match(/^(Hey|👋|🚨|💡|Attention|Breaking|Just in|Today|Question|Did you know|Excited to|I'm thrilled)/i)) {
-    const hooks = [
-      "💡 Insight alert: ",
-      "👋 Hey LinkedIn family! ",
-      "🚨 Attention ${industry} professionals: ",
-      "Excited to share: ",
-      "Question for my network: ",
-      "Did you know? ",
-      "Today I learned something valuable about "
-    ];
-    optimized = hooks[Math.floor(Math.random() * hooks.length)] + optimized;
-  }
-  
-  // Incorporate keywords if they're not already present
-  keywordsList.forEach(keyword => {
-    if (!optimized.toLowerCase().includes(keyword.toLowerCase())) {
-      // Try to insert it naturally
-      const sentences = optimized.split('. ');
-      if (sentences.length > 1) {
-        const position = Math.floor(Math.random() * (sentences.length - 1)) + 1;
-        sentences[position] = `This relates directly to ${keyword}. ${sentences[position]}`;
-        optimized = sentences.join('. ');
-      } else {
-        optimized += ` This highlights the importance of ${keyword}.`;
-      }
-    }
-  });
-  
-  // Improve formatting
-  if (!optimized.includes('\n\n')) {
-    optimized = optimized.replace(/\. /g, '.\n\n');
-  }
-  
-  // Add a call to action if not present
-  if (!optimized.match(/(what do you think|what's your take|agree|thoughts|comment|share your|let me know)/i)) {
-    optimized += "\n\nWhat's your experience with this? I'd love to hear your thoughts in the comments!";
-  }
-  
-  // Add relevant hashtags if not present
-  if (!optimized.includes('#')) {
-    const defaultHashtags = ['#ProfessionalDevelopment', '#CareerGrowth', '#LinkedInTips'];
-    const keywordHashtags = keywordsList.map(k => `#${k.replace(/\s+/g, '')}`);
-    const allHashtags = [...keywordHashtags, ...defaultHashtags].slice(0, 5);
-    
-    optimized += `\n\n${allHashtags.join(' ')}`;
-  }
-  
-  return optimized;
 };
 
 export default PostForm;
