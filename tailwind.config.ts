@@ -19,15 +19,15 @@ export default {
 			}
 		},
 		extend: {
-			backgroundImage: {
-				'grid-pattern': 'linear-gradient(to right, #E5E7EB 1px, transparent 1px), linear-gradient(to bottom, #E5E7EB 1px, transparent 1px)',
-			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				'brown': {
+					'700': '#5D4037',
+				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
@@ -67,6 +67,14 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			fontFamily: {
+				'pixel': ['"Press Start 2P"', 'cursive'],
+				'pixel-body': ['"VT323"', 'monospace'],
+			},
+			backgroundImage: {
+				'grid-pattern': 'linear-gradient(to right, #E5E7EB 1px, transparent 1px), linear-gradient(to bottom, #E5E7EB 1px, transparent 1px)',
+				'pixel-gradient': 'linear-gradient(90deg, #ff71ce, #01cdfe, #05ffa1, #b967ff, #fffb96)',
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -88,11 +96,17 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pixel-shine': {
+					'0%': { 'background-position': '0% 50%' },
+					'50%': { 'background-position': '100% 50%' },
+					'100%': { 'background-position': '0% 50%' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pixel-shine': 'pixel-shine 3s ease infinite'
 			}
 		}
 	},
