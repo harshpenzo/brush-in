@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Linkedin, Share2, Star, Sparkles } from "lucide-react";
+import { Copy, Check, Linkedin, Share2 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -38,19 +38,16 @@ const PostPreview = ({ post }: PostPreviewProps) => {
   };
 
   return (
-    <Card className="h-full border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-2 bg-[linear-gradient(90deg,#ff71ce,#01cdfe,#05ffa1,#b967ff,#fffb96)]"></div>
-      
-      <CardContent className="pt-6 flex flex-col h-full">
+    <Card className="h-full bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+      <CardContent className="p-6 flex flex-col h-full">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
-            <h2 className="text-lg font-bold text-indigo-900 font-pixel">Post Preview</h2>
-            <Star className="w-4 h-4 ml-2 text-yellow-400 animate-pulse" />
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Post Preview</h2>
           </div>
-          <div className={`text-sm font-medium px-2 py-1 rounded-md ${
+          <div className={`text-xs font-medium px-2 py-1 rounded-md ${
             charCount > maxChars 
-              ? 'bg-red-100 text-red-600 border border-red-300' 
-              : 'bg-indigo-100 text-indigo-600 border border-indigo-300'
+              ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' 
+              : 'bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400'
           }`}>
             {charCount}/{maxChars} chars
           </div>
@@ -58,7 +55,7 @@ const PostPreview = ({ post }: PostPreviewProps) => {
         
         {post ? (
           <>
-            <div className="bg-white p-5 rounded-md border-2 border-black flex-grow overflow-auto whitespace-pre-line mb-4 shadow-inner text-gray-700 font-pixel">
+            <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-lg border border-slate-200 dark:border-slate-700 flex-grow overflow-auto whitespace-pre-line mb-4 text-slate-700 dark:text-slate-300">
               {post}
             </div>
             
@@ -66,30 +63,28 @@ const PostPreview = ({ post }: PostPreviewProps) => {
               <Button 
                 onClick={handleCopy} 
                 variant="outline" 
-                className="flex-1 border-2 border-black text-indigo-600 hover:bg-indigo-50 font-pixel shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                className="flex-1 bg-white dark:bg-transparent border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-smooth"
               >
-                {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-                {copied ? "COPIED" : "COPY"}
+                {copied ? <Check className="mr-2 h-4 w-4 text-green-500" /> : <Copy className="mr-2 h-4 w-4" />}
+                {copied ? "Copied" : "Copy"}
               </Button>
               
               <Button 
                 onClick={handleShare} 
-                className="flex-1 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white border-2 border-black font-pixel shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                className="flex-1 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-smooth"
               >
                 <Share2 className="mr-2 h-4 w-4" />
-                SHARE ON LINKEDIN
+                Share on LinkedIn
               </Button>
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center flex-grow bg-indigo-50 rounded-md border-2 border-dashed border-indigo-300 p-6 relative">
-            <Sparkles className="absolute top-4 right-4 w-6 h-6 text-indigo-300 animate-ping" style={{ animationDuration: '3s' }} />
+          <div className="flex items-center justify-center flex-grow bg-slate-50 dark:bg-slate-900 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 p-6">
             <div className="text-center">
-              <Linkedin className="h-12 w-12 text-indigo-300 mx-auto mb-4" />
-              <p className="text-indigo-400 font-pixel">
+              <Linkedin className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+              <p className="text-slate-500 dark:text-slate-400">
                 Generated post will appear here
               </p>
-              <Star className="h-5 w-5 text-yellow-300 mx-auto mt-4 animate-pulse" />
             </div>
           </div>
         )}

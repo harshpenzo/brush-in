@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Wand2, RefreshCw, Loader2, Sparkles, Zap } from "lucide-react";
+import { Wand2, RefreshCw, Loader2, MessageCircle, Edit3 } from "lucide-react";
 
 interface PostFormProps {
   onGenerate: (post: string) => void;
@@ -123,20 +122,18 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
   };
 
   return (
-    <Card className="border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-2 bg-[linear-gradient(90deg,#ff71ce,#01cdfe,#05ffa1,#b967ff,#fffb96)]"></div>
-      
-      <CardContent className="pt-6">
+    <Card className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+      <CardContent className="p-6">
         <div className="flex gap-2 mb-6">
           <Button
             type="button"
             variant={mode === "create" ? "default" : "outline"}
             onClick={() => setMode("create")}
             className={mode === "create" 
-              ? "bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-2 border-black font-pixel shadow-md" 
-              : "bg-white border-2 border-black text-indigo-900 font-pixel shadow-md"}
+              ? "bg-brand-600 hover:bg-brand-700 text-white rounded-lg" 
+              : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg"}
           >
-            <Sparkles className={`mr-2 h-4 w-4 ${mode === "create" ? "text-yellow-300" : "text-cyan-500"}`} />
+            <MessageCircle className="mr-2 h-4 w-4" />
             Create Post
           </Button>
           <Button
@@ -144,10 +141,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
             variant={mode === "optimize" ? "default" : "outline"}
             onClick={() => setMode("optimize")}
             className={mode === "optimize" 
-              ? "bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white border-2 border-black font-pixel shadow-md" 
-              : "bg-white border-2 border-black text-indigo-900 font-pixel shadow-md"}
+              ? "bg-brand-600 hover:bg-brand-700 text-white rounded-lg" 
+              : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg"}
           >
-            <Zap className={`mr-2 h-4 w-4 ${mode === "optimize" ? "text-yellow-300" : "text-pink-500"}`} />
+            <Edit3 className="mr-2 h-4 w-4" />
             Optimize Post
           </Button>
         </div>
@@ -155,21 +152,21 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
         {mode === "create" ? (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="topic" className="text-indigo-900 font-pixel">Topic</Label>
+              <Label htmlFor="topic" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Topic</Label>
               <Input
                 id="topic"
                 placeholder="e.g. Leadership, Industry Trends, Work-Life Balance"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                className="border-2 border-indigo-300 focus:border-indigo-500 shadow-inner"
+                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
               />
             </div>
             
             <div>
-              <Label htmlFor="tone" className="text-indigo-900 font-pixel">Tone</Label>
+              <Label htmlFor="tone" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Tone</Label>
               <select
                 id="tone"
-                className="flex h-10 w-full rounded-md border-2 border-indigo-300 bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:border-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full h-10 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
               >
@@ -182,30 +179,30 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
             </div>
             
             <div>
-              <Label htmlFor="keywords" className="text-indigo-900 font-pixel">Keywords (comma separated)</Label>
+              <Label htmlFor="keywords" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Keywords (comma separated)</Label>
               <Input
                 id="keywords"
                 placeholder="e.g. innovation, strategy, growth"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
-                className="border-2 border-indigo-300 focus:border-indigo-500 shadow-inner"
+                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
               />
             </div>
             
             <Button 
               onClick={handleGenerate}
-              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-pixel shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all border-2 border-black"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
               disabled={isGenerating}
             >
               {isGenerating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  GENERATING...
+                  Generating...
                 </>
               ) : (
                 <>
                   <Wand2 className="mr-2 h-4 w-4" />
-                  GENERATE POST
+                  Generate Post
                 </>
               )}
             </Button>
@@ -213,31 +210,31 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
         ) : (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="existingPost" className="text-indigo-900 font-pixel">Your Existing Post</Label>
+              <Label htmlFor="existingPost" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Your Existing Post</Label>
               <Textarea
                 id="existingPost"
                 placeholder="Paste your LinkedIn post here for optimization..."
                 rows={8}
                 value={existingPost}
                 onChange={(e) => setExistingPost(e.target.value)}
-                className="border-2 border-indigo-300 focus:border-indigo-500 shadow-inner"
+                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
               />
             </div>
             
             <Button 
               onClick={handleOptimize}
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-pixel shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all border-2 border-black"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
               disabled={isGenerating}
             >
               {isGenerating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  OPTIMIZING...
+                  Optimizing...
                 </>
               ) : (
                 <>
                   <RefreshCw className="mr-2 h-4 w-4" />
-                  OPTIMIZE POST
+                  Optimize Post
                 </>
               )}
             </Button>
