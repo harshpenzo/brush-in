@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Wand2, RefreshCw, Loader2, MessageCircle, Edit3 } from "lucide-react";
+import { Wand2, RefreshCw, Loader2, MessageCircle, Edit3, Hash, ArrowRight } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
 
 interface PostFormProps {
   onGenerate: (post: string) => void;
@@ -13,36 +32,83 @@ interface PostFormProps {
   initialMode?: "create" | "optimize";
 }
 
+// Create Schema for form validation
+const createPostSchema = z.object({
+  topic: z.string().min(1, { message: "Topic is required" }),
+  description: z.string().optional(),
+  tone: z.string().default("professional"),
+  contentStyle: z.string().default("default"),
+  postLength: z.string().default("medium"),
+  keywords: z.string().optional(),
+  industry: z.string().default("technology"),
+});
+
+const optimizePostSchema = z.object({
+  existingPost: z.string().min(10, { message: "Please enter at least 10 characters" }),
+  optimizationGoal: z.string().default("engagement"),
+});
+
+type CreatePostFormValues = z.infer<typeof createPostSchema>;
+type OptimizePostFormValues = z.infer<typeof optimizePostSchema>;
+
 const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormProps) => {
   const [mode, setMode] = useState<"create" | "optimize">(initialMode);
-  const [topic, setTopic] = useState("");
-  const [description, setDescription] = useState("");
-  const [tone, setTone] = useState("professional");
-  const [keywords, setKeywords] = useState("");
-  const [existingPost, setExistingPost] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+  const [readabilityScore, setReadabilityScore] = useState<number | null>(null);
   const { toast } = useToast();
+
+  // Create form for new post
+  const createForm = useForm<CreatePostFormValues>({
+    resolver: zodResolver(createPostSchema),
+    defaultValues: {
+      topic: "",
+      description: "",
+      tone: "professional",
+      contentStyle: "default",
+      postLength: "medium",
+      keywords: "",
+      industry: "technology",
+    },
+  });
+
+  // Create form for optimizing post
+  const optimizeForm = useForm<OptimizePostFormValues>({
+    resolver: zodResolver(optimizePostSchema),
+    defaultValues: {
+      existingPost: "",
+      optimizationGoal: "engagement",
+    },
+  });
 
   // Update mode when initialMode prop changes
   useEffect(() => {
     setMode(initialMode);
   }, [initialMode]);
 
-  const handleGenerate = () => {
-    if (!topic) {
-      toast({
-        title: "Topic required",
-        description: "Please enter a topic for your post",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleGenerate = (values: CreatePostFormValues) => {
     setIsGenerating(true);
     
-    // Simulate API call with description included
+    // Simulate API call with enhanced parameters
     setTimeout(() => {
-      const generatedPost = generateSamplePost(topic, tone, keywords, description);
+      const generatedPost = generateEnhancedPost(
+        values.topic,
+        values.tone,
+        values.keywords,
+        values.description,
+        values.contentStyle,
+        values.postLength,
+        values.industry
+      );
+      
+      // Calculate simulated readability score (in a real app, this would use an actual algorithm)
+      const simulatedScore = Math.floor(Math.random() * 30) + 70; // 70-100 score
+      setReadabilityScore(simulatedScore);
+      
+      // Generate related hashtags
+      const generatedHashtags = generateHashtags(values.topic, values.industry, values.keywords);
+      setHashtags(generatedHashtags);
+      
       onGenerate(generatedPost);
       setIsGenerating(false);
       
@@ -53,53 +119,114 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
     }, 1500);
   };
 
-  const handleOptimize = () => {
-    if (!existingPost) {
-      toast({
-        title: "Post required",
-        description: "Please enter your existing post to optimize",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleOptimize = (values: OptimizePostFormValues) => {
     setIsGenerating(true);
     
-    // Simulate API call
+    // Simulate API call with optimization goal
     setTimeout(() => {
-      const optimizedPost = optimizeSamplePost(existingPost);
+      const optimizedPost = optimizeEnhancedPost(values.existingPost, values.optimizationGoal);
+      
+      // Calculate simulated readability score
+      const simulatedScore = Math.floor(Math.random() * 20) + 80; // 80-100 score (optimized should be better)
+      setReadabilityScore(simulatedScore);
+      
+      // Generate related hashtags
+      const extractedTopic = extractTopicFromPost(values.existingPost);
+      const generatedHashtags = generateHashtags(extractedTopic, "general", "");
+      setHashtags(generatedHashtags);
+      
       onOptimize(optimizedPost);
       setIsGenerating(false);
       
       toast({
         title: "Post optimized",
-        description: "Your LinkedIn post has been enhanced for better engagement.",
+        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal}.`,
       });
     }, 1500);
   };
 
-  // Sample post generation function (would be replaced with actual API call)
-  const generateSamplePost = (topic: string, tone: string, keywords: string, description: string) => {
+  // Enhanced post generation function (would be replaced with actual AI API call)
+  const generateEnhancedPost = (
+    topic: string, 
+    tone: string, 
+    keywords: string, 
+    description: string, 
+    contentStyle: string,
+    postLength: string,
+    industry: string
+  ) => {
     const keywordsList = keywords ? keywords.split(",").map(k => k.trim()) : [];
     const keywordsText = keywordsList.length > 0 ? ` including ${keywordsList.join(", ")}` : "";
     const contextText = description ? `\n\nContext: ${description}\n\n` : "\n\n";
     
-    const posts = [
-      `🔥 Excited to share my thoughts on ${topic}!${contextText}In today's fast-paced professional environment, it's crucial to understand the impact of ${topic} on our industry${keywordsText}.\n\nI've seen firsthand how ${topic} can transform business outcomes when implemented correctly.\n\nWhat's your experience with ${topic}? Have you found success implementing this in your organization?\n\n#ProfessionalDevelopment #${topic.replace(/\s+/g, "")} #IndustryInsights`,
-      
-      `I've been reflecting on ${topic} lately, and wanted to share some insights...${contextText}Three key takeaways about ${topic} that every professional should know:\n\n1️⃣ It drives meaningful engagement across teams\n2️⃣ It can significantly improve operational efficiency${keywordsText}\n3️⃣ When implemented properly, it leads to measurable ROI\n\nHas anyone else experienced similar results with ${topic}? Would love to hear your thoughts!\n\n#${topic.replace(/\s+/g, "")} #ProfessionalGrowth #BestPractices`,
-      
-      `💡 Just completed an intensive deep-dive on ${topic}!${contextText}The most surprising thing I learned? The correlation between ${topic} and overall business success is stronger than ever before${keywordsText}.\n\nIf you're not exploring how ${topic} can benefit your organization, you might be leaving opportunities on the table.\n\nDM me if you'd like to discuss how this could apply to your specific situation.\n\n#${topic.replace(/\s+/g, "")} #Innovation #GrowthMindset`
-    ];
+    let postTemplate;
     
-    return posts[Math.floor(Math.random() * posts.length)];
+    // Select content style
+    switch (contentStyle) {
+      case "storytelling":
+        postTemplate = [
+          `📖 Let me share a story about ${topic}...${contextText}It all started when I first encountered a challenge related to ${topic}${keywordsText}. The situation seemed impossible at first.\n\nBut then I discovered that by approaching it with a fresh perspective, everything changed. The key insight was understanding that ${topic} isn't just about the technical aspects, but about the human elements too.\n\nHas anyone else had a similar journey with ${topic}? I'd love to hear your stories!\n\n#${topic.replace(/\s+/g, "")} #ProfessionalJourney #Insights`,
+          
+          `🔍 I want to share something that changed my perspective on ${topic}...${contextText}Three years ago, I was struggling to understand the true impact of ${topic} in our industry${keywordsText}.\n\nThen something clicked. I realized that success with ${topic} isn't about following the standard playbook - it's about innovation and adaptation.\n\nThis realization transformed how I approach ${topic} challenges now. I've seen firsthand how this mindset shift can create remarkable outcomes.\n\nWhat's a perspective shift that changed your professional journey?\n\n#${topic.replace(/\s+/g, "")} #MindsetShift #ProfessionalGrowth`
+        ];
+        break;
+      
+      case "listicle":
+        postTemplate = [
+          `📋 Top 5 Insights About ${topic} Every Professional Should Know${contextText}After working with ${topic}${keywordsText} for years, here's what I've learned:\n\n1️⃣ Integration is key - ${topic} doesn't exist in isolation\n2️⃣ The landscape is constantly evolving, staying updated is crucial\n3️⃣ The fundamentals matter more than trends\n4️⃣ Cross-functional collaboration amplifies results\n5️⃣ Measuring impact drives continuous improvement\n\nWhich of these resonates most with you? Any you'd add to the list?\n\n#${topic.replace(/\s+/g, "")} #ProfessionalDevelopment #IndustryInsights`,
+          
+          `🔑 3 Game-Changing Approaches to ${topic} I Wish I Knew Earlier${contextText}After deep diving into ${topic}${keywordsText}, here's what I've discovered:\n\n1. Focus on outcomes over outputs - what real-world results are you creating?\n\n2. Build systems, not just solutions - how does ${topic} fit into the broader ecosystem?\n\n3. Prioritize adaptability - the only constant is change, especially with ${topic}\n\nWhich of these principles have you found most valuable in your work?\n\n#${topic.replace(/\s+/g, "")} #CareerLessons #ProfessionalGrowth`
+        ];
+        break;
+      
+      case "question-based":
+        postTemplate = [
+          `❓ Is ${topic} really as transformative as everyone claims?${contextText}I've been contemplating this question a lot lately. While many praise ${topic}${keywordsText} as revolutionary, I'm curious about the practical impact.\n\nHave you implemented ${topic} in your organization? What tangible results did you see?\n\nDid it live up to the hype or were there unexpected challenges?\n\nWhat metrics did you use to measure success?\n\nLet's have a real conversation about the actual impact of ${topic} beyond the buzzwords.\n\n#${topic.replace(/\s+/g, "")} #RealTalk #PracticalInsights`,
+          
+          `🤔 What's the biggest misconception about ${topic} in today's business landscape?${contextText}After working extensively with ${topic}${keywordsText}, I've noticed several myths that persist.\n\nIs it that ${topic} is only for large enterprises? Or perhaps that it requires massive investment to implement effectively?\n\nMaybe it's the belief that ${topic} is just a passing trend?\n\nWhat misconception have you encountered? And how has your real-world experience contradicted it?\n\nI'd love to hear your perspective!\n\n#${topic.replace(/\s+/g, "")} #MythBusting #IndustryInsights`
+        ];
+        break;
+      
+      default: // "default"
+        postTemplate = [
+          `🔥 Excited to share my thoughts on ${topic}!${contextText}In today's fast-paced ${industry} environment, it's crucial to understand the impact of ${topic} on our industry${keywordsText}.\n\nI've seen firsthand how ${topic} can transform business outcomes when implemented correctly.\n\nWhat's your experience with ${topic}? Have you found success implementing this in your organization?\n\n#ProfessionalDevelopment #${topic.replace(/\s+/g, "")} #IndustryInsights`,
+          
+          `I've been reflecting on ${topic} lately, and wanted to share some insights...${contextText}Three key takeaways about ${topic} that every ${industry} professional should know:\n\n1️⃣ It drives meaningful engagement across teams\n2️⃣ It can significantly improve operational efficiency${keywordsText}\n3️⃣ When implemented properly, it leads to measurable ROI\n\nHas anyone else experienced similar results with ${topic}? Would love to hear your thoughts!\n\n#${topic.replace(/\s+/g, "")} #ProfessionalGrowth #BestPractices`,
+          
+          `💡 Just completed an intensive deep-dive on ${topic}!${contextText}The most surprising thing I learned? The correlation between ${topic} and overall business success is stronger than ever before${keywordsText}.\n\nIf you're not exploring how ${topic} can benefit your organization, you might be leaving opportunities on the table.\n\nDM me if you'd like to discuss how this could apply to your specific situation.\n\n#${topic.replace(/\s+/g, "")} #Innovation #GrowthMindset`
+        ];
+    }
+    
+    // Select post based on length preference
+    let selectedPost = postTemplate[Math.floor(Math.random() * postTemplate.length)];
+    
+    // Adjust post length
+    if (postLength === "short" && selectedPost.length > 500) {
+      // Create shorter version by removing some detail
+      selectedPost = selectedPost.replace(/\n\n[^#]+\n\n/g, "\n\n");
+    } else if (postLength === "long" && selectedPost.length < 1000) {
+      // Add more detail for longer posts
+      const industryContext = `\n\nIn the ${industry} industry, we're seeing rapid changes that make ${topic} more relevant than ever. Professionals who understand this intersection gain a significant competitive advantage.\n\n`;
+      selectedPost = selectedPost.replace(/\n\n#/, industryContext + "\n\n#");
+    }
+    
+    // Adjust tone
+    if (tone === "casual" && selectedPost.indexOf("🔥") === -1) {
+      selectedPost = "👋 Hey everyone! " + selectedPost.replace(/\b(I've|I'm|I'll)\b/g, match => match.toLowerCase());
+    } else if (tone === "inspirational") {
+      selectedPost = "✨ Inspiration struck me today about " + selectedPost.replace(/(excited|reflecting|completed)/i, "passionate");
+    } else if (tone === "educational") {
+      selectedPost = "📚 Today's learning: " + selectedPost.replace(/(share|reflecting|completed)/i, "exploring");
+    }
+    
+    return selectedPost;
   };
 
-  // Sample post optimization function (would be replaced with actual API call)
-  const optimizeSamplePost = (post: string) => {
-    // Add hashtags if not present
+  // Enhanced post optimization function (would be replaced with actual AI API call)
+  const optimizeEnhancedPost = (post: string, optimizationGoal: string) => {
     let optimized = post;
     
+    // Add hashtags if not present
     if (!optimized.includes("#")) {
       const topics = ["ProfessionalDevelopment", "Innovation", "Leadership", "GrowthMindset", "LinkedIn"];
       const randomTags = Array(3).fill(0).map(() => topics[Math.floor(Math.random() * topics.length)]);
@@ -108,19 +235,108 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
       optimized += `\n\n#${uniqueTags.join(" #")}`;
     }
     
-    // Add engagement question if not present
-    if (!optimized.includes("?")) {
-      optimized += "\n\nWhat are your thoughts on this? I'd love to hear your perspective!";
-    }
-    
-    // Add emoji if not present
-    if (!/[\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25B6}\u{23F8}-\u{23FA}]/u.test(optimized)) {
-      const emojis = ["🚀", "💡", "🔥", "⭐", "📈", "💪", "🎯"];
-      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-      optimized = randomEmoji + " " + optimized;
+    // Optimize based on goal
+    switch (optimizationGoal) {
+      case "engagement":
+        // Add engagement question if not present
+        if (!optimized.includes("?")) {
+          optimized += "\n\nWhat are your thoughts on this? I'd love to hear your perspective!";
+        }
+        
+        // Add emoji if not present
+        if (!/[\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25B6}\u{23F8}-\u{23FA}]/u.test(optimized)) {
+          const emojis = ["🚀", "💡", "🔥", "⭐", "📈", "💪", "🎯"];
+          const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+          optimized = randomEmoji + " " + optimized;
+        }
+        break;
+        
+      case "clarity":
+        // Simplify sentences (simulated)
+        optimized = optimized.replace(/([^.!?]+[.!?])\s+/g, (match, sentence) => {
+          if (sentence.length > 140) {
+            // Break long sentences (simulated)
+            return sentence.substring(0, sentence.lastIndexOf(",", 70) + 1) + " " + 
+                   sentence.substring(sentence.lastIndexOf(",", 70) + 1) + " ";
+          }
+          return match;
+        });
+        break;
+        
+      case "professionalism":
+        // Remove excessive emojis (simulated)
+        let emojiCount = 0;
+        optimized = optimized.replace(/[\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25B6}\u{23F8}-\u{23FA}]/ug, (match) => {
+          if (emojiCount < 2) {
+            emojiCount++;
+            return match;
+          }
+          return '';
+        });
+        break;
+        
+      default:
+        // General optimization (readability)
+        // Add paragraph breaks for readability if missing
+        if (!optimized.includes("\n\n") && optimized.length > 300) {
+          optimized = optimized.replace(/([.!?])\s+/g, (match, punctuation, index) => {
+            if (index > 150 && index < optimized.length - 150) {
+              return punctuation + "\n\n";
+            }
+            return match;
+          });
+        }
     }
     
     return optimized;
+  };
+
+  // Helper function to extract topic from existing post
+  const extractTopicFromPost = (post: string) => {
+    const topics = ["leadership", "innovation", "technology", "marketing", "personal development", 
+                   "career growth", "productivity", "team building", "strategy", "communication"];
+    
+    // Find the most mentioned topic (simulated)
+    for (const topic of topics) {
+      if (post.toLowerCase().includes(topic)) {
+        return topic;
+      }
+    }
+    
+    return "professional development";
+  };
+
+  // Function to generate hashtags
+  const generateHashtags = (topic: string, industry: string, keywords: string) => {
+    const industryTags = {
+      "technology": ["TechTrends", "Innovation", "DigitalTransformation", "TechLeadership"],
+      "marketing": ["MarketingStrategy", "DigitalMarketing", "BrandGrowth", "MarketingTips"],
+      "finance": ["FinancialLiteracy", "Investment", "FinTech", "WealthManagement"],
+      "healthcare": ["HealthTech", "PatientCare", "Healthcare", "MedicalInnovation"],
+      "education": ["EdTech", "LearningAndDevelopment", "Education", "TeachingSkills"],
+      "general": ["ProfessionalDevelopment", "CareerGrowth", "Leadership", "Innovation"]
+    };
+    
+    // Get base tags from industry
+    const baseTags = industryTags[industry as keyof typeof industryTags] || industryTags.general;
+    
+    // Add topic-specific tags
+    const topicTag = topic.replace(/\s+/g, "");
+    
+    // Process keywords
+    let keywordTags: string[] = [];
+    if (keywords) {
+      keywordTags = keywords
+        .split(",")
+        .map(k => k.trim().replace(/\s+/g, ""))
+        .filter(k => k.length > 0);
+    }
+    
+    // Combine and ensure uniqueness
+    const allTags = [topicTag, ...baseTags, ...keywordTags];
+    const uniqueTags = [...new Set(allTags)].slice(0, 5); // Limit to 5 hashtags
+    
+    return uniqueTags;
   };
 
   return (
@@ -152,106 +368,306 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
         </div>
 
         {mode === "create" ? (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="topic" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Topic</Label>
-              <Input
-                id="topic"
-                placeholder="e.g. Leadership, Industry Trends, Work-Life Balance"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+          <Form {...createForm}>
+            <form onSubmit={createForm.handleSubmit(handleGenerate)} className="space-y-4">
+              <FormField
+                control={createForm.control}
+                name="topic"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Topic</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Leadership, Industry Trends, Work-Life Balance"
+                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <Label htmlFor="description" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Add more context about your post..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
-                rows={3}
+              <FormField
+                control={createForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Add more context about your post..."
+                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            
-            <div>
-              <Label htmlFor="tone" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Tone</Label>
-              <select
-                id="tone"
-                className="w-full h-10 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
-                value={tone}
-                onChange={(e) => setTone(e.target.value)}
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={createForm.control}
+                  name="tone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Tone</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                            <SelectValue placeholder="Select tone" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="professional">Professional</SelectItem>
+                          <SelectItem value="casual">Casual</SelectItem>
+                          <SelectItem value="inspirational">Inspirational</SelectItem>
+                          <SelectItem value="educational">Educational</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={createForm.control}
+                  name="contentStyle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Content Style</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                            <SelectValue placeholder="Select style" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="default">Standard</SelectItem>
+                          <SelectItem value="storytelling">Storytelling</SelectItem>
+                          <SelectItem value="listicle">Listicle</SelectItem>
+                          <SelectItem value="question-based">Question-based</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={createForm.control}
+                  name="postLength"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Post Length</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                            <SelectValue placeholder="Select length" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="short">Short (< 500 chars)</SelectItem>
+                          <SelectItem value="medium">Medium (500-1000 chars)</SelectItem>
+                          <SelectItem value="long">Long (> 1000 chars)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={createForm.control}
+                  name="industry"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Industry</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                            <SelectValue placeholder="Select industry" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="technology">Technology</SelectItem>
+                          <SelectItem value="marketing">Marketing</SelectItem>
+                          <SelectItem value="finance">Finance</SelectItem>
+                          <SelectItem value="healthcare">Healthcare</SelectItem>
+                          <SelectItem value="education">Education</SelectItem>
+                          <SelectItem value="general">General</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <FormField
+                control={createForm.control}
+                name="keywords"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">
+                      <div className="flex items-center">
+                        Keywords
+                        <Hash className="ml-1 h-4 w-4 text-slate-500" />
+                      </div>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. innovation, strategy, growth (comma separated)"
+                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <Button 
+                type="submit"
+                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
+                disabled={isGenerating}
               >
-                <option value="professional">Professional</option>
-                <option value="casual">Casual</option>
-                <option value="inspirational">Inspirational</option>
-                <option value="educational">Educational</option>
-                <option value="storytelling">Storytelling</option>
-              </select>
-            </div>
-            
-            <div>
-              <Label htmlFor="keywords" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Keywords (comma separated)</Label>
-              <Input
-                id="keywords"
-                placeholder="e.g. innovation, strategy, growth"
-                value={keywords}
-                onChange={(e) => setKeywords(e.target.value)}
-                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
-              />
-            </div>
-            
-            <Button 
-              onClick={handleGenerate}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-2 h-4 w-4" />
-                  Generate Post
-                </>
-              )}
-            </Button>
-          </div>
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    Generate Post with AI
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
         ) : (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="existingPost" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Your Existing Post</Label>
-              <Textarea
-                id="existingPost"
-                placeholder="Paste your LinkedIn post here for optimization..."
-                rows={8}
-                value={existingPost}
-                onChange={(e) => setExistingPost(e.target.value)}
-                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+          <Form {...optimizeForm}>
+            <form onSubmit={optimizeForm.handleSubmit(handleOptimize)} className="space-y-4">
+              <FormField
+                control={optimizeForm.control}
+                name="existingPost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Your Existing Post</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Paste your LinkedIn post here for optimization..."
+                        rows={8}
+                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            
-            <Button 
-              onClick={handleOptimize}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Optimizing...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Optimize Post
-                </>
+              
+              <FormField
+                control={optimizeForm.control}
+                name="optimizationGoal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Optimization Goal</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                          <SelectValue placeholder="Select goal" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="engagement">Maximize Engagement</SelectItem>
+                        <SelectItem value="clarity">Improve Clarity</SelectItem>
+                        <SelectItem value="professionalism">Enhance Professionalism</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <Button 
+                type="submit"
+                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Optimizing...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Optimize Post with AI
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
+        
+        {/* Readability Score & Hashtag Recommendations */}
+        {readabilityScore !== null && (
+          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-col space-y-3">
+              <div>
+                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Readability Score</h3>
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
+                  <div 
+                    className={`h-2.5 rounded-full ${
+                      readabilityScore >= 90 ? 'bg-green-500' : 
+                      readabilityScore >= 70 ? 'bg-brand-500' : 'bg-orange-500'
+                    }`} 
+                    style={{ width: `${readabilityScore}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  <span>Needs work</span>
+                  <span>{readabilityScore}/100</span>
+                  <span>Excellent</span>
+                </div>
+              </div>
+              
+              {hashtags.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
+                    <Hash className="mr-1 h-4 w-4" /> 
+                    Recommended Hashtags
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {hashtags.map((tag, index) => (
+                      <span 
+                        key={index}
+                        className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-brand-100 text-brand-800 dark:bg-brand-900/30 dark:text-brand-300"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 p-0"
+                      type="button"
+                    >
+                      <span className="flex items-center">
+                        View more
+                        <ArrowRight className="ml-1 h-3 w-3" />
+                      </span>
+                    </Button>
+                  </div>
+                </div>
               )}
-            </Button>
+            </div>
           </div>
         )}
       </CardContent>
