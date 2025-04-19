@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -471,9 +470,9 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="short">Short (< 500 chars)</SelectItem>
+                          <SelectItem value="short">Short (&lt; 500 chars)</SelectItem>
                           <SelectItem value="medium">Medium (500-1000 chars)</SelectItem>
-                          <SelectItem value="long">Long (> 1000 chars)</SelectItem>
+                          <SelectItem value="long">Long (&gt; 1000 chars)</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -628,51 +627,4 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                       readabilityScore >= 90 ? 'bg-green-500' : 
                       readabilityScore >= 70 ? 'bg-brand-500' : 'bg-orange-500'
                     }`} 
-                    style={{ width: `${readabilityScore}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  <span>Needs work</span>
-                  <span>{readabilityScore}/100</span>
-                  <span>Excellent</span>
-                </div>
-              </div>
-              
-              {hashtags.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                    <Hash className="mr-1 h-4 w-4" /> 
-                    Recommended Hashtags
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {hashtags.map((tag, index) => (
-                      <span 
-                        key={index}
-                        className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-brand-100 text-brand-800 dark:bg-brand-900/30 dark:text-brand-300"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 p-0"
-                      type="button"
-                    >
-                      <span className="flex items-center">
-                        View more
-                        <ArrowRight className="ml-1 h-3 w-3" />
-                      </span>
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
-
-export default PostForm;
+                    style={{ width: `${read
