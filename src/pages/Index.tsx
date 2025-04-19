@@ -6,6 +6,7 @@ import Features from "@/components/Features";
 import PostForm from "@/components/PostForm";
 import PostPreview from "@/components/PostPreview";
 import Tips from "@/components/Tips";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -14,6 +15,7 @@ const Index = () => {
   
   const featuresRef = useRef<HTMLDivElement>(null);
   const postCreatorRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const handleGeneratePost = (post: string) => {
     setGeneratedPost(post);
@@ -37,6 +39,19 @@ const Index = () => {
 
   return (
     <Layout onScrollToFeatures={scrollToFeatures}>
+      {/* Pricing Banner */}
+      <div className="bg-gradient-to-r from-brand-600 to-brand-400 text-white py-2 px-4 text-center">
+        <p className="text-sm font-medium">
+          🚀 Get started for free! Upgrade to Pro for unlimited posts and advanced features.{" "}
+          <button 
+            onClick={() => navigate("/pricing")} 
+            className="underline font-bold hover:text-white/90 transition-colors"
+          >
+            View pricing
+          </button>
+        </p>
+      </div>
+      
       <Hero onScrollToFeatures={scrollToFeatures} onSelectOption={selectOption} />
       
       <div ref={featuresRef}>
