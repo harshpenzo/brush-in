@@ -16,6 +16,7 @@ interface PostFormProps {
 const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormProps) => {
   const [mode, setMode] = useState<"create" | "optimize">(initialMode);
   const [topic, setTopic] = useState("");
+  const [description, setDescription] = useState("");
   const [tone, setTone] = useState("professional");
   const [keywords, setKeywords] = useState("");
   const [existingPost, setExistingPost] = useState("");
@@ -39,9 +40,9 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
 
     setIsGenerating(true);
     
-    // Simulate API call
+    // Simulate API call with description included
     setTimeout(() => {
-      const generatedPost = generateSamplePost(topic, tone, keywords);
+      const generatedPost = generateSamplePost(topic, tone, keywords, description);
       onGenerate(generatedPost);
       setIsGenerating(false);
       
@@ -78,16 +79,17 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
   };
 
   // Sample post generation function (would be replaced with actual API call)
-  const generateSamplePost = (topic: string, tone: string, keywords: string) => {
+  const generateSamplePost = (topic: string, tone: string, keywords: string, description: string) => {
     const keywordsList = keywords ? keywords.split(",").map(k => k.trim()) : [];
     const keywordsText = keywordsList.length > 0 ? ` including ${keywordsList.join(", ")}` : "";
+    const contextText = description ? `\n\nContext: ${description}\n\n` : "\n\n";
     
     const posts = [
-      `🔥 Excited to share my thoughts on ${topic}!\n\nIn today's fast-paced professional environment, it's crucial to understand the impact of ${topic} on our industry${keywordsText}.\n\nI've seen firsthand how ${topic} can transform business outcomes when implemented correctly.\n\nWhat's your experience with ${topic}? Have you found success implementing this in your organization?\n\n#ProfessionalDevelopment #${topic.replace(/\s+/g, "")} #IndustryInsights`,
+      `🔥 Excited to share my thoughts on ${topic}!${contextText}In today's fast-paced professional environment, it's crucial to understand the impact of ${topic} on our industry${keywordsText}.\n\nI've seen firsthand how ${topic} can transform business outcomes when implemented correctly.\n\nWhat's your experience with ${topic}? Have you found success implementing this in your organization?\n\n#ProfessionalDevelopment #${topic.replace(/\s+/g, "")} #IndustryInsights`,
       
-      `I've been reflecting on ${topic} lately, and wanted to share some insights...\n\nThree key takeaways about ${topic} that every professional should know:\n\n1️⃣ It drives meaningful engagement across teams\n2️⃣ It can significantly improve operational efficiency${keywordsText}\n3️⃣ When implemented properly, it leads to measurable ROI\n\nHas anyone else experienced similar results with ${topic}? Would love to hear your thoughts!\n\n#${topic.replace(/\s+/g, "")} #ProfessionalGrowth #BestPractices`,
+      `I've been reflecting on ${topic} lately, and wanted to share some insights...${contextText}Three key takeaways about ${topic} that every professional should know:\n\n1️⃣ It drives meaningful engagement across teams\n2️⃣ It can significantly improve operational efficiency${keywordsText}\n3️⃣ When implemented properly, it leads to measurable ROI\n\nHas anyone else experienced similar results with ${topic}? Would love to hear your thoughts!\n\n#${topic.replace(/\s+/g, "")} #ProfessionalGrowth #BestPractices`,
       
-      `💡 Just completed an intensive deep-dive on ${topic}!\n\nThe most surprising thing I learned? The correlation between ${topic} and overall business success is stronger than ever before${keywordsText}.\n\nIf you're not exploring how ${topic} can benefit your organization, you might be leaving opportunities on the table.\n\nDM me if you'd like to discuss how this could apply to your specific situation.\n\n#${topic.replace(/\s+/g, "")} #Innovation #GrowthMindset`
+      `💡 Just completed an intensive deep-dive on ${topic}!${contextText}The most surprising thing I learned? The correlation between ${topic} and overall business success is stronger than ever before${keywordsText}.\n\nIf you're not exploring how ${topic} can benefit your organization, you might be leaving opportunities on the table.\n\nDM me if you'd like to discuss how this could apply to your specific situation.\n\n#${topic.replace(/\s+/g, "")} #Innovation #GrowthMindset`
     ];
     
     return posts[Math.floor(Math.random() * posts.length)];
@@ -159,6 +161,18 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="description" className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Description</Label>
+              <Textarea
+                id="description"
+                placeholder="Add more context about your post..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                rows={3}
               />
             </div>
             
