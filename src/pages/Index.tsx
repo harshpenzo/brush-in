@@ -1,12 +1,11 @@
 
 import { useState, useRef } from "react";
-import Header from "@/components/Header";
+import Layout from "@/components/Layout";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import PostForm from "@/components/PostForm";
 import PostPreview from "@/components/PostPreview";
 import Tips from "@/components/Tips";
-import { Linkedin } from "lucide-react";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -37,9 +36,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">      
-      <Header onScrollToFeatures={scrollToFeatures} />
-      
+    <Layout onScrollToFeatures={scrollToFeatures}>
       <Hero onScrollToFeatures={scrollToFeatures} onSelectOption={selectOption} />
       
       <div ref={featuresRef}>
@@ -85,29 +82,7 @@ const Index = () => {
           </main>
         </div>
       )}
-      
-      <footer className="bg-slate-900 dark:bg-slate-950 py-12 mt-auto">
-        <div className="container mx-auto px-4 text-center">
-          <div className="mb-6 flex items-center justify-center gap-2">
-            <div className="bg-brand-600 text-white p-2 rounded-lg">
-              <Linkedin size={20} />
-            </div>
-            <span className="font-semibold text-white text-xl">Brush<span className="text-brand-400">In</span></span>
-          </div>
-          <p className="text-slate-400 max-w-md mx-auto">
-            BrushIn - Create engaging LinkedIn content that drives results for your professional network
-          </p>
-          <div className="mt-8 flex justify-center gap-6">
-            <a href="#" className="text-slate-400 hover:text-white transition-smooth">Terms</a>
-            <a href="#" className="text-slate-400 hover:text-white transition-smooth">Privacy</a>
-            <a href="#" className="text-slate-400 hover:text-white transition-smooth">Contact</a>
-          </div>
-          <div className="mt-6 text-slate-500 text-sm">
-            © {new Date().getFullYear()} BrushIn. All rights reserved.
-          </div>
-        </div>
-      </footer>
-    </div>
+    </Layout>
   );
 };
 
