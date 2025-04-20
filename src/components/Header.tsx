@@ -1,4 +1,3 @@
-
 import { Linkedin, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -22,12 +21,8 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleGetStarted = () => {
-    if (onScrollToFeatures) {
-      onScrollToFeatures();
-    } else {
-      navigate("/?action=create");
-    }
+  const handleSignIn = () => {
+    navigate("/");
   };
 
   return (
@@ -71,10 +66,10 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
         
         <div className="flex items-center gap-4">
           <Button 
-            onClick={handleGetStarted}
+            onClick={handleSignIn}
             className="hidden md:flex bg-gradient-to-r from-brand-600 to-brand-400 hover:from-brand-700 hover:to-brand-500 text-white px-6 py-2 rounded-lg font-medium shadow-sm hover:shadow transition-smooth"
           >
-            Get Started
+            Sign In
           </Button>
 
           <button 
@@ -119,17 +114,25 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
               Contact
             </Link>
             <Button 
-              onClick={() => {
-                handleGetStarted();
-                setIsMobileMenuOpen(false);
-              }}
+              onClick={handleSignIn}
               className="bg-gradient-to-r from-brand-600 to-brand-400 hover:from-brand-700 hover:to-brand-500 text-white w-full py-2 rounded-lg font-medium shadow-sm hover:shadow transition-smooth"
             >
-              Get Started
+              Sign In
             </Button>
           </div>
         </div>
       )}
+      
+      {/* Animated Characters */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full pointer-events-none">
+        <div className="container mx-auto px-4">
+          <div className="relative">
+            <div className="absolute -left-4 top-0 w-16 h-16 bg-brand-100 dark:bg-brand-900/30 rounded-full transform transition-transform hover:scale-110 pointer-events-auto" />
+            <div className="absolute left-20 -top-8 w-12 h-12 bg-brand-200 dark:bg-brand-800/30 rounded-full transform transition-transform hover:scale-110 pointer-events-auto" />
+            <div className="absolute right-4 top-4 w-20 h-20 bg-brand-300 dark:bg-brand-700/30 rounded-full transform transition-transform hover:scale-110 pointer-events-auto" />
+          </div>
+        </div>
+      </div>
     </header>
   );
 };
