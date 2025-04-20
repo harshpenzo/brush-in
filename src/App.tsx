@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 import Index from "./pages/Index";
+import AuthForm from "./components/AuthForm";
 import NotFound from "./pages/NotFound";
 import Pricing from "./pages/Pricing";
 import Faq from "./pages/Faq";
@@ -25,6 +26,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<AuthForm />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/testimonials" element={<Testimonials />} />
