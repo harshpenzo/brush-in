@@ -1,5 +1,5 @@
 
-import { ArrowDown, Sparkles } from "lucide-react";
+import { ArrowDown, Sparkles, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef } from "react";
 
