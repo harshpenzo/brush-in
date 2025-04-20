@@ -1,6 +1,7 @@
 
-import { ArrowDown, Linkedin, Sparkles } from "lucide-react";
+import { ArrowDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useRef } from "react";
 
 interface HeroProps {
   onScrollToFeatures: () => void;
@@ -8,9 +9,61 @@ interface HeroProps {
 }
 
 const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Create floating "in" elements
+    const createFloatingElement = () => {
+      const element = document.createElement("div");
+      element.className = "absolute text-white/10 text-6xl font-bold pointer-events-none select-none";
+      element.textContent = "in";
+      
+      // Random initial position
+      element.style.left = `${Math.random() * 100}%`;
+      element.style.top = `${Math.random() * 100}%`;
+      element.style.transform = "translate(-50%, -50%)";
+      container.appendChild(element);
+
+      // Mouse interaction
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const elementRect = element.getBoundingClientRect();
+        const elementX = elementRect.left - rect.left + elementRect.width / 2;
+        const elementY = elementRect.top - rect.top + elementRect.height / 2;
+        
+        const angleRad = Math.atan2(y - elementY, x - elementX);
+        const distance = Math.min(100, Math.hypot(x - elementX, y - elementY) / 5);
+        
+        element.style.transform = `translate(${-Math.cos(angleRad) * distance}px, ${-Math.sin(angleRad) * distance}px)`;
+        element.style.transition = "transform 0.3s ease-out";
+      };
+
+      container.addEventListener("mousemove", handleMouseMove);
+
+      // Cleanup
+      return () => {
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeChild(element);
+      };
+    };
+
+    // Create multiple elements
+    const cleanupFns = Array.from({ length: 15 }, createFloatingElement);
+    
+    return () => {
+      cleanupFns.forEach(cleanup => cleanup());
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pt-20 px-4 bg-gradient-to-b from-brand-50 to-white dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto max-w-6xl">
+    <div ref={containerRef} className="min-h-screen flex flex-col items-center justify-center pt-20 px-4 bg-gradient-to-b from-brand-900 to-slate-900 overflow-hidden relative">
+      <div className="container mx-auto max-w-6xl relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="max-w-2xl space-y-6 animate-fade-in">
             <div className="inline-flex items-center px-4 py-2 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 rounded-full text-sm font-medium mb-4">
@@ -81,13 +134,13 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       </div>
       
       <div 
-        className="absolute bottom-10 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none"
+        className="absolute bottom-10 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none z-10"
         onClick={onScrollToFeatures}
       >
-        <div className="bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm hover:shadow-md transition-smooth border border-slate-200 dark:border-slate-700">
+        <div className="bg-white/10 backdrop-blur-sm p-3 rounded-full hover:bg-white/20 transition-smooth">
           <ArrowDown 
             size={24} 
-            className="text-brand-600 dark:text-brand-400" 
+            className="text-white" 
           />
         </div>
       </div>

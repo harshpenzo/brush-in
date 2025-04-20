@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import Layout from "@/components/Layout";
 import Hero from "@/components/Hero";
@@ -39,19 +38,6 @@ const Index = () => {
 
   return (
     <Layout onScrollToFeatures={scrollToFeatures}>
-      {/* Pricing Banner */}
-      <div className="bg-gradient-to-r from-brand-600 to-brand-400 text-white py-2 px-4 text-center">
-        <p className="text-sm font-medium">
-          🚀 Get started for free! Upgrade to Pro for unlimited posts and advanced features.{" "}
-          <button 
-            onClick={() => navigate("/pricing")} 
-            className="underline font-bold hover:text-white/90 transition-colors"
-          >
-            View pricing
-          </button>
-        </p>
-      </div>
-      
       <Hero onScrollToFeatures={scrollToFeatures} onSelectOption={selectOption} />
       
       <div ref={featuresRef}>
