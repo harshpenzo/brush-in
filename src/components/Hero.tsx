@@ -15,41 +15,65 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Create floating feather elements
+    // Create floating elements (ink pots and feathers)
     const createFloatingElement = () => {
       const element = document.createElement("div");
-      element.className = "absolute text-slate-200/10 pointer-events-none select-none";
+      element.className = "absolute text-slate-200/10 pointer-events-none select-none transition-transform duration-500";
       
-      // Random feather or inkpot
+      // Randomly choose between feather and inkpot (using + symbol for inkpot)
       const isFeather = Math.random() > 0.3;
       if (isFeather) {
-        element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8L8 16"/><path d="M16 8L18 6"/><path d="M8 16L6 18"/><path d="M14 4l-4 4"/><path d="M4 14l4-4"/><path d="M20 8l-4-4"/><path d="M8 20l-4-4"/></svg>`;
+        element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="hand-drawn"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>`;
       } else {
-        element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>`;
+        element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="hand-drawn"><path d="M12 2v20M2 12h20"></path></svg>`;
       }
       
-      // Random initial position
-      element.style.left = `${Math.random() * 100}%`;
-      element.style.top = `${Math.random() * 100}%`;
+      // Random initial position (avoiding content area)
+      const safeZone = 150; // pixels from the center
+      const containerWidth = container.offsetWidth;
+      const containerHeight = container.offsetHeight;
+      
+      let x = Math.random() * containerWidth;
+      let y = Math.random() * containerHeight;
+      
+      // Ensure elements don't overlap with central content
+      const centerX = containerWidth / 2;
+      const centerY = containerHeight / 2;
+      if (Math.abs(x - centerX) < safeZone && Math.abs(y - centerY) < safeZone) {
+        if (x < centerX) x = x - safeZone;
+        else x = x + safeZone;
+      }
+      
+      element.style.left = `${x}px`;
+      element.style.top = `${y}px`;
       element.style.transform = "translate(-50%, -50%) rotate(0deg)";
       container.appendChild(element);
 
-      // Mouse interaction
+      // Mouse interaction with smooth easing
       const handleMouseMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
         
         const elementRect = element.getBoundingClientRect();
         const elementX = elementRect.left - rect.left + elementRect.width / 2;
         const elementY = elementRect.top - rect.top + elementRect.height / 2;
         
-        const angleRad = Math.atan2(y - elementY, x - elementX);
-        const distance = Math.min(100, Math.hypot(x - elementX, y - elementY) / 5);
-        const rotation = (Math.random() - 0.5) * 45;
+        const dx = mouseX - elementX;
+        const dy = mouseY - elementY;
+        const distance = Math.hypot(dx, dy);
+        const maxDistance = 200;
         
-        element.style.transform = `translate(${-Math.cos(angleRad) * distance}px, ${-Math.sin(angleRad) * distance}px) rotate(${rotation}deg)`;
-        element.style.transition = "transform 0.3s ease-out";
+        if (distance < maxDistance) {
+          const angle = Math.atan2(dy, dx);
+          const force = (1 - distance / maxDistance) * 100;
+          const moveX = Math.cos(angle + Math.PI) * force;
+          const moveY = Math.sin(angle + Math.PI) * force;
+          
+          element.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${(Math.random() - 0.5) * 45}deg)`;
+        } else {
+          element.style.transform = "translate(0, 0) rotate(0deg)";
+        }
       };
 
       container.addEventListener("mousemove", handleMouseMove);
@@ -60,8 +84,8 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       };
     };
 
-    // Create multiple elements
-    const cleanupFns = Array.from({ length: 20 }, createFloatingElement);
+    // Create multiple background elements
+    const cleanupFns = Array.from({ length: 30 }, createFloatingElement);
     
     return () => {
       cleanupFns.forEach(cleanup => cleanup());
