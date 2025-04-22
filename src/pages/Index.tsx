@@ -41,27 +41,25 @@ const Index = () => {
 
   return (
     <Layout onScrollToFeatures={scrollToFeatures}>
-      <div className="bg-pattern">
-        <Hero onScrollToFeatures={scrollToFeatures} onSelectOption={selectOption} />
-      </div>
+      <Hero onScrollToFeatures={scrollToFeatures} onSelectOption={selectOption} />
       
       <div ref={featuresRef}>
         <Features onSelectOption={selectOption} />
       </div>
       
       {showPostCreator && (
-        <div ref={postCreatorRef} className="py-20 bg-slate-50">
+        <div ref={postCreatorRef} className="py-20 bg-slate-800">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12 fade-in-bottom">
-              <span className="inline-block px-4 py-2 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 rounded-full text-sm font-medium mb-4">
+              <span className="inline-block px-4 py-2 bg-brand-500/20 text-brand-400 rounded-full text-sm font-medium mb-4">
                 AI Content Generator
               </span>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">
+              <h2 className="text-3xl font-bold text-white mb-3">
                 {activeOption === "create" 
                   ? "Create Your LinkedIn Post" 
                   : "Optimize Your LinkedIn Post"}
               </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              <p className="text-lg text-slate-300 max-w-2xl mx-auto">
                 {activeOption === "create"
                   ? "Generate engaging content for your professional network with our AI-powered tools."
                   : "Enhance your existing post to maximize engagement and professional impact."}

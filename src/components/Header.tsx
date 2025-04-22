@@ -1,5 +1,5 @@
 
-import { Menu, X, Linkedin } from "lucide-react";
+import { Menu, X, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -38,51 +38,51 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
 
   return (
     <header 
-      className={`fixed w-full z-50 transition-all duration-300 ${
+      className={`fixed w-full z-50 transition-all duration-500 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-md py-3 shadow-sm' 
+          ? 'bg-slate-900/90 backdrop-blur-md py-3 shadow-lg border-b border-slate-800/50' 
           : 'bg-transparent py-5'
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="bg-brand-600 text-white p-1.5 rounded transition-smooth group-hover:bg-brand-700">
-            <Linkedin size={20} />
+          <div className="bg-brand-500 text-white p-2 rounded-lg transition-smooth group-hover:bg-brand-600 shadow-lg">
+            <Feather size={20} className="transition-transform group-hover:rotate-12" />
           </div>
-          <h1 className="text-xl font-bold text-slate-900">
-            Brush<span className="text-brand-400 group-hover:text-brand-500 transition-smooth">In</span>
+          <h1 className="text-xl font-bold text-white">
+            <span className="text-brand-400 group-hover:text-brand-300 transition-smooth">Brush</span>
           </h1>
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">
           <Link 
             to="/about" 
-            className={`link-underline text-slate-700 hover:text-brand-600 transition-smooth font-medium text-sm ${
-              isActive('/about') ? 'text-brand-600 after:scale-x-100' : ''
+            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/about') ? 'text-brand-400 after:scale-x-100' : ''
             }`}
           >
             About
           </Link>
           <Link 
             to="/pricing" 
-            className={`link-underline text-slate-700 hover:text-brand-600 transition-smooth font-medium text-sm ${
-              isActive('/pricing') ? 'text-brand-600 after:scale-x-100' : ''
+            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/pricing') ? 'text-brand-400 after:scale-x-100' : ''
             }`}
           >
             Pricing
           </Link>
           <Link 
             to="/testimonials" 
-            className={`link-underline text-slate-700 hover:text-brand-600 transition-smooth font-medium text-sm ${
-              isActive('/testimonials') ? 'text-brand-600 after:scale-x-100' : ''
+            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/testimonials') ? 'text-brand-400 after:scale-x-100' : ''
             }`}
           >
             Testimonials
           </Link>
           <Link 
             to="/contact" 
-            className={`link-underline text-slate-700 hover:text-brand-600 transition-smooth font-medium text-sm ${
-              isActive('/contact') ? 'text-brand-600 after:scale-x-100' : ''
+            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/contact') ? 'text-brand-400 after:scale-x-100' : ''
             }`}
           >
             Contact
@@ -92,13 +92,13 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
         <div className="flex items-center gap-4">
           <Button 
             onClick={handleSignIn}
-            className="hidden md:flex bg-brand-600 hover:bg-brand-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm hover:shadow-md transition-smooth"
+            className="hidden md:flex bg-brand-500 hover:bg-brand-600 text-white px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-xl transition-smooth"
           >
             Sign In
           </Button>
 
           <button 
-            className="md:hidden text-slate-700 dark:text-slate-200 hover:bg-slate-100 p-2 rounded-full transition-smooth" 
+            className="md:hidden text-white hover:bg-slate-800/50 p-2 rounded-full transition-smooth" 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
@@ -109,43 +109,43 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
 
       {/* Enhanced mobile menu with animations */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white dark:bg-slate-900 shadow-md py-4 animate-fade-in">
+        <div className="md:hidden absolute top-full left-0 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800/50 shadow-xl py-4 animate-slide-in-right">
           <div className="container mx-auto px-4 flex flex-col gap-4">
             <Link 
               to="/about" 
-              className={`text-slate-700 hover:text-brand-600 dark:text-slate-200 dark:hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-50 ${
-                isActive('/about') ? 'bg-slate-50 text-brand-600' : ''
+              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/about') ? 'bg-slate-800/70 text-brand-400' : ''
               }`}
             >
               About
             </Link>
             <Link 
               to="/pricing" 
-              className={`text-slate-700 hover:text-brand-600 dark:text-slate-200 dark:hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-50 ${
-                isActive('/pricing') ? 'bg-slate-50 text-brand-600' : ''
+              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/pricing') ? 'bg-slate-800/70 text-brand-400' : ''
               }`}
             >
               Pricing
             </Link>
             <Link 
               to="/testimonials" 
-              className={`text-slate-700 hover:text-brand-600 dark:text-slate-200 dark:hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-50 ${
-                isActive('/testimonials') ? 'bg-slate-50 text-brand-600' : ''
+              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/testimonials') ? 'bg-slate-800/70 text-brand-400' : ''
               }`}
             >
               Testimonials
             </Link>
             <Link 
               to="/contact" 
-              className={`text-slate-700 hover:text-brand-600 dark:text-slate-200 dark:hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-50 ${
-                isActive('/contact') ? 'bg-slate-50 text-brand-600' : ''
+              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/contact') ? 'bg-slate-800/70 text-brand-400' : ''
               }`}
             >
               Contact
             </Link>
             <Button 
               onClick={handleSignIn}
-              className="bg-brand-600 hover:bg-brand-700 text-white w-full py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-smooth mt-2"
+              className="bg-brand-500 hover:bg-brand-600 text-white w-full py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-smooth mt-2"
             >
               Sign In
             </Button>

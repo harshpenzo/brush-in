@@ -4,12 +4,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BrushIn - LinkedIn Post Creator</title>
-    <meta name="description" content="Create engaging LinkedIn posts with BrushIn AI" />
-    <meta name="author" content="BrushIn" />
+    <title>Brush - LinkedIn Post Creator</title>
+    <meta name="description" content="Create engaging LinkedIn posts with Brush AI" />
+    <meta name="author" content="Brush" />
 
-    <meta property="og:title" content="BrushIn - LinkedIn Post Creator" />
-    <meta property="og:description" content="Create engaging LinkedIn posts with BrushIn AI" />
+    <meta property="og:title" content="Brush - LinkedIn Post Creator" />
+    <meta property="og:description" content="Create engaging LinkedIn posts with Brush AI" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
@@ -18,7 +18,7 @@
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
     <!-- Modern fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap">
     
     <style>
       /* Modern UI styles */
@@ -30,20 +30,22 @@
       body {
         font-family: var(--font-sans);
         scroll-behavior: smooth;
+        background-color: #0f172a;
+        color: white;
       }
       
       h1, h2, h3, h4, h5, h6 {
         font-family: var(--font-heading);
       }
       
-      /* Preloading animation */
+      /* Improved preloading animation */
       .preload-overlay {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: #fff;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
         z-index: 9999;
         display: flex;
         align-items: center;
@@ -52,13 +54,35 @@
       }
       
       .preload-logo {
-        animation: pulse 1.5s infinite ease-in-out;
+        position: relative;
       }
       
-      @keyframes pulse {
-        0% { transform: scale(0.95); opacity: 0.7; }
-        50% { transform: scale(1.05); opacity: 1; }
-        100% { transform: scale(0.95); opacity: 0.7; }
+      .preload-logo::after {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        right: -20px;
+        bottom: -20px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0) 70%);
+        animation: pulse-glow 2s infinite ease-in-out;
+      }
+      
+      @keyframes pulse-glow {
+        0% { opacity: 0.5; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1.1); }
+        100% { opacity: 0.5; transform: scale(0.8); }
+      }
+      
+      .feather-logo {
+        animation: float 3s infinite ease-in-out;
+        filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.5));
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
       }
     </style>
   </head>
@@ -74,14 +98,13 @@
       </defs>
     </svg>
     
-    <!-- Preload overlay -->
+    <!-- Improved preload overlay -->
     <div class="preload-overlay" id="preload">
       <div class="preload-logo">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" style="filter: url('#hand-drawn-filter');">
-          <rect x="2" y="2" width="20" height="20" rx="5" />
-          <path d="M16 8.5c0 2-2 3.5-4 3.5s-4-1.5-4-3.5a4 4 0 0 1 8 0z" />
-          <path d="M12 14v4" />
-          <path d="M9 18h6" />
+        <svg class="feather-logo" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" style="filter: url('#hand-drawn-filter');">
+          <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
+          <line x1="16" y1="8" x2="2" y2="22"></line>
+          <line x1="17.5" y1="15" x2="9" y2="15"></line>
         </svg>
       </div>
     </div>
@@ -89,19 +112,20 @@
     <!-- App root -->
     <div id="root"></div>
     
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
     
     <script>
-      // Remove preloader after content loads
+      // Enhanced preloader removal with fade-out animation
       window.addEventListener('load', () => {
         const preloader = document.getElementById('preload');
         if (preloader) {
-          preloader.style.opacity = '0';
           setTimeout(() => {
-            preloader.style.display = 'none';
-          }, 500);
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+              preloader.style.display = 'none';
+            }, 500);
+          }, 800); // Slightly longer delay to show the animation
         }
       });
     </script>
