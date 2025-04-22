@@ -1,4 +1,3 @@
-
 import { ArrowDown, Sparkles, Linkedin, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef } from "react";
@@ -171,9 +170,6 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               Create engaging <span className="text-brand-400 relative">
                 LinkedIn
-                <svg className="absolute -bottom-2 left-0 w-full h-2 text-brand-400 hand-drawn" viewBox="0 0 100 10" preserveAspectRatio="none">
-                  <path d="M0,5 C20,10 50,0 100,5" fill="none" stroke="currentColor" strokeWidth="2" />
-                </svg>
               </span> content that drives results
             </h1>
             

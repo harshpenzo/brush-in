@@ -1,4 +1,3 @@
-
 import { Menu, X, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -50,7 +49,7 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
             <Feather size={20} className="transition-transform group-hover:rotate-12" />
           </div>
           <h1 className="text-xl font-bold text-white">
-            <span className="text-brand-400 group-hover:text-brand-300 transition-smooth">Brush</span>
+            <span className="text-brand-400 group-hover:text-brand-300 transition-smooth">Brushin</span>
           </h1>
         </Link>
         
