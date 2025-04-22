@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,14 +88,9 @@
     @apply font-heading font-semibold;
   }
 
-  /* Add SVG filter for hand-drawn effect */
-  body::after {
-    content: "";
-    position: fixed;
-    pointer-events: none;
-    z-index: -1;
-    width: 0;
-    height: 0;
+  /* Hand-drawn SVG filter */
+  svg {
+    filter: url(#hand-drawn-filter);
   }
 }
 
@@ -115,12 +111,93 @@
     @apply hover:shadow-smooth-lg transition-shadow duration-300;
   }
   
-  /* Hand-drawn effect filter */
-  svg {
-    filter: url(#hand-drawn-filter);
+  /* Enhanced interactive animations */
+  .btn-hover {
+    @apply relative overflow-hidden;
+  }
+  
+  .btn-hover::after {
+    @apply content-[''] absolute inset-0 bg-white/20 scale-x-0 origin-left transition-transform duration-300;
+  }
+  
+  .btn-hover:hover::after {
+    @apply scale-x-100;
+  }
+  
+  /* Animated underline */
+  .link-underline {
+    @apply relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100;
+  }
+  
+  /* Image zoom effect */
+  .img-zoom {
+    @apply overflow-hidden;
+  }
+  
+  .img-zoom img {
+    @apply transition-transform duration-500 hover:scale-105;
+  }
+  
+  /* Enhanced box shadows */
+  .shadow-smooth {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .shadow-smooth-lg {
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Hand-drawn element */
+  .hand-drawn {
+    filter: url('#hand-drawn-filter');
+  }
+  
+  /* Enhanced card with depth */
+  .card-depth {
+    @apply relative;
+  }
+  
+  .card-depth::before {
+    @apply content-[''] absolute -bottom-2 -right-2 w-full h-full bg-slate-100 dark:bg-slate-800 rounded-xl -z-10;
+  }
+  
+  /* Animated fade-in for content sections */
+  .fade-in-bottom {
+    animation: fadeInBottom 0.6s ease-out forwards;
+  }
+  
+  @keyframes fadeInBottom {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
-.hand-drawn {
-  filter: url('#hand-drawn-filter');
+/* Animated card with gradient border */
+.gradient-border {
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(45deg, #0ea5e9, #6366f1);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }

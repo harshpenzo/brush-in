@@ -18,7 +18,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
     // Create floating elements (ink pots and feathers)
     const createFloatingElement = () => {
       const element = document.createElement("div");
-      element.className = "absolute text-slate-200/10 pointer-events-none select-none transition-transform duration-500";
+      element.className = "absolute text-slate-200/10 pointer-events-none select-none transition-all duration-500";
       
       // Randomly choose between feather and inkpot (using + symbol for inkpot)
       const isFeather = Math.random() > 0.3;
@@ -94,11 +94,28 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
 
   return (
     <div ref={containerRef} className="min-h-screen flex flex-col items-center justify-center pt-20 px-4 bg-white overflow-hidden relative">
+      {/* SVG filter for hand-drawn effect */}
+      <svg width="0" height="0" className="absolute">
+        <filter id="hand-drawn-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1" />
+        </filter>
+      </svg>
+      
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="max-w-2xl space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight font-sans">
-              Create engaging <span className="text-brand-600">LinkedIn</span> content that drives results
+          <div className="max-w-2xl space-y-6 animate-fade-in fade-in-bottom">
+            <span className="inline-block px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-xs font-medium mb-2">
+              Professional LinkedIn Content
+            </span>
+            
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
+              Create engaging <span className="text-brand-600 relative">
+                LinkedIn
+                <svg className="absolute -bottom-2 left-0 w-full h-2 text-brand-300 hand-drawn" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0,5 C20,10 50,0 100,5" fill="none" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </span> content that drives results
             </h1>
             
             <p className="text-lg md:text-xl text-slate-600 font-light">
@@ -108,30 +125,32 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button 
                 size="lg" 
-                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-6 rounded-lg font-medium text-base shadow-sm hover:shadow-md transition-smooth"
+                className="bg-brand-600 hover:bg-brand-700 text-white px-8 py-6 rounded-lg font-medium text-base shadow-sm hover:shadow-md transition-smooth group"
                 onClick={() => onSelectOption("create")}
               >
+                <Sparkles className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
                 Create New Post
               </Button>
               
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-900 px-8 py-6 rounded-lg font-medium text-base transition-smooth"
+                className="border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-900 px-8 py-6 rounded-lg font-medium text-base transition-smooth hover:border-brand-200"
                 onClick={() => onSelectOption("optimize")}
               >
+                <Feather className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
                 Optimize Post
               </Button>
             </div>
           </div>
           
-          <div className="relative w-full max-w-md animate-fade-in animation-delay-300">
-            <div className="bg-white rounded-xl shadow-smooth-lg border border-slate-200 p-6 relative z-10">
+          <div className="relative w-full max-w-md animate-fade-in fade-in-bottom" style={{ animationDelay: "300ms" }}>
+            <div className="card-depth bg-white rounded-xl shadow-smooth-lg border border-slate-200 p-6 relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <img 
                   src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop" 
-                  alt="Profile" 
-                  className="w-12 h-12 rounded-full object-cover"
+                  alt="Satya Nadella Profile" 
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
                 />
                 <div>
                   <p className="font-medium text-slate-900">Satya Nadella</p>
@@ -142,31 +161,34 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
               <div className="space-y-3 mb-4">
                 <p className="text-slate-700">Excited to announce Microsoft's continued commitment to AI innovation and responsible development. Our latest breakthroughs in machine learning are not just advancing technology—they're transforming how we work, learn, and connect. 🚀</p>
                 <p className="text-slate-700">The future of AI is collaborative, ethical, and accessible to all. Looking forward to sharing more at our upcoming AI Summit.</p>
-                <p className="text-slate-700">#AI #Innovation #Technology #Leadership</p>
+                <p className="text-slate-700 font-medium">
+                  <span className="text-brand-600">#AI</span> <span className="text-brand-600">#Innovation</span> <span className="text-brand-600">#Technology</span> <span className="text-brand-600">#Leadership</span>
+                </p>
               </div>
               
               <div className="flex justify-between items-center pt-2 border-t border-slate-200">
                 <div className="flex -space-x-2">
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="Avatar 1" className="w-8 h-8 rounded-full border-2 border-white"/>
-                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="Avatar 2" className="w-8 h-8 rounded-full border-2 border-white"/>
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="Avatar 3" className="w-8 h-8 rounded-full border-2 border-white"/>
+                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="Avatar 1" className="w-8 h-8 rounded-full border-2 border-white hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="Avatar 2" className="w-8 h-8 rounded-full border-2 border-white hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="Avatar 3" className="w-8 h-8 rounded-full border-2 border-white hover:scale-110 transition-transform cursor-pointer"/>
+                  <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 text-xs flex items-center justify-center border-2 border-white hover:scale-110 transition-transform cursor-pointer">+124</div>
                 </div>
-                <p className="text-sm text-slate-500">2.5K reactions</p>
+                <p className="text-sm text-slate-500 font-medium">2.5K reactions</p>
               </div>
             </div>
             
-            <div className="absolute -bottom-6 -right-6 w-full h-full bg-slate-100 rounded-xl -z-10"></div>
-            <div className="absolute -bottom-3 -right-3 w-full h-full bg-slate-50 rounded-xl -z-20"></div>
+            <div className="absolute -bottom-3 -right-3 w-full h-full bg-slate-50 rounded-xl -z-10"></div>
           </div>
         </div>
       </div>
       
       <div 
-        className="absolute bottom-10 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none z-10"
+        className="absolute bottom-10 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none z-10 group"
         onClick={onScrollToFeatures}
+        aria-label="Scroll to features"
       >
-        <div className="bg-slate-900/10 backdrop-blur-sm p-3 rounded-full hover:bg-slate-900/20 transition-smooth">
-          <ArrowDown size={24} className="text-slate-900" />
+        <div className="bg-brand-500/10 backdrop-blur-sm p-3 rounded-full group-hover:bg-brand-500/20 transition-smooth">
+          <ArrowDown size={24} className="text-brand-700" />
         </div>
       </div>
     </div>
