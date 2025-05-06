@@ -220,7 +220,6 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
     return selectedPost;
   };
 
-  // Enhanced post optimization function (would be replaced with actual AI API call)
   const optimizeEnhancedPost = (post: string, optimizationGoal: string) => {
     let optimized = post;
     
@@ -289,7 +288,6 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
     return optimized;
   };
 
-  // Helper function to extract topic from existing post
   const extractTopicFromPost = (post: string) => {
     const topics = ["leadership", "innovation", "technology", "marketing", "personal development", 
                    "career growth", "productivity", "team building", "strategy", "communication"];
@@ -304,7 +302,6 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
     return "professional development";
   };
 
-  // Function to generate hashtags
   const generateHashtags = (topic: string, industry: string, keywords: string) => {
     const industryTags = {
       "technology": ["TechTrends", "Innovation", "DigitalTransformation", "TechLeadership"],
@@ -368,6 +365,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
         {mode === "create" ? (
           <Form {...createForm}>
             <form onSubmit={createForm.handleSubmit(handleGenerate)} className="space-y-4">
+              
               <FormField
                 control={createForm.control}
                 name="topic"
@@ -614,9 +612,9 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           </Form>
         )}
         
-        {/* Readability Score & Hashtag Recommendations */}
         {readabilityScore !== null && (
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
             <div className="flex flex-col space-y-3">
               <div>
-                <h3 className="text-sm font-medium text-
+                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Readability Score</h3>
+                <div className="mt-1 h-2 w-full bg-slate-200 dark:bg-slate-7

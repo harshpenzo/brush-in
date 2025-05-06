@@ -35,29 +35,6 @@ const Tips = () => {
     }
   ];
 
-  const moreTips = [
-    {
-      icon: <MessageSquare className="h-4 w-4 text-sky-600 dark:text-sky-400" />,
-      title: "First Hour",
-      description: "Respond to comments within the first hour to boost the algorithm."
-    },
-    {
-      icon: <Image className="h-4 w-4 text-sky-600 dark:text-sky-400" />,
-      title: "Visuals",
-      description: "Add relevant images or videos to increase engagement by 98%."
-    },
-    {
-      icon: <Users className="h-4 w-4 text-sky-600 dark:text-sky-400" />,
-      title: "Tagging",
-      description: "Tag relevant connections but limit to 5 per post."
-    },
-    {
-      icon: <AlertCircle className="h-4 w-4 text-sky-600 dark:text-sky-400" />,
-      title: "Avoid",
-      description: "External links in the main post can reduce reach."
-    }
-  ];
-
   return (
     <Card className="h-full bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
       <CardContent className="p-4">
