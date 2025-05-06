@@ -223,7 +223,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
   const optimizeEnhancedPost = (post: string, optimizationGoal: string) => {
     let optimized = post;
     
-    // Add hashtags if not present
+    // Add strategic hashtags if not present
     if (!optimized.includes("#")) {
       const topics = ["ProfessionalDevelopment", "Innovation", "Leadership", "GrowthMindset", "LinkedIn"];
       const randomTags = Array(3).fill(0).map(() => topics[Math.floor(Math.random() * topics.length)]);
@@ -232,10 +232,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
       optimized += `\n\n#${uniqueTags.join(" #")}`;
     }
     
-    // Optimize based on goal
+    // Enhanced optimization based on goals
     switch (optimizationGoal) {
       case "engagement":
-        // Add engagement question if not present
+        // Add engaging question if not present
         if (!optimized.includes("?")) {
           optimized += "\n\nWhat are your thoughts on this? I'd love to hear your perspective!";
         }
@@ -245,6 +245,11 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           const emojis = ["🚀", "💡", "🔥", "⭐", "📈", "💪", "🎯"];
           const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
           optimized = randomEmoji + " " + optimized;
+        }
+        
+        // Improve call to action
+        if (!optimized.toLowerCase().includes("comment") && !optimized.toLowerCase().includes("share") && !optimized.toLowerCase().includes("like")) {
+          optimized += "\n\nShare your thoughts in the comments or tag someone who would find this valuable!";
         }
         break;
         
@@ -258,6 +263,20 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           }
           return match;
         });
+        
+        // Add structural elements for better readability
+        if (!optimized.includes("•") && !optimized.includes("1.") && !optimized.includes("1)") && optimized.length > 400) {
+          const sentences = optimized.split(/[.!?]+/).filter(s => s.trim().length > 0);
+          if (sentences.length >= 4) {
+            // Convert to bullet points if appropriate
+            const bulletPoint = "• ";
+            const firstPart = sentences.slice(0, 1).join(". ") + ".\n\n";
+            const bulletPoints = sentences.slice(1, 4).map(s => bulletPoint + s.trim()).join("\n");
+            const lastPart = sentences.length > 4 ? "\n\n" + sentences.slice(4).join(". ") + "." : "";
+            
+            optimized = firstPart + bulletPoints + lastPart;
+          }
+        }
         break;
         
       case "professionalism":
@@ -270,10 +289,27 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           }
           return '';
         });
+        
+        // Refine informal language
+        optimized = optimized.replace(/\b(wanna|gonna|gotta)\b/gi, match => {
+          if (match.toLowerCase() === 'wanna') return 'want to';
+          if (match.toLowerCase() === 'gonna') return 'going to';
+          if (match.toLowerCase() === 'gotta') return 'have to';
+          return match;
+        });
+        
+        // Add industry-specific terms if appropriate
+        if (!optimized.toLowerCase().includes("roi") && 
+            !optimized.toLowerCase().includes("strategy") && 
+            !optimized.toLowerCase().includes("analysis")) {
+          optimized = optimized.replace(/\n\n([^#]*)$/, (match, ending) => {
+            return "\n\nThe strategic implications for professionals in this space are significant, particularly when considering long-term ROI and market positioning.\n\n" + ending;
+          });
+        }
         break;
         
       default:
-        // General optimization (readability)
+        // General optimization for readability and structure
         // Add paragraph breaks for readability if missing
         if (!optimized.includes("\n\n") && optimized.length > 300) {
           optimized = optimized.replace(/([.!?])\s+/g, (match, punctuation, index) => {
@@ -282,6 +318,13 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
             }
             return match;
           });
+        }
+        
+        // Ensure there's a clear takeaway or value proposition
+        if (!optimized.toLowerCase().includes("takeaway") && 
+            !optimized.toLowerCase().includes("benefit") && 
+            !optimized.toLowerCase().includes("learn")) {
+          optimized += "\n\nKey takeaway: Implementing these insights can lead to meaningful improvements in both personal effectiveness and organizational outcomes.";
         }
     }
     
@@ -347,7 +390,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
               : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md flex-1"}
           >
             <MessageCircle className="mr-2 h-4 w-4" />
-            Create Post
+            <span className="text-slate-900 dark:text-white">Create Post</span>
           </Button>
           <Button
             type="button"
@@ -358,7 +401,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
               : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md flex-1"}
           >
             <Edit3 className="mr-2 h-4 w-4" />
-            Optimize Post
+            <span className="text-slate-900 dark:text-white">Optimize Post</span>
           </Button>
         </div>
 
@@ -535,12 +578,12 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 {isGenerating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
+                    <span className="text-white">Generating...</span>
                   </>
                 ) : (
                   <>
                     <Wand2 className="mr-2 h-4 w-4" />
-                    Generate Post with AI
+                    <span className="text-white">Generate Post with AI</span>
                   </>
                 )}
               </Button>
@@ -599,12 +642,12 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 {isGenerating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Optimizing...
+                    <span className="text-white">Optimizing...</span>
                   </>
                 ) : (
                   <>
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    Optimize Post with AI
+                    <span className="text-white">Optimize Post with AI</span>
                   </>
                 )}
               </Button>

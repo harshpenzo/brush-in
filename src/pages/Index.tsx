@@ -75,8 +75,8 @@ const Index = () => {
                 />
               </div>
               
-              <div className="space-y-4 fade-in-bottom" style={{ animationDelay: "200ms" }}>
-                <div className="mb-4">
+              <div className="lg:flex lg:flex-col lg:space-y-4 fade-in-bottom order-first lg:order-last" style={{ animationDelay: "200ms" }}>
+                <div className="mb-4 lg:flex-grow">
                   <PostPreview post={generatedPost} />
                 </div>
                 
