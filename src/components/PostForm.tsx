@@ -619,4 +619,4 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
             <div className="flex flex-col space-y-3">
               <div>
-                <h3 className="text-sm font-medium text-slate-7
+                <h3 className="text-sm font-medium text-
