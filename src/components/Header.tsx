@@ -1,6 +1,7 @@
+
 import { Menu, X, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 interface HeaderProps {
@@ -10,6 +11,7 @@ interface HeaderProps {
 const Header = ({ onScrollToFeatures }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const logoRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,6 +21,29 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
     };
 
     window.addEventListener('scroll', handleScroll);
+    
+    // Logo animation
+    const animateLogo = () => {
+      const logo = logoRef.current;
+      if (logo) {
+        const pulseAnimation = () => {
+          logo.style.transform = "scale(1.15)";
+          setTimeout(() => {
+            logo.style.transform = "scale(1)";
+          }, 300);
+        };
+        
+        // Initial delay before starting animation
+        setTimeout(() => {
+          pulseAnimation();
+          // Set interval for repeated animation
+          setInterval(pulseAnimation, 6000);
+        }, 2000);
+      }
+    };
+    
+    animateLogo();
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -45,7 +70,10 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="bg-brand-500 text-white p-2 rounded-lg transition-smooth group-hover:bg-brand-600 shadow-lg">
+          <div 
+            ref={logoRef} 
+            className="bg-brand-500 text-white p-2 rounded-lg transition-all duration-300 group-hover:bg-brand-600 shadow-lg"
+          >
             <Feather size={20} className="transition-transform group-hover:rotate-12" />
           </div>
           <h1 className="text-xl font-bold text-white">
@@ -56,32 +84,32 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
         <nav className="hidden md:flex items-center gap-8">
           <Link 
             to="/about" 
-            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/about') ? 'text-brand-400 after:scale-x-100' : ''
+            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/about') ? 'text-brand-400' : ''
             }`}
           >
             About
           </Link>
           <Link 
             to="/pricing" 
-            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/pricing') ? 'text-brand-400 after:scale-x-100' : ''
+            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/pricing') ? 'text-brand-400' : ''
             }`}
           >
             Pricing
           </Link>
           <Link 
             to="/testimonials" 
-            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/testimonials') ? 'text-brand-400 after:scale-x-100' : ''
+            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/testimonials') ? 'text-brand-400' : ''
             }`}
           >
             Testimonials
           </Link>
           <Link 
             to="/contact" 
-            className={`link-underline text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/contact') ? 'text-brand-400 after:scale-x-100' : ''
+            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
+              isActive('/contact') ? 'text-brand-400' : ''
             }`}
           >
             Contact

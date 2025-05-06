@@ -1,3 +1,4 @@
+
 import { ArrowDown, Sparkles, Linkedin, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef } from "react";
@@ -9,6 +10,7 @@ interface HeroProps {
 
 const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -144,6 +146,28 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
     const cleanupBackground = createAnimatedBackground();
     const cleanupElements = createFloatingElements();
     
+    // Animate the logo
+    const animateLogo = () => {
+      const logo = logoRef.current;
+      if (logo) {
+        const rotateAnimation = () => {
+          logo.style.transition = "transform 0.5s ease-out";
+          logo.style.transform = "rotate(12deg)";
+          
+          setTimeout(() => {
+            logo.style.transition = "transform 0.5s ease-out";
+            logo.style.transform = "rotate(0deg)";
+          }, 500);
+          
+          setTimeout(rotateAnimation, 5000);
+        };
+        
+        rotateAnimation();
+      }
+    };
+    
+    animateLogo();
+    
     return () => {
       cleanupBackground();
       cleanupElements();
@@ -170,6 +194,11 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               Create engaging <span className="text-brand-400 relative">
                 LinkedIn
+                {/* Arrow pointing from LinkedIn to the post preview */}
+                <svg className="absolute -right-16 top-full hidden md:block animate-bounce" width="80" height="60" viewBox="0 0 80 60" fill="none">
+                  <path d="M5,5 Q40,0 75,45" stroke="#38bdf8" strokeWidth="2" strokeDasharray="4 4" fill="none" />
+                  <path d="M70,30 L75,45 L60,40" fill="none" stroke="#38bdf8" strokeWidth="2" />
+                </svg>
               </span> content that drives results
             </h1>
             
@@ -244,6 +273,13 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       >
         <div className="bg-brand-500/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-brand-500/30 transition-smooth">
           <ArrowDown size={24} className="text-brand-400" />
+        </div>
+      </div>
+      
+      {/* Animated logo */}
+      <div ref={logoRef} className="fixed top-5 left-6 z-50 transition-transform">
+        <div className="bg-brand-500 text-white p-2 rounded-lg hover:bg-brand-600 shadow-lg">
+          <Feather size={20} className="transition-transform" />
         </div>
       </div>
     </div>

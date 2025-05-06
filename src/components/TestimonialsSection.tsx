@@ -18,7 +18,7 @@ const testimonials: Testimonial[] = [
     role: "Marketing Director",
     company: "TechGrowth Inc.",
     avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
-    quote: "Brush has completely transformed how I create content for LinkedIn. The AI-powered suggestions are spot-on and have helped me increase engagement by over 200%."
+    quote: "Brushin has completely transformed how I create content for LinkedIn. The AI-powered suggestions are spot-on and have helped me increase engagement by over 200%."
   },
   {
     id: 2,
@@ -26,7 +26,7 @@ const testimonials: Testimonial[] = [
     role: "Startup Founder",
     company: "Nexus Ventures",
     avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
-    quote: "As someone who struggled with creating compelling LinkedIn content, Brush has been a game-changer. My network has grown significantly since I started using it."
+    quote: "As someone who struggled with creating compelling LinkedIn content, Brushin has been a game-changer. My network has grown significantly since I started using it."
   },
   {
     id: 3,
@@ -47,34 +47,17 @@ const TestimonialsSection = () => {
 
     const cards = section.querySelectorAll('.testimonial-card');
     
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
+    // Immediately add animation classes instead of using observer
+    cards.forEach((card, index) => {
+      card.classList.add('animate-fade-in');
+      card.setAttribute('style', `animation-delay: ${index * 0.2}s`);
     });
-
-    cards.forEach(card => {
-      observer.observe(card);
-    });
-
-    return () => {
-      cards.forEach(card => {
-        observer.unobserve(card);
-      });
-    };
   }, []);
 
   return (
     <section ref={sectionRef} className="py-24 bg-slate-800">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16 opacity-0 animate-fade-in">
+        <div className="text-center mb-16 opacity-100 animate-fade-in">
           <span className="inline-block px-4 py-2 bg-brand-500/20 text-brand-400 rounded-full text-sm font-medium mb-4">
             Success Stories
           </span>
@@ -82,7 +65,7 @@ const TestimonialsSection = () => {
             What our users are saying
           </h2>
           <p className="text-lg text-slate-300 max-w-3xl mx-auto">
-            Professionals from various industries have transformed their LinkedIn presence with Brush.
+            Professionals from various industries have transformed their LinkedIn presence with Brushin.
           </p>
         </div>
         
@@ -90,7 +73,7 @@ const TestimonialsSection = () => {
           {testimonials.map((testimonial, index) => (
             <div 
               key={testimonial.id}
-              className="testimonial-card opacity-0 bg-slate-700/50 backdrop-blur-sm rounded-xl p-8 border border-slate-600 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group"
+              className="testimonial-card opacity-100 bg-slate-700/50 backdrop-blur-sm rounded-xl p-8 border border-slate-600 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className="mb-6 text-brand-400/40 group-hover:text-brand-400/70 transition-colors">
@@ -128,7 +111,7 @@ const TestimonialsSection = () => {
         </div>
         
         <div className="text-center mt-12">
-          <a href="/testimonials" className="inline-flex items-center text-brand-400 font-medium hover:text-brand-300 transition-smooth link-underline">
+          <a href="/testimonials" className="inline-flex items-center text-brand-400 font-medium hover:text-brand-300 transition-smooth">
             View all testimonials
             <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
