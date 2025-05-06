@@ -1,4 +1,3 @@
-
 import { Menu, X, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
@@ -22,39 +21,47 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
 
     window.addEventListener('scroll', handleScroll);
     
-    // Logo animation
+    // Enhanced feather logo animation
     const animateLogo = () => {
       const logo = logoRef.current;
       if (logo) {
-        const pulseAnimation = () => {
-          logo.style.transform = "scale(1.15)";
-          setTimeout(() => {
-            logo.style.transform = "scale(1)";
-          }, 300);
+        // Feather falling/floating animation
+        const floatingAnimation = () => {
+          // Create a sequence of movements that simulate a feather blown by wind
+          const sequence = async () => {
+            // Float down and right
+            logo.style.transition = "transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+            logo.style.transform = "translateY(8px) translateX(4px) rotate(15deg)";
+            
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Float up and left (wind blowing)
+            logo.style.transition = "transform 2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+            logo.style.transform = "translateY(-5px) translateX(-3px) rotate(-8deg)";
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Gentle bob in place
+            logo.style.transition = "transform 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+            logo.style.transform = "translateY(2px) translateX(2px) rotate(5deg)";
+            
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            
+            // Return to original position with a slight wobble
+            logo.style.transition = "transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)";
+            logo.style.transform = "translateY(0) translateX(0) rotate(0deg)";
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Repeat the sequence
+            floatingAnimation();
+          };
+          
+          sequence();
         };
         
-        // Add rotation animation
-        const rotateAnimation = () => {
-          logo.style.transition = "transform 0.5s ease-out";
-          logo.style.transform = "rotate(12deg)";
-          
-          setTimeout(() => {
-            logo.style.transition = "transform 0.5s ease-out";
-            logo.style.transform = "rotate(0deg)";
-          }, 500);
-          
-          setTimeout(rotateAnimation, 5000);
-        };
-        
-        // Initial delay before starting animation
-        setTimeout(() => {
-          pulseAnimation();
-          // Set interval for repeated animation
-          setInterval(pulseAnimation, 6000);
-          
-          // Start rotation animation after pulse
-          setTimeout(rotateAnimation, 2000);
-        }, 2000);
+        // Start the floating animation with an initial delay
+        setTimeout(floatingAnimation, 1000);
       }
     };
     
@@ -77,6 +84,7 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
   };
 
   return (
+    
     <header 
       className={`fixed w-full z-50 transition-all duration-500 ${
         isScrolled 
@@ -90,12 +98,13 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
             ref={logoRef} 
             className="bg-sky-500 text-white p-2 rounded-lg transition-all duration-300 group-hover:bg-sky-600 shadow-lg"
           >
-            <Feather size={20} className="transition-transform group-hover:rotate-12" />
+            <Feather size={20} className="feather-logo" />
           </div>
           <h1 className="text-xl font-bold text-white">
             <span className="text-sky-400 group-hover:text-sky-300 transition-smooth">Brushin</span>
           </h1>
         </Link>
+        
         
         <nav className="hidden md:flex items-center gap-8">
           <Link 
@@ -150,7 +159,7 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
         </div>
       </div>
 
-      {/* Enhanced mobile menu with animations */}
+      
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800/50 shadow-xl py-4 animate-slide-in-right">
           <div className="container mx-auto px-4 flex flex-col gap-4">

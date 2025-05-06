@@ -76,11 +76,13 @@ const Index = () => {
               </div>
               
               <div className="space-y-4 fade-in-bottom" style={{ animationDelay: "200ms" }}>
-                <div className="h-[350px]">
+                <div className="mb-4">
                   <PostPreview post={generatedPost} />
                 </div>
                 
-                <Tips />
+                <div className="h-auto">
+                  <Tips />
+                </div>
               </div>
             </div>
           </div>

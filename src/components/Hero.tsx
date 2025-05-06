@@ -1,4 +1,3 @@
-
 import { ArrowDown, Sparkles, Linkedin, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef } from "react";
@@ -15,40 +14,90 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Create animated background
+    // Create enhanced animated background
     const createAnimatedBackground = () => {
-      // Create gradient orbs for the background
-      const orbs = Array.from({ length: 5 }, (_, i) => {
+      // Create more vibrant gradient orbs for the background
+      const orbs = Array.from({ length: 8 }, (_, i) => {
         const orb = document.createElement("div");
-        const size = Math.random() * 300 + 200;
-        const hue = Math.random() * 60 + 180; // Blue to cyan range
+        const size = Math.random() * 350 + 200;
+        // More varied and vibrant color range
+        const hue = i % 2 === 0 
+          ? Math.random() * 60 + 180 // Blue to cyan range
+          : Math.random() * 40 + 220; // Purple to blue range
         
         orb.className = "absolute rounded-full blur-3xl opacity-20 animate-float";
         orb.style.width = `${size}px`;
         orb.style.height = `${size}px`;
-        orb.style.backgroundColor = `hsl(${hue}, 70%, 60%)`;
+        orb.style.backgroundColor = `hsl(${hue}, ${70 + Math.random() * 20}%, ${50 + Math.random() * 20}%)`;
         orb.style.left = `${Math.random() * 100}%`;
         orb.style.top = `${Math.random() * 100}%`;
         orb.style.animationDelay = `${Math.random() * 5}s`;
         orb.style.transform = "translate(-50%, -50%)";
         orb.style.zIndex = "0";
         
+        // Add custom animation to each orb
+        orb.style.animation = `floatOrb ${10 + Math.random() * 15}s ease-in-out infinite`;
+        
         container.appendChild(orb);
         return orb;
       });
 
+      // Add subtle moving particle effects
+      const addParticles = () => {
+        const particleCount = 40;
+        const particles: HTMLDivElement[] = [];
+        
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          const size = Math.random() * 6 + 2;
+          
+          particle.className = "absolute rounded-full";
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          particle.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.15 + 0.05})`;
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+          particle.style.zIndex = "1";
+          
+          // Create unique floating animation for each particle
+          particle.style.transition = "transform 3s ease-in-out, opacity 3s ease-in-out";
+          
+          container.appendChild(particle);
+          particles.push(particle);
+          
+          // Animate particles
+          const moveParticle = () => {
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const opacity = Math.random() * 0.15 + 0.05;
+            
+            particle.style.transform = `translate(${x}vw, ${y}vh)`;
+            particle.style.opacity = `${opacity}`;
+            
+            setTimeout(() => moveParticle(), 3000 + Math.random() * 2000);
+          };
+          
+          moveParticle();
+        }
+        
+        return particles;
+      };
+      
+      const particles = addParticles();
+
       return () => {
         orbs.forEach(orb => container.removeChild(orb));
+        particles.forEach(particle => container.removeChild(particle));
       };
     };
 
-    // Create floating ink pots and feathers
+    // Create floating ink pots and feathers with enhanced movement
     const createFloatingElements = () => {
       const elements: HTMLDivElement[] = [];
-      const count = 15; // Reduced count to avoid clutter
+      const count = 20; // Increased count for more visual interest
       
       // Create elements outside of main content
-      const safeMargin = 150; // Margin to keep elements away from center content
+      const safeMargin = 120; // Margin to keep elements away from center content
       const centerX = container.offsetWidth / 2;
       const centerY = container.offsetHeight / 2;
       const contentWidth = Math.min(1000, container.offsetWidth * 0.8);
@@ -58,12 +107,23 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
         const element = document.createElement("div");
         element.className = "absolute text-slate-200/10 pointer-events-none select-none transition-all duration-500 svg-element";
         
-        // Randomly choose between feather and inkpot
-        const isFeather = Math.random() > 0.3;
+        // Randomly choose between feather and inkpot with more feathers
+        const isFeather = Math.random() > 0.2;
         if (isFeather) {
-          element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="hand-drawn"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>`;
+          // Create different feather angles and types
+          const rotation = Math.random() * 360;
+          const scale = 0.8 + Math.random() * 0.6;
+          element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(${rotation}deg) scale(${scale});" class="hand-drawn"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>`;
         } else {
-          element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="hand-drawn"><circle cx="12" cy="12" r="7"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>`;
+          // Inkpots with varying designs
+          const variation = Math.floor(Math.random() * 3);
+          if (variation === 0) {
+            element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="hand-drawn"><circle cx="12" cy="12" r="7"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>`;
+          } else if (variation === 1) {
+            element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="hand-drawn"><rect x="8" y="8" width="8" height="12" rx="2"></rect><path d="M10 8V6a2 2 0 0 1 4 0v2"></path></svg>`;
+          } else {
+            element.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="hand-drawn"><path d="M9 3h6v11h4l-7 7-7-7h4z"></path></svg>`;
+          }
         }
         
         // Position elements to avoid the central content area
@@ -86,27 +146,30 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
         element.style.left = `${x}px`;
         element.style.top = `${y}px`;
         element.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg)`;
-        element.style.opacity = `${Math.random() * 0.2 + 0.1}`;
+        element.style.opacity = `${Math.random() * 0.3 + 0.1}`;
         container.appendChild(element);
         elements.push(element);
         
-        // Add floating animation
+        // Add more natural and varied floating animation
         const animateFloat = () => {
-          const floatX = (Math.random() - 0.5) * 15;
-          const floatY = (Math.random() - 0.5) * 15;
-          const rotation = (Math.random() - 0.5) * 20;
+          // Enhanced natural movement simulation
+          const moveX = (Math.random() - 0.5) * 25; 
+          const moveY = (Math.random() - 0.5) * 25;
+          const rotation = (Math.random() - 0.5) * 30;
+          const duration = 6 + Math.random() * 8; // Varied durations
+          const easing = ['ease-in-out', 'cubic-bezier(0.37, 0, 0.63, 1)', 'cubic-bezier(0.34, 1.56, 0.64, 1)'][Math.floor(Math.random() * 3)];
           
-          element.style.transition = "transform 8s ease-in-out, opacity 3s ease-in-out";
-          element.style.transform = `translate(calc(-50% + ${floatX}px), calc(-50% + ${floatY}px)) rotate(${rotation}deg)`;
+          element.style.transition = `transform ${duration}s ${easing}, opacity 3s ease-in-out`;
+          element.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) rotate(${rotation}deg)`;
           element.style.opacity = `${Math.random() * 0.3 + 0.1}`;
           
-          setTimeout(animateFloat, 8000 + Math.random() * 4000);
+          setTimeout(animateFloat, duration * 1000 + Math.random() * 3000);
         };
         
         setTimeout(animateFloat, Math.random() * 2000);
       }
 
-      // Mouse interaction with smooth easing
+      // Enhanced mouse interaction with more responsive easing
       const handleMouseMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -120,16 +183,18 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
           const dx = mouseX - elementX;
           const dy = mouseY - elementY;
           const distance = Math.hypot(dx, dy);
-          const maxDistance = 250;
+          const maxDistance = 300; // Increased interaction range
           
           if (distance < maxDistance) {
             const angle = Math.atan2(dy, dx);
-            const force = (1 - distance / maxDistance) * 70;
+            // Force inverse proportional to distance - stronger push when closer
+            const force = (1 - distance / maxDistance) * 100;
             const moveX = Math.cos(angle + Math.PI) * force;
             const moveY = Math.sin(angle + Math.PI) * force;
             
-            element.style.transition = "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)";
-            element.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) rotate(${(Math.random() - 0.5) * 45}deg)`;
+            // More natural, physics-like movement
+            element.style.transition = "transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)";
+            element.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) rotate(${(Math.random() - 0.5) * 60}deg)`;
           }
         });
       };
