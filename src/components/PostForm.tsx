@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -143,7 +144,6 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
     }, 1500);
   };
 
-  // Enhanced post generation function (would be replaced with actual AI API call)
   const generateEnhancedPost = (
     topic: string, 
     tone: string, 
@@ -617,4 +617,51 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
             <div className="flex flex-col space-y-3">
               <div>
                 <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Readability Score</h3>
-                <div className="mt-1 h-2 w-full bg-slate-200 dark:bg-slate-7
+                <div className="mt-1 h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full ${
+                      readabilityScore >= 90 ? "bg-green-500" : 
+                      readabilityScore >= 80 ? "bg-green-400" : 
+                      readabilityScore >= 70 ? "bg-yellow-500" : "bg-orange-500"
+                    }`}
+                    style={{ width: `${readabilityScore}%` }}
+                  />
+                </div>
+                <div className="mt-1 flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span>Score: {readabilityScore}</span>
+                  {readabilityScore >= 90 ? (
+                    <span className="text-green-600 dark:text-green-400 font-medium">Excellent</span>
+                  ) : readabilityScore >= 80 ? (
+                    <span className="text-green-600 dark:text-green-400 font-medium">Good</span>
+                  ) : readabilityScore >= 70 ? (
+                    <span className="text-yellow-600 dark:text-yellow-400 font-medium">Average</span>
+                  ) : (
+                    <span className="text-orange-600 dark:text-orange-400 font-medium">Needs Improvement</span>
+                  )}
+                </div>
+              </div>
+              
+              {hashtags.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Recommended Hashtags</h3>
+                  <div className="mt-1 flex flex-wrap gap-2">
+                    {hashtags.map((tag, index) => (
+                      <span 
+                        key={index} 
+                        className="inline-flex items-center bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-300 text-xs rounded-full px-2.5 py-1"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default PostForm;
