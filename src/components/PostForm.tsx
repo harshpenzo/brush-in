@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -418,7 +417,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                     <FormControl>
                       <Input
                         placeholder="e.g. Leadership, Industry Trends, Work-Life Balance"
-                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
+                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
                         {...field}
                       />
                     </FormControl>
@@ -436,7 +435,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                     <FormControl>
                       <Textarea
                         placeholder="Add more context about your post..."
-                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
+                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
                         rows={3}
                         {...field}
                       />
@@ -455,7 +454,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                       <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Tone</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select tone" />
                           </SelectTrigger>
                         </FormControl>
@@ -479,7 +478,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                       <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Content Style</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select style" />
                           </SelectTrigger>
                         </FormControl>
@@ -505,7 +504,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                       <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Post Length</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select length" />
                           </SelectTrigger>
                         </FormControl>
@@ -528,7 +527,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                       <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Industry</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select industry" />
                           </SelectTrigger>
                         </FormControl>
@@ -561,7 +560,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                     <FormControl>
                       <Input
                         placeholder="e.g. innovation, strategy, growth (comma separated)"
-                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
+                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
                         {...field}
                       />
                     </FormControl>
@@ -597,114 +596,3 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 name="existingPost"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Your Existing Post</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Paste your LinkedIn post here for optimization..."
-                        rows={8}
-                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={optimizeForm.control}
-                name="optimizationGoal"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Optimization Goal</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
-                          <SelectValue placeholder="Select goal" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="engagement">Maximize Engagement</SelectItem>
-                        <SelectItem value="clarity">Improve Clarity</SelectItem>
-                        <SelectItem value="professionalism">Enhance Professionalism</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <Button 
-                type="submit"
-                className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-2.5 rounded-md transition-all"
-                disabled={isGenerating}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span className="text-white">Optimizing...</span>
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    <span className="text-white">Optimize Post with AI</span>
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
-        )}
-        
-        {readabilityScore !== null && (
-          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <div className="flex flex-col space-y-3">
-              <div>
-                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Readability Score</h3>
-                <div className="mt-1 h-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full ${
-                      readabilityScore >= 90 ? "bg-green-500" : 
-                      readabilityScore >= 80 ? "bg-green-400" : 
-                      readabilityScore >= 70 ? "bg-yellow-500" : "bg-orange-500"
-                    }`}
-                    style={{ width: `${readabilityScore}%` }}
-                  />
-                </div>
-                <div className="mt-1 flex justify-between text-xs text-slate-500 dark:text-slate-400">
-                  <span>Score: {readabilityScore}</span>
-                  {readabilityScore >= 90 ? (
-                    <span className="text-green-600 dark:text-green-400 font-medium">Excellent</span>
-                  ) : readabilityScore >= 80 ? (
-                    <span className="text-green-600 dark:text-green-400 font-medium">Good</span>
-                  ) : readabilityScore >= 70 ? (
-                    <span className="text-yellow-600 dark:text-yellow-400 font-medium">Average</span>
-                  ) : (
-                    <span className="text-orange-600 dark:text-orange-400 font-medium">Needs Improvement</span>
-                  )}
-                </div>
-              </div>
-              
-              {hashtags.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Recommended Hashtags</h3>
-                  <div className="mt-1 flex flex-wrap gap-2">
-                    {hashtags.map((tag, index) => (
-                      <span 
-                        key={index} 
-                        className="inline-flex items-center bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-300 text-xs rounded-full px-2.5 py-1"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
-
-export default PostForm;
