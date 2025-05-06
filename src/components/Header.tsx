@@ -33,11 +33,27 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
           }, 300);
         };
         
+        // Add rotation animation
+        const rotateAnimation = () => {
+          logo.style.transition = "transform 0.5s ease-out";
+          logo.style.transform = "rotate(12deg)";
+          
+          setTimeout(() => {
+            logo.style.transition = "transform 0.5s ease-out";
+            logo.style.transform = "rotate(0deg)";
+          }, 500);
+          
+          setTimeout(rotateAnimation, 5000);
+        };
+        
         // Initial delay before starting animation
         setTimeout(() => {
           pulseAnimation();
           // Set interval for repeated animation
           setInterval(pulseAnimation, 6000);
+          
+          // Start rotation animation after pulse
+          setTimeout(rotateAnimation, 2000);
         }, 2000);
       }
     };
@@ -72,44 +88,44 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
         <Link to="/" className="flex items-center gap-2 group">
           <div 
             ref={logoRef} 
-            className="bg-brand-500 text-white p-2 rounded-lg transition-all duration-300 group-hover:bg-brand-600 shadow-lg"
+            className="bg-sky-500 text-white p-2 rounded-lg transition-all duration-300 group-hover:bg-sky-600 shadow-lg"
           >
             <Feather size={20} className="transition-transform group-hover:rotate-12" />
           </div>
           <h1 className="text-xl font-bold text-white">
-            <span className="text-brand-400 group-hover:text-brand-300 transition-smooth">Brushin</span>
+            <span className="text-sky-400 group-hover:text-sky-300 transition-smooth">Brushin</span>
           </h1>
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">
           <Link 
             to="/about" 
-            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/about') ? 'text-brand-400' : ''
+            className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
+              isActive('/about') ? 'text-sky-400' : ''
             }`}
           >
             About
           </Link>
           <Link 
             to="/pricing" 
-            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/pricing') ? 'text-brand-400' : ''
+            className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
+              isActive('/pricing') ? 'text-sky-400' : ''
             }`}
           >
             Pricing
           </Link>
           <Link 
             to="/testimonials" 
-            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/testimonials') ? 'text-brand-400' : ''
+            className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
+              isActive('/testimonials') ? 'text-sky-400' : ''
             }`}
           >
             Testimonials
           </Link>
           <Link 
             to="/contact" 
-            className={`text-slate-300 hover:text-brand-400 transition-smooth font-medium text-sm ${
-              isActive('/contact') ? 'text-brand-400' : ''
+            className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
+              isActive('/contact') ? 'text-sky-400' : ''
             }`}
           >
             Contact
@@ -119,7 +135,7 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
         <div className="flex items-center gap-4">
           <Button 
             onClick={handleSignIn}
-            className="hidden md:flex bg-brand-500 hover:bg-brand-600 text-white px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-xl transition-smooth"
+            className="hidden md:flex bg-sky-500 hover:bg-sky-600 text-white px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-xl transition-smooth"
           >
             Sign In
           </Button>
@@ -140,39 +156,39 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
           <div className="container mx-auto px-4 flex flex-col gap-4">
             <Link 
               to="/about" 
-              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
-                isActive('/about') ? 'bg-slate-800/70 text-brand-400' : ''
+              className={`text-slate-300 hover:text-sky-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/about') ? 'bg-slate-800/70 text-sky-400' : ''
               }`}
             >
               About
             </Link>
             <Link 
               to="/pricing" 
-              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
-                isActive('/pricing') ? 'bg-slate-800/70 text-brand-400' : ''
+              className={`text-slate-300 hover:text-sky-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/pricing') ? 'bg-slate-800/70 text-sky-400' : ''
               }`}
             >
               Pricing
             </Link>
             <Link 
               to="/testimonials" 
-              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
-                isActive('/testimonials') ? 'bg-slate-800/70 text-brand-400' : ''
+              className={`text-slate-300 hover:text-sky-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/testimonials') ? 'bg-slate-800/70 text-sky-400' : ''
               }`}
             >
               Testimonials
             </Link>
             <Link 
               to="/contact" 
-              className={`text-slate-300 hover:text-brand-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
-                isActive('/contact') ? 'bg-slate-800/70 text-brand-400' : ''
+              className={`text-slate-300 hover:text-sky-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/contact') ? 'bg-slate-800/70 text-sky-400' : ''
               }`}
             >
               Contact
             </Link>
             <Button 
               onClick={handleSignIn}
-              className="bg-brand-500 hover:bg-brand-600 text-white w-full py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-smooth mt-2"
+              className="bg-sky-500 hover:bg-sky-600 text-white w-full py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-smooth mt-2"
             >
               Sign In
             </Button>

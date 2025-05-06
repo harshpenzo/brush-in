@@ -10,7 +10,6 @@ interface HeroProps {
 
 const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -146,28 +145,6 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
     const cleanupBackground = createAnimatedBackground();
     const cleanupElements = createFloatingElements();
     
-    // Animate the logo
-    const animateLogo = () => {
-      const logo = logoRef.current;
-      if (logo) {
-        const rotateAnimation = () => {
-          logo.style.transition = "transform 0.5s ease-out";
-          logo.style.transform = "rotate(12deg)";
-          
-          setTimeout(() => {
-            logo.style.transition = "transform 0.5s ease-out";
-            logo.style.transform = "rotate(0deg)";
-          }, 500);
-          
-          setTimeout(rotateAnimation, 5000);
-        };
-        
-        rotateAnimation();
-      }
-    };
-    
-    animateLogo();
-    
     return () => {
       cleanupBackground();
       cleanupElements();
@@ -187,19 +164,12 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="max-w-2xl space-y-6 animate-fade-in fade-in-bottom backdrop-blur-sm bg-slate-900/30 p-8 rounded-2xl border border-slate-700/50">
-            <span className="inline-block px-3 py-1 bg-brand-500/20 text-brand-400 rounded-full text-xs font-medium mb-2">
+            <span className="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-xs font-medium mb-2">
               Professional LinkedIn Content
             </span>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              Create engaging <span className="text-brand-400 relative">
-                LinkedIn
-                {/* Arrow pointing from LinkedIn to the post preview */}
-                <svg className="absolute -right-16 top-full hidden md:block animate-bounce" width="80" height="60" viewBox="0 0 80 60" fill="none">
-                  <path d="M5,5 Q40,0 75,45" stroke="#38bdf8" strokeWidth="2" strokeDasharray="4 4" fill="none" />
-                  <path d="M70,30 L75,45 L60,40" fill="none" stroke="#38bdf8" strokeWidth="2" />
-                </svg>
-              </span> content that drives results
+              Create engaging <span className="text-sky-400 relative">LinkedIn</span> content that drives results
             </h1>
             
             <p className="text-lg md:text-xl text-slate-300 font-light">
@@ -209,7 +179,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button 
                 size="lg" 
-                className="bg-brand-500 hover:bg-brand-600 text-white px-8 py-6 rounded-lg font-medium text-base shadow-lg hover:shadow-xl transition-smooth group"
+                className="bg-sky-500 hover:bg-sky-600 text-white px-8 py-6 rounded-lg font-medium text-base shadow-lg hover:shadow-xl transition-smooth group"
                 onClick={() => onSelectOption("create")}
               >
                 <Sparkles className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
@@ -219,7 +189,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-white px-8 py-6 rounded-lg font-medium text-base transition-smooth hover:border-brand-400"
+                className="border-2 border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-white px-8 py-6 rounded-lg font-medium text-base transition-smooth hover:border-sky-400"
                 onClick={() => onSelectOption("optimize")}
               >
                 <Feather className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
@@ -229,12 +199,12 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
           </div>
           
           <div className="relative w-full max-w-md animate-fade-in fade-in-bottom" style={{ animationDelay: "300ms" }}>
-            <div className="card-depth bg-white/5 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-6 relative z-10 transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-brand-500/20">
+            <div className="card-depth bg-white/5 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-6 relative z-10 transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-sky-500/20">
               <div className="flex items-center gap-3 mb-4">
                 <img 
                   src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop" 
                   alt="Satya Nadella Profile" 
-                  className="w-12 h-12 rounded-full object-cover border-2 border-brand-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-sky-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 />
                 <div>
                   <p className="font-medium text-white">Satya Nadella</p>
@@ -246,7 +216,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
                 <p className="text-slate-300">Excited to announce Microsoft's continued commitment to AI innovation and responsible development. Our latest breakthroughs in machine learning are not just advancing technology—they're transforming how we work, learn, and connect. 🚀</p>
                 <p className="text-slate-300">The future of AI is collaborative, ethical, and accessible to all. Looking forward to sharing more at our upcoming AI Summit.</p>
                 <p className="text-slate-300 font-medium">
-                  <span className="text-brand-400">#AI</span> <span className="text-brand-400">#Innovation</span> <span className="text-brand-400">#Technology</span> <span className="text-brand-400">#Leadership</span>
+                  <span className="text-sky-400">#AI</span> <span className="text-sky-400">#Innovation</span> <span className="text-sky-400">#Technology</span> <span className="text-sky-400">#Leadership</span>
                 </p>
               </div>
               
@@ -261,7 +231,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
               </div>
             </div>
             
-            <div className="absolute -bottom-3 -right-3 w-full h-full bg-brand-500/10 rounded-xl -z-10 blur-xl"></div>
+            <div className="absolute -bottom-3 -right-3 w-full h-full bg-sky-500/10 rounded-xl -z-10 blur-xl"></div>
           </div>
         </div>
       </div>
@@ -271,15 +241,8 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
         onClick={onScrollToFeatures}
         aria-label="Scroll to features"
       >
-        <div className="bg-brand-500/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-brand-500/30 transition-smooth">
-          <ArrowDown size={24} className="text-brand-400" />
-        </div>
-      </div>
-      
-      {/* Animated logo */}
-      <div ref={logoRef} className="fixed top-5 left-6 z-50 transition-transform">
-        <div className="bg-brand-500 text-white p-2 rounded-lg hover:bg-brand-600 shadow-lg">
-          <Feather size={20} className="transition-transform" />
+        <div className="bg-sky-500/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-sky-500/30 transition-smooth">
+          <ArrowDown size={24} className="text-sky-400" />
         </div>
       </div>
     </div>

@@ -1,9 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Wand2, RefreshCw, Loader2, MessageCircle, Edit3, Hash, ArrowRight } from "lucide-react";
@@ -340,16 +338,16 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
   };
 
   return (
-    <Card className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-      <CardContent className="p-6">
-        <div className="flex gap-2 mb-6">
+    <Card className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      <CardContent className="p-5">
+        <div className="flex gap-2 mb-6 bg-slate-50 dark:bg-slate-700/30 p-1 rounded-lg">
           <Button
             type="button"
             variant={mode === "create" ? "default" : "outline"}
             onClick={() => setMode("create")}
             className={mode === "create" 
-              ? "bg-brand-600 hover:bg-brand-700 text-white rounded-lg" 
-              : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg"}
+              ? "bg-sky-500 hover:bg-sky-600 text-white rounded-md flex-1 px-4 py-2" 
+              : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md flex-1"}
           >
             <MessageCircle className="mr-2 h-4 w-4" />
             Create Post
@@ -359,8 +357,8 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
             variant={mode === "optimize" ? "default" : "outline"}
             onClick={() => setMode("optimize")}
             className={mode === "optimize" 
-              ? "bg-brand-600 hover:bg-brand-700 text-white rounded-lg" 
-              : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg"}
+              ? "bg-sky-500 hover:bg-sky-600 text-white rounded-md flex-1 px-4 py-2" 
+              : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md flex-1"}
           >
             <Edit3 className="mr-2 h-4 w-4" />
             Optimize Post
@@ -375,11 +373,11 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 name="topic"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Topic</FormLabel>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Topic</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="e.g. Leadership, Industry Trends, Work-Life Balance"
-                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
                         {...field}
                       />
                     </FormControl>
@@ -393,11 +391,11 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Description</FormLabel>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Description</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Add more context about your post..."
-                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
                         rows={3}
                         {...field}
                       />
@@ -413,10 +411,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                   name="tone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Tone</FormLabel>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Tone</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
                             <SelectValue placeholder="Select tone" />
                           </SelectTrigger>
                         </FormControl>
@@ -437,10 +435,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                   name="contentStyle"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Content Style</FormLabel>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Content Style</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
                             <SelectValue placeholder="Select style" />
                           </SelectTrigger>
                         </FormControl>
@@ -463,10 +461,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                   name="postLength"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Post Length</FormLabel>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Post Length</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
                             <SelectValue placeholder="Select length" />
                           </SelectTrigger>
                         </FormControl>
@@ -486,10 +484,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                   name="industry"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Industry</FormLabel>
+                      <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Industry</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                          <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
                             <SelectValue placeholder="Select industry" />
                           </SelectTrigger>
                         </FormControl>
@@ -513,7 +511,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 name="keywords"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">
                       <div className="flex items-center">
                         Keywords
                         <Hash className="ml-1 h-4 w-4 text-slate-500" />
@@ -522,7 +520,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                     <FormControl>
                       <Input
                         placeholder="e.g. innovation, strategy, growth (comma separated)"
-                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
                         {...field}
                       />
                     </FormControl>
@@ -533,7 +531,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
               
               <Button 
                 type="submit"
-                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
+                className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-2.5 rounded-md transition-all"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
@@ -558,12 +556,12 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 name="existingPost"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Your Existing Post</FormLabel>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Your Existing Post</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Paste your LinkedIn post here for optimization..."
                         rows={8}
-                        className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20"
+                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900"
                         {...field}
                       />
                     </FormControl>
@@ -577,10 +575,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
                 name="optimizationGoal"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1.5 block">Optimization Goal</FormLabel>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-medium mb-1 block">Optimization Goal</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg focus:border-brand-500 dark:focus:border-brand-500 focus:ring focus:ring-brand-500/20">
+                        <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900">
                           <SelectValue placeholder="Select goal" />
                         </SelectTrigger>
                       </FormControl>
@@ -597,7 +595,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
               
               <Button 
                 type="submit"
-                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg transition-smooth"
+                className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-2.5 rounded-md transition-all"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
@@ -621,58 +619,4 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
             <div className="flex flex-col space-y-3">
               <div>
-                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Readability Score</h3>
-                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
-                  <div 
-                    className={`h-2.5 rounded-full ${
-                      readabilityScore >= 90 ? 'bg-green-500' : 
-                      readabilityScore >= 70 ? 'bg-brand-500' : 'bg-orange-500'
-                    }`} 
-                    style={{ width: `${readabilityScore}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  <span>Needs work</span>
-                  <span>{readabilityScore}/100</span>
-                  <span>Excellent</span>
-                </div>
-              </div>
-              
-              {hashtags.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center">
-                    <Hash className="mr-1 h-4 w-4" /> 
-                    Recommended Hashtags
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {hashtags.map((tag, index) => (
-                      <span 
-                        key={index}
-                        className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-brand-100 text-brand-800 dark:bg-brand-900/30 dark:text-brand-300"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 p-0"
-                      type="button"
-                    >
-                      <span className="flex items-center">
-                        View more
-                        <ArrowRight className="ml-1 h-3 w-3" />
-                      </span>
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
-
-export default PostForm;
+                <h3 className="text-sm font-medium text-slate-7

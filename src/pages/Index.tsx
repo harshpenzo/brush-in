@@ -48,10 +48,10 @@ const Index = () => {
       </div>
       
       {showPostCreator && (
-        <div ref={postCreatorRef} className="py-20 bg-slate-800">
+        <div ref={postCreatorRef} className="py-16 bg-slate-800">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12 fade-in-bottom">
-              <span className="inline-block px-4 py-2 bg-brand-500/20 text-brand-400 rounded-full text-sm font-medium mb-4">
+            <div className="text-center mb-8 fade-in-bottom">
+              <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
                 AI Content Generator
               </span>
               <h2 className="text-3xl font-bold text-white mb-3">
@@ -66,8 +66,8 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              <div className="space-y-6 fade-in-bottom" style={{ animationDelay: "100ms" }}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <div className="lg:col-span-2 space-y-6 fade-in-bottom" style={{ animationDelay: "100ms" }}>
                 <PostForm 
                   onGenerate={handleGeneratePost} 
                   onOptimize={handleOptimizePost} 
@@ -75,8 +75,8 @@ const Index = () => {
                 />
               </div>
               
-              <div className="space-y-6 fade-in-bottom" style={{ animationDelay: "200ms" }}>
-                <div className="h-[400px]">
+              <div className="space-y-4 fade-in-bottom" style={{ animationDelay: "200ms" }}>
+                <div className="h-[350px]">
                   <PostPreview post={generatedPost} />
                 </div>
                 
