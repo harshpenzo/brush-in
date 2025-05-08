@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -84,6 +83,10 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
   useEffect(() => {
     setMode(initialMode);
   }, [initialMode]);
+
+  const handleModeChange = (newMode: "create" | "optimize") => {
+    setMode(newMode);
+  };
 
   const handleGenerate = (values: CreatePostFormValues) => {
     setIsGenerating(true);
@@ -384,7 +387,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           <Button
             type="button"
             variant={mode === "create" ? "default" : "outline"}
-            onClick={() => setMode("create")}
+            onClick={() => handleModeChange("create")}
             className={mode === "create" 
               ? "bg-sky-500 hover:bg-sky-600 text-white rounded-md flex-1 px-4 py-2" 
               : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md flex-1"}
@@ -395,7 +398,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
           <Button
             type="button"
             variant={mode === "optimize" ? "default" : "outline"}
-            onClick={() => setMode("optimize")}
+            onClick={() => handleModeChange("optimize")}
             className={mode === "optimize" 
               ? "bg-sky-500 hover:bg-sky-600 text-white rounded-md flex-1 px-4 py-2" 
               : "bg-white dark:bg-transparent hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md flex-1"}
@@ -592,106 +595,4 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
         ) : (
           <Form {...optimizeForm}>
             <form onSubmit={optimizeForm.handleSubmit(handleOptimize)} className="space-y-4">
-              <FormField
-                control={optimizeForm.control}
-                name="existingPost"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-900 dark:text-slate-300 font-medium mb-1 block">Your LinkedIn Post</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Paste your existing LinkedIn post here..."
-                        className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                        rows={8}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={optimizeForm.control}
-                name="optimizationGoal"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-900 dark:text-slate-300 font-medium mb-1 block">Optimization Goal</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-                          <SelectValue placeholder="Select goal" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="engagement">Increase Engagement</SelectItem>
-                        <SelectItem value="clarity">Improve Clarity</SelectItem>
-                        <SelectItem value="professionalism">Enhance Professionalism</SelectItem>
-                        <SelectItem value="general">General Improvement</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <Button 
-                type="submit"
-                className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-2.5 rounded-md transition-all"
-                disabled={isGenerating}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span className="text-white">Optimizing...</span>
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    <span className="text-white">Optimize Post with AI</span>
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
-        )}
-        
-        {/* Display hashtags if available */}
-        {hashtags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {hashtags.map((tag, index) => (
-              <span key={index} className="bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 text-xs px-2 py-1 rounded-full flex items-center">
-                <Hash className="h-3 w-3 mr-1" />
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-        
-        {/* Display readability score if available */}
-        {readabilityScore !== null && (
-          <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-700 dark:text-slate-300">Readability Score</span>
-              <div className="flex items-center">
-                <span className="text-sm font-medium text-slate-900 dark:text-slate-100 mr-2">{readabilityScore}/100</span>
-                <div className="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full rounded-full ${
-                      readabilityScore >= 90 ? 'bg-green-500' : 
-                      readabilityScore >= 75 ? 'bg-sky-500' : 
-                      readabilityScore >= 60 ? 'bg-amber-500' : 'bg-red-500'
-                    }`} 
-                    style={{ width: `${readabilityScore}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
-
-export default PostForm;
+              <
