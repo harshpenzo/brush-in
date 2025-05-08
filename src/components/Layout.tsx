@@ -13,23 +13,28 @@ const Layout = ({ children, onScrollToFeatures }: LayoutProps) => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 text-white">
+    <div className="min-h-screen flex flex-col bg-slate-900 text-white perspective-1000">
       <Header onScrollToFeatures={onScrollToFeatures} />
       
       <main className="flex-grow">
         {children}
       </main>
       
-      <footer className="bg-slate-900 dark:bg-slate-950 border-t border-slate-800/50 py-16 mt-auto">
-        <div className="container mx-auto px-4">
+      <footer className="bg-slate-900 dark:bg-slate-950 border-t border-slate-800/50 py-16 mt-auto relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-500/50 to-transparent"></div>
+        
+        <div className="absolute -top-[500px] -right-[500px] w-[800px] h-[800px] bg-brand-600/5 rounded-full blur-3xl animate-float pointer-events-none"></div>
+        <div className="absolute -bottom-[300px] -left-[300px] w-[500px] h-[500px] bg-brand-600/5 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-6 group">
-                <div className="bg-brand-500 text-white p-2 rounded-lg transition-smooth group-hover:bg-brand-600 shadow-lg">
-                  <Feather size={20} className="transition-transform group-hover:rotate-12" />
+                <div className="bg-brand-500 text-white p-2 rounded-lg transition-smooth group-hover:bg-brand-600 shadow-lg hover:-rotate-12 transition-all duration-500">
+                  <Feather size={20} className="transition-transform group-hover:rotate-12 feather-logo" />
                 </div>
                 <span className="font-semibold text-white text-2xl">
-                  <span className="text-brand-400 group-hover:text-brand-300 transition-smooth">Brush</span>
+                  <span className="text-brand-400 group-hover:text-brand-300 transition-smooth">Brush</span>in
                 </span>
               </div>
               <p className="text-slate-400 mb-6">
@@ -38,15 +43,15 @@ const Layout = ({ children, onScrollToFeatures }: LayoutProps) => {
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-slate-300 hover:text-brand-400 transition-smooth group">
                   <Mail size={18} className="text-brand-500 group-hover:rotate-6 transition-transform" />
-                  <a href="mailto:contact@brush.com" className="text-sm">contact@brush.com</a>
+                  <a href="mailto:contact@brushin.com" className="text-sm">contact@brushin.com</a>
                 </div>
                 <div className="flex items-center gap-3 text-slate-300 hover:text-brand-400 transition-smooth group">
                   <Phone size={18} className="text-brand-500 group-hover:rotate-6 transition-transform" />
-                  <a href="tel:+11234567890" className="text-sm">+1 (123) 456-7890</a>
+                  <a href="tel:+911234567890" className="text-sm">+91 (123) 456-7890</a>
                 </div>
                 <div className="flex items-center gap-3 text-slate-300 hover:text-brand-400 transition-smooth group">
                   <MapPin size={18} className="text-brand-500 group-hover:rotate-6 transition-transform" />
-                  <span className="text-sm">San Francisco, CA</span>
+                  <span className="text-sm">New Delhi, India</span>
                 </div>
               </div>
             </div>
@@ -144,7 +149,7 @@ const Layout = ({ children, onScrollToFeatures }: LayoutProps) => {
           
           <div className="border-t border-slate-800 pt-8 md:flex md:justify-between md:items-center text-center md:text-left">
             <div className="text-slate-500 text-sm mb-6 md:mb-0">
-              © {currentYear} Brush. All rights reserved.
+              © {currentYear} Brushin. All rights reserved.
             </div>
             <div className="flex justify-center md:justify-end space-x-6">
               <a href="#" className="text-slate-400 hover:text-brand-400 transition-smooth hover:scale-110 transform" aria-label="Twitter">
