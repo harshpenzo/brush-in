@@ -595,4 +595,4 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
         ) : (
           <Form {...optimizeForm}>
             <form onSubmit={optimizeForm.handleSubmit(handleOptimize)} className="space-y-4">
-                <
+              <
