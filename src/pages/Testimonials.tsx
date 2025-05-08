@@ -71,8 +71,10 @@ const Testimonials = () => {
     if (cardsRef.current) {
       const cards = cardsRef.current.querySelectorAll('.testimonial-card');
       cards.forEach((card, index) => {
-        card.classList.add('opacity-0');
-        card.style.transitionDelay = `${index * 0.1}s`;
+        // Cast card to HTMLElement to access style property
+        const cardElement = card as HTMLElement;
+        cardElement.classList.add('opacity-0');
+        cardElement.style.transitionDelay = `${index * 0.1}s`;
         observer.observe(card);
       });
     }
