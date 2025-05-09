@@ -8,7 +8,6 @@ import PostPreview from "@/components/PostPreview";
 import Tips from "@/components/Tips";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
-import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -17,7 +16,6 @@ const Index = () => {
   
   const featuresRef = useRef<HTMLDivElement>(null);
   const postCreatorRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   const handleGeneratePost = (post: string) => {
     setGeneratedPost(post);
@@ -77,7 +75,7 @@ const Index = () => {
                   <PostForm 
                     onGenerate={handleGeneratePost} 
                     onOptimize={handleOptimizePost} 
-                    initialMode={activeOption === "optimize" ? "optimize" : "create"}
+                    initialMode={activeOption || "create"}
                   />
                 </div>
               </div>

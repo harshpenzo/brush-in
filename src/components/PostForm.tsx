@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Edit3, Wand2, RefreshCw, Loader2, Hash } from "lucide-react";
+import { MessageCircle, Edit3 } from "lucide-react";
 import { CreatePostForm } from "./post/CreatePostForm";
 import { OptimizePostForm } from "./post/OptimizePostForm";
+import { CreatePostFormValues } from "./post/CreatePostForm";
+import { OptimizePostFormValues } from "./post/OptimizePostForm";
 
 interface PostFormProps {
   onGenerate: (post: string) => void;
@@ -29,7 +31,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
     setMode(newMode);
   };
 
-  const handleGenerate = (values: any) => {
+  const handleGenerate = (values: CreatePostFormValues) => {
     setIsGenerating(true);
     
     // Simulate API call with enhanced parameters
@@ -62,7 +64,7 @@ const PostForm = ({ onGenerate, onOptimize, initialMode = "create" }: PostFormPr
     }, 1500);
   };
 
-  const handleOptimize = (values: any) => {
+  const handleOptimize = (values: OptimizePostFormValues) => {
     setIsGenerating(true);
     
     // Simulate API call with optimization goal
