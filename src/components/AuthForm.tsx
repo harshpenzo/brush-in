@@ -12,12 +12,18 @@ const AuthForm = () => {
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showSignupPassword, setShowSignupPassword] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const navigate = useNavigate();
   const { toast } = useToast();
   
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulate successful authentication
+    localStorage.setItem("user", JSON.stringify({ email, name: email.split('@')[0] }));
+    localStorage.setItem("isAuthenticated", "true");
+    
     toast({
       title: "Welcome back!",
       description: "You've successfully signed in",
@@ -28,6 +34,9 @@ const AuthForm = () => {
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulate successful registration
+    localStorage.setItem("user", JSON.stringify({ email, name }));
+    localStorage.setItem("isAuthenticated", "true");
+    
     toast({
       title: "Account created",
       description: "Your account has been created successfully",
@@ -57,17 +66,17 @@ const AuthForm = () => {
 
           <CardContent className="pt-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid grid-cols-2 mb-6 bg-slate-200 dark:bg-slate-900 p-1 rounded-lg w-full">
+              <TabsList className="grid grid-cols-2 mb-6 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg w-full">
                 <TabsTrigger 
                   value="signin" 
-                  className="data-[state=active]:bg-sky-500 data-[state=active]:text-white font-medium text-base"
+                  className="data-[state=active]:bg-sky-500 data-[state=active]:text-white font-semibold text-base"
                 >
                   <LogIn className="mr-2 h-4 w-4" />
                   Sign In
                 </TabsTrigger>
                 <TabsTrigger 
                   value="signup" 
-                  className="data-[state=active]:bg-sky-500 data-[state=active]:text-white font-medium text-base"
+                  className="data-[state=active]:bg-sky-500 data-[state=active]:text-white font-semibold text-base"
                 >
                   <User className="mr-2 h-4 w-4" />
                   Sign Up
@@ -83,9 +92,11 @@ const AuthForm = () => {
                     <Input
                       id="email"
                       type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
                       required
-                      className="w-full bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600"
+                      className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
                     />
                   </div>
                   <div className="space-y-2">
@@ -101,9 +112,11 @@ const AuthForm = () => {
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
                         required
-                        className="w-full bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
+                        className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
                       />
                       <button
                         type="button"
@@ -115,7 +128,7 @@ const AuthForm = () => {
                       </button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium text-base py-6">
+                  <Button type="submit" className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6">
                     Sign In
                   </Button>
                 </form>
@@ -130,9 +143,11 @@ const AuthForm = () => {
                     <Input
                       id="signup-name"
                       type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       placeholder="John Doe"
                       required
-                      className="w-full bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600"
+                      className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
                     />
                   </div>
                   <div className="space-y-2">
@@ -142,9 +157,11 @@ const AuthForm = () => {
                     <Input
                       id="signup-email"
                       type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
                       required
-                      className="w-full bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600"
+                      className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
                     />
                   </div>
                   <div className="space-y-2">
@@ -155,9 +172,11 @@ const AuthForm = () => {
                       <Input
                         id="signup-password"
                         type={showSignupPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
                         required
-                        className="w-full bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
+                        className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
                       />
                       <button
                         type="button"
@@ -169,7 +188,7 @@ const AuthForm = () => {
                       </button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium text-base py-6">
+                  <Button type="submit" className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6">
                     Create Account
                   </Button>
                 </form>

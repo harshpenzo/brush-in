@@ -13,6 +13,7 @@ import { CreatePostFormValues } from "@/components/post/CreatePostForm";
 import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
 import { generateEnhancedPost, optimizeEnhancedPost, extractTopicFromPost, generateHashtags } from "@/utils/postGenerationUtils";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -26,13 +27,10 @@ const Index = () => {
   const postCreatorRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
-  // Check if user is authenticated (this is a simplified check)
+  // Check if user is authenticated before proceeding
   const checkAuthAndProceed = (option: "create" | "optimize") => {
-    // For now we'll simulate that the user is not authenticated
-    // In a real app, you would check a user session or auth state
-    const isAuthenticated = false;
-    
     if (!isAuthenticated) {
       toast({
         title: "Authentication required",
