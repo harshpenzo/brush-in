@@ -8,21 +8,80 @@ import PostPreview from "@/components/PostPreview";
 import Tips from "@/components/Tips";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
+import { CreatePostFormValues } from "@/components/post/CreatePostForm";
+import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
+import { generateEnhancedPost, optimizeEnhancedPost, extractTopicFromPost, generateHashtags } from "@/utils/postGenerationUtils";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
   const [showPostCreator, setShowPostCreator] = useState(false);
   const [activeOption, setActiveOption] = useState<"create" | "optimize" | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+  const [readabilityScore, setReadabilityScore] = useState<number | null>(null);
   
   const featuresRef = useRef<HTMLDivElement>(null);
   const postCreatorRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
-  const handleGeneratePost = (post: string) => {
-    setGeneratedPost(post);
+  const handleGeneratePost = (values: CreatePostFormValues) => {
+    setIsGenerating(true);
+    
+    // Simulate API call with enhanced parameters
+    setTimeout(() => {
+      const generatedPost = generateEnhancedPost(
+        values.topic,
+        values.tone,
+        values.keywords,
+        values.description,
+        values.contentStyle,
+        values.postLength,
+        values.industry
+      );
+      
+      // Calculate simulated readability score (in a real app, this would use an actual algorithm)
+      const simulatedScore = Math.floor(Math.random() * 30) + 70; // 70-100 score
+      setReadabilityScore(simulatedScore);
+      
+      // Generate related hashtags
+      const generatedHashtags = generateHashtags(values.topic, values.industry, values.keywords);
+      setHashtags(generatedHashtags);
+      
+      setGeneratedPost(generatedPost);
+      setIsGenerating(false);
+      
+      toast({
+        title: "Post generated",
+        description: "Your LinkedIn post has been created successfully.",
+      });
+    }, 1500);
   };
 
-  const handleOptimizePost = (post: string) => {
-    setGeneratedPost(post);
+  const handleOptimizePost = (values: OptimizePostFormValues) => {
+    setIsGenerating(true);
+    
+    // Simulate API call with optimization goal
+    setTimeout(() => {
+      const optimizedPost = optimizeEnhancedPost(values.existingPost, values.optimizationGoal);
+      
+      // Calculate simulated readability score
+      const simulatedScore = Math.floor(Math.random() * 20) + 80; // 80-100 score (optimized should be better)
+      setReadabilityScore(simulatedScore);
+      
+      // Generate related hashtags
+      const extractedTopic = extractTopicFromPost(values.existingPost);
+      const generatedHashtags = generateHashtags(extractedTopic, "general", "");
+      setHashtags(generatedHashtags);
+      
+      setGeneratedPost(optimizedPost);
+      setIsGenerating(false);
+      
+      toast({
+        title: "Post optimized",
+        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal}.`,
+      });
+    }, 1500);
   };
 
   const scrollToFeatures = () => {
@@ -76,6 +135,7 @@ const Index = () => {
                     onGenerate={handleGeneratePost} 
                     onOptimize={handleOptimizePost} 
                     initialMode={activeOption || "create"}
+                    isGenerating={isGenerating}
                   />
                 </div>
               </div>
