@@ -1,5 +1,6 @@
 
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
@@ -24,6 +25,30 @@ const Index = () => {
   const featuresRef = useRef<HTMLDivElement>(null);
   const postCreatorRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Check if user is authenticated (this is a simplified check)
+  const checkAuthAndProceed = (option: "create" | "optimize") => {
+    // For now we'll simulate that the user is not authenticated
+    // In a real app, you would check a user session or auth state
+    const isAuthenticated = false;
+    
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in or sign up to create posts",
+      });
+      navigate("/auth");
+      return;
+    }
+    
+    // If authenticated, proceed with post creation
+    setActiveOption(option);
+    setShowPostCreator(true);
+    setTimeout(() => {
+      postCreatorRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
 
   const handleGeneratePost = (values: CreatePostFormValues) => {
     setIsGenerating(true);
@@ -88,20 +113,15 @@ const Index = () => {
     featuresRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const selectOption = (option: "create" | "optimize") => {
-    setActiveOption(option);
-    setShowPostCreator(true);
-    setTimeout(() => {
-      postCreatorRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   return (
     <Layout onScrollToFeatures={scrollToFeatures}>
-      <Hero onScrollToFeatures={scrollToFeatures} onSelectOption={selectOption} />
+      <Hero 
+        onScrollToFeatures={scrollToFeatures} 
+        onSelectOption={checkAuthAndProceed} 
+      />
       
       <div ref={featuresRef}>
-        <Features onSelectOption={selectOption} />
+        <Features onSelectOption={checkAuthAndProceed} />
       </div>
       
       {showPostCreator && (
