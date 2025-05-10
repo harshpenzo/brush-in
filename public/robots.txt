@@ -1,3 +1,12 @@
+
+# Brush AI LinkedIn Post Creator Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://brush.app/sitemap.xml
+
+# Specific Rules
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +19,5 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+# Optimize crawling
+Crawl-delay: 10
