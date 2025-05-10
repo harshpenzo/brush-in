@@ -26,9 +26,12 @@ const App = () => {
         <TooltipProvider>
           <AuthProvider>
             <Helmet>
-              <meta name="description" content="Create engaging LinkedIn posts with Brush AI" />
+              <title>Brushin - AI LinkedIn Post Creator for Professionals</title>
+              <meta name="description" content="Create engaging, professional LinkedIn posts with Brushin AI. Generate content that drives engagement and builds your professional brand." />
+              <meta name="keywords" content="Brushin, LinkedIn post creator, LinkedIn content, professional content, AI writer, LinkedIn engagement, LinkedIn strategy, social media for professionals" />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <meta name="theme-color" content="#0ea5e9" />
+              <link rel="canonical" href="https://brushin.app/" />
             </Helmet>
             <Toaster />
             <Sonner />

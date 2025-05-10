@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4 text-brand-400">Brush</h3>
+            <h3 className="text-xl font-bold mb-4 text-brand-400">Brushin</h3>
             <p className="text-slate-400 mb-4">
               Elevate your LinkedIn presence with AI-powered content creation.
             </p>
@@ -57,14 +57,14 @@ const Footer = () => {
         
         <div className="border-t border-slate-800 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-500 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} Brush. All rights reserved.
+            © {new Date().getFullYear()} Brushin. All rights reserved.
           </p>
           <div className="flex items-center">
             <p className="text-slate-500 text-sm mr-2">Made with</p>
             <svg className="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
             </svg>
-            <p className="text-slate-500 text-sm ml-2">for professionals</p>
+            <p className="text-slate-500 text-sm ml-2">for LinkedIn professionals</p>
           </div>
         </div>
       </div>
