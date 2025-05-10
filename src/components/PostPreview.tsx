@@ -1,18 +1,29 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Linkedin, Share2, Hash, ArrowRight, BarChart3 } from "lucide-react";
+import { Copy, Check, Linkedin, Share2, Hash, BarChart3 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
+import SavePostButton from "./post/SavePostButton";
 
 interface PostPreviewProps {
   post: string;
   hashtags?: string[];
   readabilityScore?: number | null;
+  topic?: string;
+  tone?: string;
+  industry?: string;
 }
 
-const PostPreview = ({ post, hashtags = [], readabilityScore = null }: PostPreviewProps) => {
+const PostPreview = ({ 
+  post, 
+  hashtags = [], 
+  readabilityScore = null,
+  topic = "",
+  tone = "",
+  industry = ""
+}: PostPreviewProps) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   const charCount = post.length;
@@ -160,7 +171,7 @@ const PostPreview = ({ post, hashtags = [], readabilityScore = null }: PostPrevi
               </div>
             )}
             
-            <div className="flex gap-2 mt-auto">
+            <div className="flex flex-wrap gap-2 mt-auto">
               <Button 
                 onClick={handleCopy} 
                 variant="outline" 
@@ -170,12 +181,21 @@ const PostPreview = ({ post, hashtags = [], readabilityScore = null }: PostPrevi
                 {copied ? "Copied" : "Copy"}
               </Button>
               
+              <SavePostButton 
+                post={post} 
+                hashtags={displayHashtags}
+                readabilityScore={readabilityScore}
+                topic={topic}
+                tone={tone}
+                industry={industry}
+              />
+              
               <Button 
                 onClick={handleShare} 
                 className="flex-1 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-all duration-300 hover:shadow-md"
               >
                 <Share2 className="mr-2 h-4 w-4" />
-                Share on LinkedIn
+                Share
               </Button>
             </div>
           </>

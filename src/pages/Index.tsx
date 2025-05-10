@@ -23,6 +23,9 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [readabilityScore, setReadabilityScore] = useState<number | null>(null);
+  const [currentTopic, setCurrentTopic] = useState("");
+  const [currentTone, setCurrentTone] = useState("");
+  const [currentIndustry, setCurrentIndustry] = useState("");
   
   const featuresRef = useRef<HTMLDivElement>(null);
   const postCreatorRef = useRef<HTMLDivElement>(null);
@@ -53,6 +56,11 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
+      // Save values for post metadata
+      setCurrentTopic(values.topic);
+      setCurrentTone(values.tone);
+      setCurrentIndustry(values.industry);
+      
       // Generate post using Gemini API
       const generatedPost = await generateGeminiPost(
         values.topic,
@@ -94,6 +102,12 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
+      // Extract topic from post for metadata
+      const extractedTopic = extractTopicFromPost(values.existingPost);
+      setCurrentTopic(extractedTopic);
+      setCurrentTone(values.optimizationGoal);
+      setCurrentIndustry("general");
+      
       // Optimize post using Gemini API
       const optimizedPost = await optimizeGeminiPost(values.existingPost, values.optimizationGoal);
       
@@ -102,7 +116,6 @@ const Index = () => {
       setReadabilityScore(simulatedScore);
       
       // Generate related hashtags
-      const extractedTopic = extractTopicFromPost(values.existingPost);
       const generatedHashtags = await generateGeminiHashtags(extractedTopic, "general", "");
       setHashtags(generatedHashtags);
       
@@ -181,6 +194,9 @@ const Index = () => {
                     post={generatedPost} 
                     hashtags={hashtags}
                     readabilityScore={readabilityScore}
+                    topic={currentTopic}
+                    tone={currentTone}
+                    industry={currentIndustry}
                   />
                 </div>
                 

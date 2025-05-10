@@ -3,45 +3,56 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MessageCircle, User, LogIn, Eye, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { MessageCircle, User, LogIn, Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const AuthForm = () => {
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showSignupPassword, setShowSignupPassword] = useState<boolean>(false);
+  
+  // Form states
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const navigate = useNavigate();
-  const { toast } = useToast();
   
-  const handleSignIn = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  
+  const navigate = useNavigate();
+  const { login, signUp, loading } = useAuth();
+  
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate successful authentication
-    localStorage.setItem("user", JSON.stringify({ email, name: email.split('@')[0] }));
-    localStorage.setItem("isAuthenticated", "true");
     
-    toast({
-      title: "Welcome back!",
-      description: "You've successfully signed in",
-    });
-    navigate("/");
+    if (isSubmitting || loading) return;
+    
+    try {
+      setIsSubmitting(true);
+      await login(email, password);
+      navigate("/");
+    } catch (error) {
+      console.error("Sign in error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate successful registration
-    localStorage.setItem("user", JSON.stringify({ email, name }));
-    localStorage.setItem("isAuthenticated", "true");
     
-    toast({
-      title: "Account created",
-      description: "Your account has been created successfully",
-    });
-    navigate("/");
+    if (isSubmitting || loading) return;
+    
+    try {
+      setIsSubmitting(true);
+      await signUp(email, password, name);
+      navigate("/");
+    } catch (error) {
+      console.error("Sign up error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -60,7 +71,7 @@ const AuthForm = () => {
             <div className="mx-auto bg-sky-500/20 p-3 rounded-full w-14 h-14 flex items-center justify-center">
               <MessageCircle className="h-7 w-7 text-sky-500" />
             </div>
-            <CardTitle className="text-2xl font-bold">Welcome to BrushIn</CardTitle>
+            <CardTitle className="text-2xl font-bold">Welcome to Brushin</CardTitle>
             <CardDescription>Create professional LinkedIn content with AI</CardDescription>
           </CardHeader>
 
@@ -97,6 +108,7 @@ const AuthForm = () => {
                       placeholder="you@example.com"
                       required
                       className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
+                      disabled={isSubmitting || loading}
                     />
                   </div>
                   <div className="space-y-2">
@@ -117,6 +129,7 @@ const AuthForm = () => {
                         placeholder="••••••••"
                         required
                         className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
+                        disabled={isSubmitting || loading}
                       />
                       <button
                         type="button"
@@ -128,8 +141,12 @@ const AuthForm = () => {
                       </button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6">
-                    Sign In
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6"
+                    disabled={isSubmitting || loading}
+                  >
+                    {isSubmitting || loading ? "Signing in..." : "Sign In"}
                   </Button>
                 </form>
               </TabsContent>
@@ -148,6 +165,7 @@ const AuthForm = () => {
                       placeholder="John Doe"
                       required
                       className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
+                      disabled={isSubmitting || loading}
                     />
                   </div>
                   <div className="space-y-2">
@@ -162,6 +180,7 @@ const AuthForm = () => {
                       placeholder="you@example.com"
                       required
                       className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
+                      disabled={isSubmitting || loading}
                     />
                   </div>
                   <div className="space-y-2">
@@ -177,6 +196,7 @@ const AuthForm = () => {
                         placeholder="••••••••"
                         required
                         className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
+                        disabled={isSubmitting || loading}
                       />
                       <button
                         type="button"
@@ -188,8 +208,12 @@ const AuthForm = () => {
                       </button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6">
-                    Create Account
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6"
+                    disabled={isSubmitting || loading}
+                  >
+                    {isSubmitting || loading ? "Creating account..." : "Create Account"}
                   </Button>
                 </form>
               </TabsContent>
