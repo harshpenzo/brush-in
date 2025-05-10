@@ -2,8 +2,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase client setup
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Use default values for development when environment variables are not available
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-supabase-project.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
 
 // Type definition for our database schema
 export type Post = {
@@ -17,6 +18,14 @@ export type Post = {
   industry: string;
   topic: string;
 };
+
+// Check if the required Supabase credentials are provided
+if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+  console.warn(
+    'Supabase credentials missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file. ' +
+    'Using placeholder values for now, which will cause authentication and database operations to fail.'
+  );
+}
 
 // Initialize the Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
