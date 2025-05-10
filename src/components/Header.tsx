@@ -1,4 +1,3 @@
-
 import { Menu, X, Feather, LogOut, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
@@ -80,6 +79,26 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Helper function to get user's first name or first initial
+  const getUserDisplayName = () => {
+    if (!user) return "";
+    
+    // Access the name from user.user_metadata
+    const name = user.user_metadata?.name || user.email?.charAt(0) || "U";
+    return name;
+  };
+
+  // Helper function to get the user's initials for avatar
+  const getUserInitial = () => {
+    if (!user) return "";
+    
+    // Get first character from name in metadata or email
+    const initial = user.user_metadata?.name?.charAt(0) || 
+                   user.email?.charAt(0) || 
+                   "U";
+    return initial.toUpperCase();
+  };
+
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -160,16 +179,16 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full flex items-center justify-center bg-sky-500/20 hover:bg-sky-500/30 text-sky-400">
-                    <span className="font-medium text-lg">{user?.name?.charAt(0).toUpperCase()}</span>
+                    <span className="font-medium text-lg">{getUserInitial()}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-500/20">
-                      <span className="font-medium text-sky-400">{user?.name?.charAt(0).toUpperCase()}</span>
+                      <span className="font-medium text-sky-400">{getUserInitial()}</span>
                     </div>
                     <div className="flex flex-col space-y-0.5">
-                      <p className="text-sm font-medium">{user?.name}</p>
+                      <p className="text-sm font-medium">{getUserDisplayName()}</p>
                       <p className="text-xs text-slate-500">{user?.email}</p>
                     </div>
                   </div>
@@ -245,10 +264,10 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
               <>
                 <div className="flex items-center gap-3 py-3 px-4">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-500/20">
-                    <span className="font-medium text-sky-400">{user?.name?.charAt(0).toUpperCase()}</span>
+                    <span className="font-medium text-sky-400">{getUserInitial()}</span>
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-sm font-medium text-white">{user?.name}</p>
+                    <p className="text-sm font-medium text-white">{getUserDisplayName()}</p>
                     <p className="text-xs text-slate-400">{user?.email}</p>
                   </div>
                 </div>
