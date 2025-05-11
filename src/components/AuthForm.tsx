@@ -1,381 +1,318 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Notes Zone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" href="img/logo.ico.ico" type="image/x-icon">
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <!-- Container -->
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg relative overflow-hidden">
-            <!-- Background Effects -->
-            <div class="absolute inset-0 bg-gradient-to-br from-sky-100/50 to-transparent dark:from-sky-900/30 z-0"></div>
-            <div class="absolute inset-0 backdrop-blur-3xl z-0"></div>
 
-            <!-- Content -->
-            <div class="relative z-10">
-                <!-- Logo -->
-                <div class="text-center mb-8">
-                    <img src="logo.png" alt="NotesZone Logo" class="h-16 mx-auto mb-2">
-                    <h2 id="formTitle" class="text-2xl font-bold text-gray-900 dark:text-white">Welcome back!</h2>
-                    <p id="formSubtitle" class="mt-2 text-gray-600 dark:text-gray-400">Please sign in to your account</p>
-                </div>
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { Eye, EyeOff, Loader2, LogIn, UserPlus } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import Layout from "@/components/Layout";
 
-                <!-- Login Form -->
-                <form id="login-form" class="space-y-6">
-                    <!-- Message Div -->
-                    <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        <span class="block sm:inline"></span>
+const AuthForm = () => {
+  const { login, signUp, loading } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  // Form state
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupName, setSignupName] = useState("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!loginEmail || !loginPassword) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      await login(loginEmail, loginPassword);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+      // Error is handled in useAuth hook
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!signupEmail || !signupPassword || !signupName) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!termsAccepted) {
+      toast({
+        title: "Terms not accepted",
+        description: "Please accept the terms and conditions",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      await signUp(signupEmail, signupPassword, signupName);
+      toast({
+        title: "Account created",
+        description: "You can now log in with your new account"
+      });
+      // Navigate to dashboard if auto-login happens in signUp function
+    } catch (error) {
+      console.error("Signup error:", error);
+      // Error is handled in useAuth hook
+    }
+  };
+
+  return (
+    <Layout>
+      <div className="container flex items-center justify-center min-h-[calc(100vh-14rem)] py-10">
+        <div className="w-full max-w-md space-y-6">
+          {/* Special offer banner */}
+          <div className="p-4 mb-6 text-center bg-yellow-100 border border-yellow-300 rounded-lg dark:bg-yellow-900/30 dark:border-yellow-800">
+            <p className="font-medium text-yellow-800 dark:text-yellow-200">
+              <span className="font-bold">Special Offer:</span> Free premium access for new users this month!
+            </p>
+          </div>
+          
+          <Card className="w-full border shadow-lg">
+            <CardHeader className="space-y-1 text-center">
+              <CardTitle className="text-2xl font-bold">Welcome to BrushIn</CardTitle>
+              <CardDescription>
+                Sign in to your account or create a new one
+              </CardDescription>
+            </CardHeader>
+            
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Log In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="login">
+                <form onSubmit={handleLogin}>
+                  <CardContent className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <div className="relative">
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="m@example.com"
+                          value={loginEmail}
+                          onChange={(e) => setLoginEmail(e.target.value)}
+                          required
+                        />
+                      </div>
                     </div>
-
-                    <!-- Email -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                        <div class="relative">
-                            <input type="email" id="login-email" required 
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
-                                placeholder="Enter your email">
-                            <span class="absolute right-3 top-2.5 text-gray-400">
-                                <i class="fas fa-envelope"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Password -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                        <div class="relative">
-                            <input type="password" id="login-password" required 
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
-                                placeholder="Enter your password">
-                            <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer toggle-password">
-                                <i class="fas fa-eye"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Remember & Forgot -->
-                    <div class="flex items-center justify-between text-sm">
-                        <label class="flex items-center text-gray-600 dark:text-gray-400">
-                            <input type="checkbox" class="rounded border-gray-300 text-yellow-400 focus:ring-yellow-400 mr-2">
-                            Remember me
-                        </label>
-                        <a href="#" class="text-yellow-500 hover:text-yellow-600 dark:hover:text-yellow-400">Forgot password?</a>
-                    </div>
-
-                    <!-- Login Button -->
-                    <button type="submit" class="w-full py-2 px-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-medium rounded-lg hover:shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Sign In
-                    </button>
-
-                    <!-- Social Login -->
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white dark:bg-gray-800 text-gray-500">Or continue with</span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-center">
-                        <button type="button" id="google-login" class="flex items-center justify-center gap-3 py-2 px-6 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5">
-                            <span class="text-gray-700 dark:text-gray-200">Continue with Google</span>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="password">Password</Label>
+                        <a 
+                          href="#" 
+                          className="text-xs text-blue-500 hover:underline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toast({ title: "Coming soon", description: "Password reset functionality coming soon!" });
+                          }}
+                        >
+                          Forgot password?
+                        </a>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          id="password"
+                          type={showLoginPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          required
+                        />
+                        <button 
+                          type="button"
+                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                          onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        >
+                          {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
+                      </div>
                     </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember" 
+                        checked={rememberMe} 
+                        onCheckedChange={(checked) => setRememberMe(checked === true)}
+                      />
+                      <label
+                        htmlFor="remember"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Remember me
+                      </label>
+                    </div>
+                  </CardContent>
+                  
+                  <CardFooter>
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Signing in...
+                        </>
+                      ) : (
+                        <>
+                          <LogIn className="w-4 h-4 mr-2" />
+                          Sign In
+                        </>
+                      )}
+                    </Button>
+                  </CardFooter>
                 </form>
-
-                <!-- Sign Up Form -->
-                <form id="signup-form" class="space-y-6 hidden">
-                    <!-- Full Name -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                        <div class="relative">
-                            <input type="text" id="signup-name" required 
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
-                                placeholder="Enter your full name">
-                            <span class="absolute right-3 top-2.5 text-gray-400">
-                                <i class="fas fa-user"></i>
-                            </span>
-                        </div>
+              </TabsContent>
+              
+              <TabsContent value="signup">
+                <form onSubmit={handleSignup}>
+                  <CardContent className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="full-name">Full Name</Label>
+                      <Input
+                        id="full-name"
+                        placeholder="John Doe"
+                        value={signupName}
+                        onChange={(e) => setSignupName(e.target.value)}
+                        required
+                      />
                     </div>
-
-                    <!-- Email -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                        <div class="relative">
-                            <input type="email" id="signup-email" required 
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
-                                placeholder="Enter your email">
-                            <span class="absolute right-3 top-2.5 text-gray-400">
-                                <i class="fas fa-envelope"></i>
-                            </span>
-                        </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email</Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="m@example.com"
+                        value={signupEmail}
+                        onChange={(e) => setSignupEmail(e.target.value)}
+                        required
+                      />
                     </div>
-
-                    <!-- Password -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                        <div class="relative">
-                            <input type="password" id="signup-password" required 
-                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
-                                placeholder="Create a password">
-                            <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer toggle-password">
-                                <i class="fas fa-eye"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Terms -->
-                    <div class="flex items-start">
-                        <div class="flex items-center h-5">
-                            <input type="checkbox" required class="rounded border-gray-300 text-yellow-400 focus:ring-yellow-400">
-                        </div>
-                        <div class="ml-3">
-                            <label class="text-sm text-gray-600 dark:text-gray-400">
-                                I agree to the <a href="#" class="text-yellow-500 hover:text-yellow-600">Terms of Service</a> and 
-                                <a href="#" class="text-yellow-500 hover:text-yellow-600">Privacy Policy</a>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Sign Up Button -->
-                    <button type="submit" class="w-full py-2 px-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-medium rounded-lg hover:shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-                        <i class="fas fa-user-plus"></i>
-                        Create Account
-                    </button>
-
-                    <!-- Social Sign Up -->
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white dark:bg-gray-800 text-gray-500">Or sign up with</span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-center">
-                        <button type="button" id="google-signup" class="flex items-center justify-center gap-3 py-2 px-6 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5">
-                            <span class="text-gray-700 dark:text-gray-200">Sign up with Google</span>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="signup-password"
+                          type={showSignupPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={signupPassword}
+                          onChange={(e) => setSignupPassword(e.target.value)}
+                          required
+                        />
+                        <button 
+                          type="button"
+                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                          onClick={() => setShowSignupPassword(!showSignupPassword)}
+                        >
+                          {showSignupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
+                      </div>
                     </div>
+                    
+                    <div className="flex items-start space-x-2">
+                      <Checkbox 
+                        id="terms" 
+                        checked={termsAccepted} 
+                        onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                        required
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-sm text-gray-500 dark:text-gray-400"
+                      >
+                        I agree to the{" "}
+                        <a
+                          href="#"
+                          className="text-blue-500 hover:underline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toast({ title: "Terms of Service", description: "Terms of Service page coming soon!" });
+                          }}
+                        >
+                          Terms of Service
+                        </a>{" "}
+                        and{" "}
+                        <a
+                          href="#"
+                          className="text-blue-500 hover:underline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toast({ title: "Privacy Policy", description: "Privacy Policy page coming soon!" });
+                          }}
+                        >
+                          Privacy Policy
+                        </a>
+                      </label>
+                    </div>
+                  </CardContent>
+                  
+                  <CardFooter>
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={loading || !termsAccepted}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Creating account...
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus className="w-4 h-4 mr-2" />
+                          Create Account
+                        </>
+                      )}
+                    </Button>
+                  </CardFooter>
                 </form>
-
-                <!-- Toggle Forms -->
-                <div class="mt-6 text-center">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        <span id="toggle-text">Don't have an account?</span>
-                        <button type="button" id="toggle-form" class="text-yellow-500 hover:text-yellow-600 dark:hover:text-yellow-400 font-medium ml-1">Sign Up</button>
-                    </p>
-                </div>
-            </div>
+              </TabsContent>
+            </Tabs>
+          </Card>
         </div>
-    </div>
+      </div>
+    </Layout>
+  );
+};
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-
-    <!-- Firebase Config -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyB-XawiwFbCOxyLpgNUIoW7MySWblx5zI8",
-            authDomain: "notes-zone-2005.firebaseapp.com",
-            projectId: "notes-zone-2005",
-            storageBucket: "notes-zone-2005.firebasestorage.app",
-            messagingSenderId: "729445577922",
-            appId: "1:729445577922:web:4d87e4f19c37c32b13775b",
-            measurementId: "G-9TER2ZYDCN"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-    </script>
-
-    <!-- Custom JS -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const toggleFormBtn = document.getElementById('toggle-form');
-            const toggleText = document.getElementById('toggle-text');
-            const formTitle = document.getElementById('formTitle');
-            const formSubtitle = document.getElementById('formSubtitle');
-            const errorMessage = document.getElementById('error-message');
-
-            // Show error message
-            const showMessage = (message, type = 'error') => {
-                errorMessage.querySelector('span').textContent = message;
-                errorMessage.classList.remove('hidden', 'bg-red-100', 'bg-green-100', 'bg-purple-100');
-                errorMessage.classList.add(
-                    type === 'error' ? 'bg-red-100' :
-                    type === 'success' ? 'bg-green-100' : 'bg-purple-100'
-                );
-                
-                setTimeout(() => {
-                    errorMessage.classList.add('hidden');
-                }, 5000);
-            };
-
-            // Toggle password visibility
-            document.querySelectorAll('.toggle-password').forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('input');
-                    const icon = this.querySelector('i');
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        icon.classList.remove('fa-eye');
-                        icon.classList.add('fa-eye-slash');
-                    } else {
-                        input.type = 'password';
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
-                    }
-                });
-            });
-
-            // Toggle between login and signup forms
-            toggleFormBtn.addEventListener('click', () => {
-                const isLogin = loginForm.classList.contains('hidden');
-                loginForm.classList.toggle('hidden');
-                signupForm.classList.toggle('hidden');
-                
-                if (isLogin) {
-                    toggleFormBtn.textContent = 'Sign Up';
-                    toggleText.textContent = "Don't have an account?";
-                    formTitle.textContent = 'Welcome back!';
-                    formSubtitle.textContent = 'Please sign in to your account';
-                } else {
-                    toggleFormBtn.textContent = 'Sign In';
-                    toggleText.textContent = 'Already have an account?';
-                    formTitle.textContent = 'Create an account';
-                    formSubtitle.textContent = 'Join us today';
-                }
-                
-                errorMessage.classList.add('hidden');
-            });
-
-            // Google Authentication
-            const handleGoogleAuth = async () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                try {
-                    const result = await auth.signInWithPopup(provider);
-                    const user = result.user;
-                    
-                    // Check if user exists in Firestore
-                    const userDoc = await db.collection('users').doc(user.uid).get();
-                    
-                    if (!userDoc.exists) {
-                        // Create new user document
-                        await db.collection('users').doc(user.uid).set({
-                            name: user.displayName,
-                            email: user.email,
-                            profileImage: user.photoURL,
-                            createdAt: new Date().toISOString()
-                        });
-                    }
-                    
-                    window.location.href = 'profile.html';
-                } catch (error) {
-                    showMessage(error.message);
-                }
-            };
-
-            document.getElementById('google-login').addEventListener('click', handleGoogleAuth);
-            document.getElementById('google-signup').addEventListener('click', handleGoogleAuth);
-
-            // Login form submission
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                
-                try {
-                    await auth.signInWithEmailAndPassword(email, password);
-                    window.location.href = 'profile.html';
-                } catch (error) {
-                    showMessage(error.message);
-                }
-            });
-
-            // Signup form submission
-            signupForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const name = document.getElementById('signup-name').value;
-                const email = document.getElementById('signup-email').value;
-                const password = document.getElementById('signup-password').value;
-                
-                try {
-                    const result = await auth.createUserWithEmailAndPassword(email, password);
-                    const user = result.user;
-                    
-                    // Update profile
-                    await user.updateProfile({
-                        displayName: name
-                    });
-                    
-                    // Create user document
-                    await db.collection('users').doc(user.uid).set({
-                        name: name,
-                        email: email,
-                        createdAt: new Date().toISOString()
-                    });
-                    
-                    window.location.href = 'profile.html';
-                } catch (error) {
-                    showMessage(error.message);
-                }
-            });
-
-            // Check authentication state
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    window.location.href = 'profile.html';
-                }
-            });
-
-            async function uploadNote(file, metadata) {
-                const user = auth.currentUser;
-                if (!user) throw new Error('Must be logged in to upload');
-
-                // Create storage reference
-                const storageRef = storage.ref();
-                const fileRef = storageRef.child(`notes/${user.uid}/${Date.now()}_${file.name}`);
-
-                // Upload file
-                const uploadTask = fileRef.put(file);
-
-                // Get download URL after upload
-                const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
-
-                // Save metadata to Firestore
-                await db.collection('notes').doc(user.uid).collection('userNotes').add({
-                    title: metadata.title,
-                    description: metadata.description,
-                    fileUrl: downloadUrl,
-                    fileName: file.name,
-                    fileType: file.type,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    size: file.size,
-                    tags: metadata.tags || []
-                });
-            }
-        });
-    </script>
-</body>
-</html> 
+export default AuthForm;
