@@ -100,12 +100,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) {
         // Handle email not confirmed error specially
-        if (error.message.includes('Email not confirmed')) {
+        if (error.message.toLowerCase().includes('email not confirmed')) {
           toast({
             title: "Email not confirmed",
-            description: "Please check your email for a confirmation link or try signing up again.",
-            variant: "destructive"
+            description: "Please check your email for a confirmation link. Click resend to get a new confirmation email.",
+            variant: "destructive",
           });
+          
+          // Attempt to resend confirmation email
+          const { error: resendError } = await supabase.auth.resend({
+            type: 'signup',
+            email,
+            options: {
+              emailRedirectTo: `${window.location.origin}/auth`,
+            },
+          });
+          
+          if (!resendError) {
+            toast({
+              title: "Confirmation email sent",
+              description: "Please check your inbox for the confirmation link.",
+            });
+          }
         } else {
           toast({
             title: "Authentication failed",
@@ -121,11 +137,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           title: "Welcome back!",
           description: "You've successfully signed in",
         });
+        
+        // Force page reload after successful login for clean state
+        window.location.href = '/dashboard';
       }
-      
-      // Force page reload after successful login for clean state
-      window.location.href = '/dashboard';
-      
     } catch (error) {
       console.error('Login error:', error);
     } finally {
@@ -147,7 +162,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           data: {
             name
           },
-          // Set emailRedirectTo to ensure redirect works correctly
           emailRedirectTo: `${window.location.origin}/auth`,
         }
       });
@@ -168,14 +182,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             title: "Account already exists",
             description: "An account with this email already exists. Please log in instead.",
           });
+          
+          // Switch to login tab
+          return;
         } else if (!data.user.email_confirmed_at) {
           toast({
             title: "Account created!",
             description: "Please check your email to confirm your account before logging in.",
           });
-          
-          // Redirect to login but don't attempt to log in automatically
-          window.location.href = '/auth';
         } else {
           // Auto login if email confirmation not required
           toast({
