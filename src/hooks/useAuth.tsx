@@ -13,16 +13,48 @@ interface AuthContextType {
   loading: boolean;
 }
 
+// Helper function to clean up auth state to prevent weird auth state issues
+const cleanupAuthState = () => {
+  // Remove standard auth tokens
+  localStorage.removeItem('supabase.auth.token');
+  // Remove all Supabase auth keys from localStorage
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+      localStorage.removeItem(key);
+    }
+  });
+  // Remove from sessionStorage if in use
+  Object.keys(sessionStorage || {}).forEach((key) => {
+    if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+      sessionStorage.removeItem(key);
+    }
+  });
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check active session on load
+    // Set up auth state change listener FIRST
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event: AuthChangeEvent, currentSession: Session | null) => {
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        setIsAuthenticated(!!currentSession?.user);
+        
+        if (event === 'SIGNED_OUT') {
+          cleanupAuthState();
+        }
+      }
+    );
+
+    // THEN check for existing session
     const checkSession = async () => {
       const { data, error } = await supabase.auth.getSession();
       
@@ -31,6 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data?.session) {
+        setSession(data.session);
         setUser(data.session.user);
         setIsAuthenticated(true);
       }
@@ -39,19 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     checkSession();
-
-    // Set up auth state change listener
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event: AuthChangeEvent, session: Session | null) => {
-        if (event === 'SIGNED_IN' && session) {
-          setUser(session.user);
-          setIsAuthenticated(true);
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null);
-          setIsAuthenticated(false);
-        }
-      }
-    );
 
     // Clean up subscription
     return () => {
@@ -62,17 +82,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     try {
       setLoading(true);
+      
+      // Clean up existing state first
+      cleanupAuthState();
+      
+      // Try global sign out to ensure clean state
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
-        toast({
-          title: "Authentication failed",
-          description: error.message,
-          variant: "destructive"
-        });
+        // Handle email not confirmed error specially
+        if (error.message.includes('Email not confirmed')) {
+          toast({
+            title: "Email not confirmed",
+            description: "Please check your email for a confirmation link or try signing up again.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Authentication failed",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
         throw error;
       }
 
@@ -82,9 +122,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: "You've successfully signed in",
         });
       }
+      
+      // Force page reload after successful login for clean state
+      window.location.href = '/dashboard';
+      
     } catch (error) {
       console.error('Login error:', error);
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -93,13 +136,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUp = async (email: string, password: string, name: string) => {
     try {
       setLoading(true);
+      
+      // Clean up existing state first
+      cleanupAuthState();
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             name
-          }
+          },
+          // Set emailRedirectTo to ensure redirect works correctly
+          emailRedirectTo: `${window.location.origin}/auth`,
         }
       });
 
@@ -113,14 +162,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (data?.user) {
-        toast({
-          title: "Account created",
-          description: "Your account has been created successfully",
-        });
+        // Check if email confirmation is required
+        if (data.user.identities && data.user.identities.length === 0) {
+          toast({
+            title: "Account already exists",
+            description: "An account with this email already exists. Please log in instead.",
+          });
+        } else if (!data.user.email_confirmed_at) {
+          toast({
+            title: "Account created!",
+            description: "Please check your email to confirm your account before logging in.",
+          });
+          
+          // Redirect to login but don't attempt to log in automatically
+          window.location.href = '/auth';
+        } else {
+          // Auto login if email confirmation not required
+          toast({
+            title: "Account created",
+            description: "Your account has been created successfully!",
+          });
+          
+          // Automatically log in if email was pre-confirmed
+          login(email, password);
+        }
       }
     } catch (error) {
       console.error('Signup error:', error);
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -129,7 +197,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signOut();
+      
+      // Clean up auth state first
+      cleanupAuthState();
+      
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
       
       if (error) {
         toast({
@@ -144,9 +216,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         title: "Signed out",
         description: "You've been successfully signed out",
       });
+      
+      // Force page reload after logout for clean state
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
-      throw error;
     } finally {
       setLoading(false);
     }

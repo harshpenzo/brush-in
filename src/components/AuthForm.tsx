@@ -34,6 +34,7 @@ const AuthForm = () => {
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [activeTab, setActiveTab] = useState("login");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,10 +50,10 @@ const AuthForm = () => {
     
     try {
       await login(loginEmail, loginPassword);
-      navigate("/dashboard");
+      // Navigation is handled in the useAuth hook
     } catch (error) {
       console.error("Login error:", error);
-      // Error is handled in useAuth hook
+      // Error handling is done in the useAuth hook
     }
   };
 
@@ -79,14 +80,10 @@ const AuthForm = () => {
     
     try {
       await signUp(signupEmail, signupPassword, signupName);
-      toast({
-        title: "Account created",
-        description: "You can now log in with your new account"
-      });
-      // Navigate to dashboard if auto-login happens in signUp function
+      // Navigation is handled in the useAuth hook
     } catch (error) {
       console.error("Signup error:", error);
-      // Error is handled in useAuth hook
+      // Error handling is done in the useAuth hook
     }
   };
 
@@ -101,7 +98,7 @@ const AuthForm = () => {
             </p>
           </div>
           
-          <Card className="w-full border shadow-lg">
+          <Card className="w-full border border-gray-300 dark:border-gray-700 shadow-lg">
             <CardHeader className="space-y-1 text-center">
               <CardTitle className="text-2xl font-bold">Welcome to BrushIn</CardTitle>
               <CardDescription className="text-base">
@@ -109,7 +106,12 @@ const AuthForm = () => {
               </CardDescription>
             </CardHeader>
             
-            <Tabs defaultValue="login" className="w-full">
+            <Tabs 
+              defaultValue="login" 
+              value={activeTab} 
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Log In</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -119,7 +121,7 @@ const AuthForm = () => {
                 <form onSubmit={handleLogin}>
                   <CardContent className="space-y-4 pt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-base font-medium">Email</Label>
+                      <Label htmlFor="email" className="text-base font-medium text-gray-800 dark:text-gray-200">Email</Label>
                       <div className="relative">
                         <Input
                           id="email"
@@ -128,14 +130,14 @@ const AuthForm = () => {
                           value={loginEmail}
                           onChange={(e) => setLoginEmail(e.target.value)}
                           required
-                          className="text-base"
+                          className="text-base bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700"
                         />
                       </div>
                     </div>
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="password" className="text-base font-medium">Password</Label>
+                        <Label htmlFor="password" className="text-base font-medium text-gray-800 dark:text-gray-200">Password</Label>
                         <a 
                           href="#" 
                           className="text-xs text-blue-500 hover:underline"
@@ -155,11 +157,11 @@ const AuthForm = () => {
                           value={loginPassword}
                           onChange={(e) => setLoginPassword(e.target.value)}
                           required
-                          className="text-base pr-10"
+                          className="text-base bg-white dark:bg-gray-900 pr-10 border-gray-300 dark:border-gray-700"
                         />
                         <button 
                           type="button"
-                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
+                          className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                           onClick={() => setShowLoginPassword(!showLoginPassword)}
                         >
                           {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -175,7 +177,7 @@ const AuthForm = () => {
                       />
                       <label
                         htmlFor="remember"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground dark:text-white"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-gray-300"
                       >
                         Remember me
                       </label>
@@ -209,19 +211,19 @@ const AuthForm = () => {
                 <form onSubmit={handleSignup}>
                   <CardContent className="space-y-4 pt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="full-name" className="text-base font-medium">Full Name</Label>
+                      <Label htmlFor="full-name" className="text-base font-medium text-gray-800 dark:text-gray-200">Full Name</Label>
                       <Input
                         id="full-name"
                         placeholder="John Doe"
                         value={signupName}
                         onChange={(e) => setSignupName(e.target.value)}
                         required
-                        className="text-base"
+                        className="text-base bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email" className="text-base font-medium">Email</Label>
+                      <Label htmlFor="signup-email" className="text-base font-medium text-gray-800 dark:text-gray-200">Email</Label>
                       <Input
                         id="signup-email"
                         type="email"
@@ -229,12 +231,12 @@ const AuthForm = () => {
                         value={signupEmail}
                         onChange={(e) => setSignupEmail(e.target.value)}
                         required
-                        className="text-base"
+                        className="text-base bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password" className="text-base font-medium">Password</Label>
+                      <Label htmlFor="signup-password" className="text-base font-medium text-gray-800 dark:text-gray-200">Password</Label>
                       <div className="relative">
                         <Input
                           id="signup-password"
@@ -243,11 +245,11 @@ const AuthForm = () => {
                           value={signupPassword}
                           onChange={(e) => setSignupPassword(e.target.value)}
                           required
-                          className="text-base pr-10"
+                          className="text-base bg-white dark:bg-gray-900 pr-10 border-gray-300 dark:border-gray-700"
                         />
                         <button 
                           type="button"
-                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
+                          className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                           onClick={() => setShowSignupPassword(!showSignupPassword)}
                         >
                           {showSignupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -264,7 +266,7 @@ const AuthForm = () => {
                       />
                       <label
                         htmlFor="terms"
-                        className="text-sm text-gray-500 dark:text-gray-400"
+                        className="text-sm text-gray-600 dark:text-gray-400"
                       >
                         I agree to the{" "}
                         <a
@@ -315,6 +317,24 @@ const AuthForm = () => {
                 </form>
               </TabsContent>
             </Tabs>
+            
+            <div className="pb-5 px-5 text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {activeTab === "login" 
+                  ? "Don't have an account? " 
+                  : "Already have an account? "}
+                <a 
+                  href="#" 
+                  className="text-blue-500 hover:underline" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveTab(activeTab === "login" ? "signup" : "login");
+                  }}
+                >
+                  {activeTab === "login" ? "Sign up" : "Log in"}
+                </a>
+              </p>
+            </div>
           </Card>
         </div>
       </div>
