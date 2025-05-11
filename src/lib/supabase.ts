@@ -1,23 +1,14 @@
 
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/integrations/supabase/types';
 
 // Supabase client setup
 // Use default values for development when environment variables are not available
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-supabase-project.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://adhjacvblsxpzshkwsww.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkaGphY3ZibHN4cHpzaGt3c3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNjg1NjAsImV4cCI6MjA2MDc0NDU2MH0.bWAFpRmDOOHEbW824DvWl4LnVLF0othCDu_zb7LxsKg';
 
 // Type definition for our database schema
-export type Post = {
-  id?: string;
-  user_id: string;
-  content: string;
-  hashtags: string[];
-  created_at?: string;
-  readability_score?: number;
-  tone: string;
-  industry: string;
-  topic: string;
-};
+export type Post = Database['public']['Tables']['posts']['Row'];
 
 // Check if the required Supabase credentials are provided
 if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
@@ -28,7 +19,7 @@ if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KE
 }
 
 // Initialize the Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 // Helper functions for post operations
 export async function fetchUserPosts(userId: string) {
@@ -46,7 +37,7 @@ export async function fetchUserPosts(userId: string) {
   return data || [];
 }
 
-export async function savePost(post: Post) {
+export async function savePost(post: Omit<Post, 'id' | 'created_at' | 'updated_at'>) {
   const { data, error } = await supabase
     .from('posts')
     .insert([post])

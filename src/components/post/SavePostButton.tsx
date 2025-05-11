@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Save, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { savePost, Post } from "@/lib/supabase";
+import { savePost } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
+import type { Database } from "@/integrations/supabase/types";
+
+type Post = Database['public']['Tables']['posts']['Row'];
 
 interface SavePostButtonProps {
   post: string;
@@ -51,7 +54,7 @@ const SavePostButton = ({
     try {
       setIsSaving(true);
       
-      const postData: Post = {
+      const postData = {
         user_id: user.id,
         content: post,
         hashtags: hashtags,
