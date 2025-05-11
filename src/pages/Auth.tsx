@@ -12,6 +12,7 @@ const Auth = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
+  // Render the AuthForm directly
   return <AuthForm />;
 };
 

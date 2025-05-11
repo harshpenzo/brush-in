@@ -104,7 +104,7 @@ const AuthForm = () => {
           <Card className="w-full border shadow-lg">
             <CardHeader className="space-y-1 text-center">
               <CardTitle className="text-2xl font-bold">Welcome to BrushIn</CardTitle>
-              <CardDescription>
+              <CardDescription className="text-base">
                 Sign in to your account or create a new one
               </CardDescription>
             </CardHeader>
@@ -119,7 +119,7 @@ const AuthForm = () => {
                 <form onSubmit={handleLogin}>
                   <CardContent className="space-y-4 pt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email" className="text-base font-medium">Email</Label>
                       <div className="relative">
                         <Input
                           id="email"
@@ -128,13 +128,14 @@ const AuthForm = () => {
                           value={loginEmail}
                           onChange={(e) => setLoginEmail(e.target.value)}
                           required
+                          className="text-base"
                         />
                       </div>
                     </div>
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password" className="text-base font-medium">Password</Label>
                         <a 
                           href="#" 
                           className="text-xs text-blue-500 hover:underline"
@@ -154,10 +155,11 @@ const AuthForm = () => {
                           value={loginPassword}
                           onChange={(e) => setLoginPassword(e.target.value)}
                           required
+                          className="text-base pr-10"
                         />
                         <button 
                           type="button"
-                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
                           onClick={() => setShowLoginPassword(!showLoginPassword)}
                         >
                           {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -173,7 +175,7 @@ const AuthForm = () => {
                       />
                       <label
                         htmlFor="remember"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground dark:text-white"
                       >
                         Remember me
                       </label>
@@ -185,6 +187,7 @@ const AuthForm = () => {
                       type="submit" 
                       className="w-full" 
                       disabled={loading}
+                      size="lg"
                     >
                       {loading ? (
                         <>
@@ -206,18 +209,19 @@ const AuthForm = () => {
                 <form onSubmit={handleSignup}>
                   <CardContent className="space-y-4 pt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="full-name">Full Name</Label>
+                      <Label htmlFor="full-name" className="text-base font-medium">Full Name</Label>
                       <Input
                         id="full-name"
                         placeholder="John Doe"
                         value={signupName}
                         onChange={(e) => setSignupName(e.target.value)}
                         required
+                        className="text-base"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="signup-email" className="text-base font-medium">Email</Label>
                       <Input
                         id="signup-email"
                         type="email"
@@ -225,11 +229,12 @@ const AuthForm = () => {
                         value={signupEmail}
                         onChange={(e) => setSignupEmail(e.target.value)}
                         required
+                        className="text-base"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
+                      <Label htmlFor="signup-password" className="text-base font-medium">Password</Label>
                       <div className="relative">
                         <Input
                           id="signup-password"
@@ -238,10 +243,11 @@ const AuthForm = () => {
                           value={signupPassword}
                           onChange={(e) => setSignupPassword(e.target.value)}
                           required
+                          className="text-base pr-10"
                         />
                         <button 
                           type="button"
-                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                          className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
                           onClick={() => setShowSignupPassword(!showSignupPassword)}
                         >
                           {showSignupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -291,6 +297,7 @@ const AuthForm = () => {
                       type="submit" 
                       className="w-full" 
                       disabled={loading || !termsAccepted}
+                      size="lg"
                     >
                       {loading ? (
                         <>
