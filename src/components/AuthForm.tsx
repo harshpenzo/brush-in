@@ -1,228 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Notes Zone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="img/logo.ico.ico" type="image/x-icon">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Container -->
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg relative overflow-hidden">
+            <!-- Background Effects -->
+            <div class="absolute inset-0 bg-gradient-to-br from-sky-100/50 to-transparent dark:from-sky-900/30 z-0"></div>
+            <div class="absolute inset-0 backdrop-blur-3xl z-0"></div>
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { MessageCircle, User, LogIn, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+            <!-- Content -->
+            <div class="relative z-10">
+                <!-- Logo -->
+                <div class="text-center mb-8">
+                    <img src="logo.png" alt="NotesZone Logo" class="h-16 mx-auto mb-2">
+                    <h2 id="formTitle" class="text-2xl font-bold text-gray-900 dark:text-white">Welcome back!</h2>
+                    <p id="formSubtitle" class="mt-2 text-gray-600 dark:text-gray-400">Please sign in to your account</p>
+                </div>
 
-const AuthForm = () => {
-  const [activeTab, setActiveTab] = useState<string>("signin");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showSignupPassword, setShowSignupPassword] = useState<boolean>(false);
-  
-  // Form states
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  
-  const navigate = useNavigate();
-  const { login, signUp, loading } = useAuth();
-  
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (isSubmitting || loading) return;
-    
-    try {
-      setIsSubmitting(true);
-      await login(email, password);
-      navigate("/");
-    } catch (error) {
-      console.error("Sign in error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+                <!-- Login Form -->
+                <form id="login-form" class="space-y-6">
+                    <!-- Message Div -->
+                    <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <span class="block sm:inline"></span>
+                    </div>
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (isSubmitting || loading) return;
-    
-    try {
-      setIsSubmitting(true);
-      await signUp(email, password, name);
-      navigate("/");
-    } catch (error) {
-      console.error("Sign up error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                        <div class="relative">
+                            <input type="email" id="login-email" required 
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
+                                placeholder="Enter your email">
+                            <span class="absolute right-3 top-2.5 text-gray-400">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" required 
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
+                                placeholder="Enter your password">
+                            <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
 
-  const toggleSignupPasswordVisibility = () => {
-    setShowSignupPassword(!showSignupPassword);
-  };
+                    <!-- Remember & Forgot -->
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center text-gray-600 dark:text-gray-400">
+                            <input type="checkbox" class="rounded border-gray-300 text-yellow-400 focus:ring-yellow-400 mr-2">
+                            Remember me
+                        </label>
+                        <a href="#" class="text-yellow-500 hover:text-yellow-600 dark:hover:text-yellow-400">Forgot password?</a>
+                    </div>
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-20">
-      <div className="w-full max-w-md">
-        <Card className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg">
-          <CardHeader className="text-center space-y-2 pb-2">
-            <div className="mx-auto bg-sky-500/20 p-3 rounded-full w-14 h-14 flex items-center justify-center">
-              <MessageCircle className="h-7 w-7 text-sky-500" />
+                    <!-- Login Button -->
+                    <button type="submit" class="w-full py-2 px-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-medium rounded-lg hover:shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+
+                    <!-- Social Login -->
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white dark:bg-gray-800 text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <button type="button" id="google-login" class="flex items-center justify-center gap-3 py-2 px-6 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5">
+                            <span class="text-gray-700 dark:text-gray-200">Continue with Google</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form id="signup-form" class="space-y-6 hidden">
+                    <!-- Full Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                        <div class="relative">
+                            <input type="text" id="signup-name" required 
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
+                                placeholder="Enter your full name">
+                            <span class="absolute right-3 top-2.5 text-gray-400">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                        <div class="relative">
+                            <input type="email" id="signup-email" required 
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
+                                placeholder="Enter your email">
+                            <span class="absolute right-3 top-2.5 text-gray-400">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="signup-password" required 
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all"
+                                placeholder="Create a password">
+                            <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="checkbox" required class="rounded border-gray-300 text-yellow-400 focus:ring-yellow-400">
+                        </div>
+                        <div class="ml-3">
+                            <label class="text-sm text-gray-600 dark:text-gray-400">
+                                I agree to the <a href="#" class="text-yellow-500 hover:text-yellow-600">Terms of Service</a> and 
+                                <a href="#" class="text-yellow-500 hover:text-yellow-600">Privacy Policy</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sign Up Button -->
+                    <button type="submit" class="w-full py-2 px-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-medium rounded-lg hover:shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+
+                    <!-- Social Sign Up -->
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white dark:bg-gray-800 text-gray-500">Or sign up with</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <button type="button" id="google-signup" class="flex items-center justify-center gap-3 py-2 px-6 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5">
+                            <span class="text-gray-700 dark:text-gray-200">Sign up with Google</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Toggle Forms -->
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        <span id="toggle-text">Don't have an account?</span>
+                        <button type="button" id="toggle-form" class="text-yellow-500 hover:text-yellow-600 dark:hover:text-yellow-400 font-medium ml-1">Sign Up</button>
+                    </p>
+                </div>
             </div>
-            <CardTitle className="text-2xl font-bold">Welcome to Brushin</CardTitle>
-            <CardDescription>Create professional LinkedIn content with AI</CardDescription>
-          </CardHeader>
-
-          <CardContent className="pt-6">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid grid-cols-2 mb-6 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg w-full">
-                <TabsTrigger 
-                  value="signin" 
-                  className="data-[state=active]:bg-sky-500 data-[state=active]:text-white font-semibold text-base"
-                >
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Sign In
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="signup" 
-                  className="data-[state=active]:bg-sky-500 data-[state=active]:text-white font-semibold text-base"
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Sign Up
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={handleSignIn} className="space-y-5">
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium text-slate-900 dark:text-white">
-                      Email Address
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      required
-                      className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
-                      disabled={isSubmitting || loading}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label htmlFor="password" className="text-sm font-medium text-slate-900 dark:text-white">
-                        Password
-                      </label>
-                      <a href="#" className="text-xs text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 font-medium">
-                        Forgot password?
-                      </a>
-                    </div>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        required
-                        className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
-                        disabled={isSubmitting || loading}
-                      />
-                      <button
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-                        aria-label={showPassword ? "Hide password" : "Show password"}
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6"
-                    disabled={isSubmitting || loading}
-                  >
-                    {isSubmitting || loading ? "Signing in..." : "Sign In"}
-                  </Button>
-                </form>
-              </TabsContent>
-
-              <TabsContent value="signup" className="space-y-4">
-                <form onSubmit={handleSignUp} className="space-y-5">
-                  <div className="space-y-2">
-                    <label htmlFor="signup-name" className="text-sm font-medium text-slate-900 dark:text-white">
-                      Full Name
-                    </label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="John Doe"
-                      required
-                      className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
-                      disabled={isSubmitting || loading}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="signup-email" className="text-sm font-medium text-slate-900 dark:text-white">
-                      Email Address
-                    </label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      required
-                      className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600"
-                      disabled={isSubmitting || loading}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="signup-password" className="text-sm font-medium text-slate-900 dark:text-white">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <Input
-                        id="signup-password"
-                        type={showSignupPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        required
-                        className="w-full bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 pr-10"
-                        disabled={isSubmitting || loading}
-                      />
-                      <button
-                        type="button"
-                        onClick={toggleSignupPasswordVisibility}
-                        className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-                        aria-label={showSignupPassword ? "Hide password" : "Show password"}
-                      >
-                        {showSignupPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-base py-6"
-                    disabled={isSubmitting || loading}
-                  >
-                    {isSubmitting || loading ? "Creating account..." : "Create Account"}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
+        </div>
     </div>
-  );
-};
 
-export default AuthForm;
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+    <!-- Firebase Config -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB-XawiwFbCOxyLpgNUIoW7MySWblx5zI8",
+            authDomain: "notes-zone-2005.firebaseapp.com",
+            projectId: "notes-zone-2005",
+            storageBucket: "notes-zone-2005.firebasestorage.app",
+            messagingSenderId: "729445577922",
+            appId: "1:729445577922:web:4d87e4f19c37c32b13775b",
+            measurementId: "G-9TER2ZYDCN"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+    </script>
+
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const toggleFormBtn = document.getElementById('toggle-form');
+            const toggleText = document.getElementById('toggle-text');
+            const formTitle = document.getElementById('formTitle');
+            const formSubtitle = document.getElementById('formSubtitle');
+            const errorMessage = document.getElementById('error-message');
+
+            // Show error message
+            const showMessage = (message, type = 'error') => {
+                errorMessage.querySelector('span').textContent = message;
+                errorMessage.classList.remove('hidden', 'bg-red-100', 'bg-green-100', 'bg-purple-100');
+                errorMessage.classList.add(
+                    type === 'error' ? 'bg-red-100' :
+                    type === 'success' ? 'bg-green-100' : 'bg-purple-100'
+                );
+                
+                setTimeout(() => {
+                    errorMessage.classList.add('hidden');
+                }, 5000);
+            };
+
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('input');
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // Toggle between login and signup forms
+            toggleFormBtn.addEventListener('click', () => {
+                const isLogin = loginForm.classList.contains('hidden');
+                loginForm.classList.toggle('hidden');
+                signupForm.classList.toggle('hidden');
+                
+                if (isLogin) {
+                    toggleFormBtn.textContent = 'Sign Up';
+                    toggleText.textContent = "Don't have an account?";
+                    formTitle.textContent = 'Welcome back!';
+                    formSubtitle.textContent = 'Please sign in to your account';
+                } else {
+                    toggleFormBtn.textContent = 'Sign In';
+                    toggleText.textContent = 'Already have an account?';
+                    formTitle.textContent = 'Create an account';
+                    formSubtitle.textContent = 'Join us today';
+                }
+                
+                errorMessage.classList.add('hidden');
+            });
+
+            // Google Authentication
+            const handleGoogleAuth = async () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                try {
+                    const result = await auth.signInWithPopup(provider);
+                    const user = result.user;
+                    
+                    // Check if user exists in Firestore
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    
+                    if (!userDoc.exists) {
+                        // Create new user document
+                        await db.collection('users').doc(user.uid).set({
+                            name: user.displayName,
+                            email: user.email,
+                            profileImage: user.photoURL,
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                    
+                    window.location.href = 'profile.html';
+                } catch (error) {
+                    showMessage(error.message);
+                }
+            };
+
+            document.getElementById('google-login').addEventListener('click', handleGoogleAuth);
+            document.getElementById('google-signup').addEventListener('click', handleGoogleAuth);
+
+            // Login form submission
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    window.location.href = 'profile.html';
+                } catch (error) {
+                    showMessage(error.message);
+                }
+            });
+
+            // Signup form submission
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                
+                try {
+                    const result = await auth.createUserWithEmailAndPassword(email, password);
+                    const user = result.user;
+                    
+                    // Update profile
+                    await user.updateProfile({
+                        displayName: name
+                    });
+                    
+                    // Create user document
+                    await db.collection('users').doc(user.uid).set({
+                        name: name,
+                        email: email,
+                        createdAt: new Date().toISOString()
+                    });
+                    
+                    window.location.href = 'profile.html';
+                } catch (error) {
+                    showMessage(error.message);
+                }
+            });
+
+            // Check authentication state
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    window.location.href = 'profile.html';
+                }
+            });
+
+            async function uploadNote(file, metadata) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('Must be logged in to upload');
+
+                // Create storage reference
+                const storageRef = storage.ref();
+                const fileRef = storageRef.child(`notes/${user.uid}/${Date.now()}_${file.name}`);
+
+                // Upload file
+                const uploadTask = fileRef.put(file);
+
+                // Get download URL after upload
+                const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
+
+                // Save metadata to Firestore
+                await db.collection('notes').doc(user.uid).collection('userNotes').add({
+                    title: metadata.title,
+                    description: metadata.description,
+                    fileUrl: downloadUrl,
+                    fileName: file.name,
+                    fileType: file.type,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    size: file.size,
+                    tags: metadata.tags || []
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
