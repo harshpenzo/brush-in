@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -18,8 +17,15 @@ if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KE
   );
 }
 
-// Initialize the Supabase client
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+// Initialize the Supabase client with explicit auth configuration
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storage: localStorage,
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true, // Detect session from URL
+  }
+});
 
 // Helper functions for post operations
 export async function fetchUserPosts(userId: string) {

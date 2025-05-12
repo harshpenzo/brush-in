@@ -1,8 +1,9 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   user: User | null;
@@ -39,45 +40,85 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Set up auth state change listener FIRST
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event: AuthChangeEvent, currentSession: Session | null) => {
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        setIsAuthenticated(!!currentSession?.user);
-        
-        if (event === 'SIGNED_OUT') {
-          cleanupAuthState();
-        }
-      }
-    );
+  // Handle auth state initialization and change detection
+  const initAuth = useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      // Check if we're coming from an auth redirect
+      const isAuthRedirect = location.hash && 
+        (location.hash.includes('access_token') || 
+         location.hash.includes('error'));
 
-    // THEN check for existing session
-    const checkSession = async () => {
+      // First get the session directly to handle redirects and initial loading
       const { data, error } = await supabase.auth.getSession();
       
       if (error) {
         console.error('Error checking auth session:', error);
+        setLoading(false);
+        return;
       }
       
       if (data?.session) {
         setSession(data.session);
         setUser(data.session.user);
         setIsAuthenticated(true);
+        
+        // If this was an auth redirect, go to dashboard after successful login
+        if (isAuthRedirect && location.pathname === '/auth') {
+          navigate('/dashboard', { replace: true });
+        }
+      } else if (isAuthRedirect && !data?.session) {
+        // Auth redirect with error
+        toast({
+          title: "Authentication failed",
+          description: "Failed to authenticate. Please try again.",
+          variant: "destructive"
+        });
       }
-      
+    } catch (err) {
+      console.error('Auth initialization error:', err);
+    } finally {
       setLoading(false);
-    };
+    }
+  }, [location.hash, location.pathname, navigate, toast]);
 
-    checkSession();
+  useEffect(() => {
+    // Set up auth state change listener
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event: AuthChangeEvent, currentSession: Session | null) => {
+        console.log('Auth state changed:', event);
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        setIsAuthenticated(!!currentSession?.user);
+        
+        // Handle sign out event specifically
+        if (event === 'SIGNED_OUT') {
+          cleanupAuthState();
+        } 
+        // Handle sign in event
+        else if (event === 'SIGNED_IN' && currentSession) {
+          // Use a timeout to avoid potential deadlocks with Supabase client
+          setTimeout(() => {
+            if (location.pathname === '/auth') {
+              navigate('/dashboard', { replace: true });
+            }
+          }, 0);
+        }
+      }
+    );
+
+    // Initialize auth state
+    initAuth();
 
     // Clean up subscription
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [initAuth, location.pathname, navigate]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -138,8 +179,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: "You've successfully signed in",
         });
         
-        // Force page reload after successful login for clean state
-        window.location.href = '/dashboard';
+        // Navigate programmatically rather than refreshing the page
+        navigate('/dashboard', { replace: true });
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -197,8 +238,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             description: "Your account has been created successfully!",
           });
           
-          // Automatically log in if email was pre-confirmed
-          login(email, password);
+          // Navigate programmatically rather than refreshing the page
+          navigate('/dashboard', { replace: true });
         }
       }
     } catch (error) {
@@ -231,8 +272,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: "You've been successfully signed out",
       });
       
-      // Force page reload after logout for clean state
-      window.location.href = '/';
+      // Navigate programmatically rather than refreshing the page
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
