@@ -46,12 +46,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Handle auth state initialization and change detection
   const initAuth = useCallback(async () => {
     try {
+      console.log('Initializing auth state...');
       setLoading(true);
       
       // Check if we're coming from an auth redirect
       const isAuthRedirect = location.hash && 
         (location.hash.includes('access_token') || 
          location.hash.includes('error'));
+
+      if (isAuthRedirect) {
+        console.log('Auth redirect detected, hash:', location.hash);
+      }
 
       // First get the session directly to handle redirects and initial loading
       const { data, error } = await supabase.auth.getSession();
@@ -63,21 +68,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data?.session) {
+        console.log('Session found during initialization:', !!data.session);
         setSession(data.session);
         setUser(data.session.user);
         setIsAuthenticated(true);
         
         // If this was an auth redirect, go to dashboard after successful login
         if (isAuthRedirect && location.pathname === '/auth') {
+          console.log('Redirecting to dashboard after successful auth...');
           navigate('/dashboard', { replace: true });
         }
       } else if (isAuthRedirect && !data?.session) {
         // Auth redirect with error
+        console.error('Auth redirect detected but no session found');
         toast({
           title: "Authentication failed",
           description: "Failed to authenticate. Please try again.",
           variant: "destructive"
         });
+      } else {
+        console.log('No session found during initialization');
       }
     } catch (err) {
       console.error('Auth initialization error:', err);
@@ -87,20 +97,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [location.hash, location.pathname, navigate, toast]);
 
   useEffect(() => {
+    console.log('Setting up auth state listener...');
+    
     // Set up auth state change listener
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, currentSession: Session | null) => {
-        console.log('Auth state changed:', event);
+        console.log('Auth state changed:', event, !!currentSession);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setIsAuthenticated(!!currentSession?.user);
         
         // Handle sign out event specifically
         if (event === 'SIGNED_OUT') {
+          console.log('User signed out, cleaning up auth state...');
           cleanupAuthState();
         } 
         // Handle sign in event
         else if (event === 'SIGNED_IN' && currentSession) {
+          console.log('User signed in, redirecting if on auth page...');
           // Use a timeout to avoid potential deadlocks with Supabase client
           setTimeout(() => {
             if (location.pathname === '/auth') {
@@ -116,6 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Clean up subscription
     return () => {
+      console.log('Cleaning up auth listener...');
       authListener.subscription.unsubscribe();
     };
   }, [initAuth, location.pathname, navigate]);

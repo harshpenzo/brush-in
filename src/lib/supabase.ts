@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -12,8 +13,8 @@ export type Post = Database['public']['Tables']['posts']['Row'];
 // Check if the required Supabase credentials are provided
 if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
   console.warn(
-    'Supabase credentials missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file. ' +
-    'Using placeholder values for now, which will cause authentication and database operations to fail.'
+    'Supabase credentials missing or invalid. Please check your .env file. ' +
+    'Using fallback values for now.'
   );
 }
 
@@ -23,7 +24,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true, // Detect session from URL
+    detectSessionInUrl: true,
+    flowType: 'implicit',
   }
 });
 
