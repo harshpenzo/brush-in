@@ -35,10 +35,13 @@ const Auth = () => {
               title: "Authentication successful",
               description: "You have been logged in successfully.",
             });
-            
-            // The useAuth hook will handle the redirect
           } else {
             console.warn('Auth callback processed but no session found');
+            toast({
+              title: "Authentication issue",
+              description: "Session not established. Please try logging in again.",
+              variant: "destructive"
+            });
           }
         } catch (err) {
           console.error('Error processing auth callback:', err);
@@ -58,7 +61,10 @@ const Auth = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500 mx-auto"></div>
+          <p className="text-white mt-4">Loading authentication status...</p>
+        </div>
       </div>
     );
   }

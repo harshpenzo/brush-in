@@ -18,7 +18,14 @@ import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 
 // Create a client
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => {
   return (
@@ -35,8 +42,6 @@ const App = () => {
                 <meta name="theme-color" content="#0ea5e9" />
                 <link rel="canonical" href="https://brushin.app/" />
               </Helmet>
-              <Toaster />
-              <Sonner />
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -49,6 +54,8 @@ const App = () => {
                   <Route path="/contact" element={<Contact />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
+                <Toaster />
+                <Sonner />
               </BrowserRouter>
             </AuthProvider>
           </TooltipProvider>
