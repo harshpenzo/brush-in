@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
@@ -88,6 +87,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
       } else {
         console.log('No session found during initialization');
+        setIsAuthenticated(false);
+        setUser(null);
       }
     } catch (err) {
       console.error('Auth initialization error:', err);

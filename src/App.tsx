@@ -22,7 +22,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <div className="flex min-h-screen flex-col bg-white dark:bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
