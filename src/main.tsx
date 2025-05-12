@@ -25,10 +25,10 @@ const renderApp = () => {
     console.error("Failed to render the application:", error);
     // Display a fallback error message on the page
     document.body.innerHTML = `
-      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; font-family: sans-serif;">
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; font-family: sans-serif; background-color: #fff; color: #333;">
         <h1>Something went wrong</h1>
         <p>The application failed to load. Please try refreshing the page.</p>
-        <button onclick="window.location.reload()" style="padding: 8px 16px; margin-top: 16px; cursor: pointer;">
+        <button onclick="window.location.reload()" style="padding: 8px 16px; margin-top: 16px; cursor: pointer; background-color: #0ea5e9; color: white; border: none; border-radius: 4px;">
           Reload Page
         </button>
       </div>
