@@ -3,19 +3,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/hooks/useAuth";
+import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider, Helmet } from "react-helmet-async";
-
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import NotFound from "./pages/NotFound";
-import Pricing from "./pages/Pricing";
-import Faq from "./pages/Faq";
-import Testimonials from "./pages/Testimonials";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Dashboard from "./pages/Dashboard";
+import AppRoutes from "./AppRoutes";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -32,8 +22,8 @@ const App = () => {
     <div className="min-h-screen bg-white dark:bg-slate-900">
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <AuthProvider>
+          <BrowserRouter>
+            <TooltipProvider>
               <Helmet>
                 <title>Brushin - AI LinkedIn Post Creator for Professionals</title>
                 <meta name="description" content="Create engaging, professional LinkedIn posts with Brushin AI. Generate content that drives engagement and builds your professional brand." />
@@ -42,23 +32,11 @@ const App = () => {
                 <meta name="theme-color" content="#0ea5e9" />
                 <link rel="canonical" href="https://brushin.app/" />
               </Helmet>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/pricing" element={<Pricing />} />
-                  <Route path="/faq" element={<Faq />} />
-                  <Route path="/testimonials" element={<Testimonials />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <Toaster />
-                <Sonner />
-              </BrowserRouter>
-            </AuthProvider>
-          </TooltipProvider>
+              <AppRoutes />
+              <Toaster />
+              <Sonner />
+            </TooltipProvider>
+          </BrowserRouter>
         </QueryClientProvider>
       </HelmetProvider>
     </div>

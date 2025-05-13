@@ -14,10 +14,11 @@ const PageTransition = ({ children }: PageTransitionProps) => {
   useEffect(() => {
     if (location.pathname !== displayLocation.pathname) {
       setTransitionStage("fadeOut");
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setTransitionStage("fadeIn");
         setDisplayLocation(location);
       }, 300);
+      return () => clearTimeout(timer);
     }
   }, [location, displayLocation]);
 
