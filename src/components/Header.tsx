@@ -1,4 +1,5 @@
-import { Menu, X, Feather, LogOut, User as UserIcon } from "lucide-react";
+
+import { Menu, X, Feather, LogOut, User as UserIcon, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -148,14 +149,6 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
             About
           </Link>
           <Link 
-            to="/pricing" 
-            className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
-              isActive('/pricing') ? 'text-sky-400' : ''
-            }`}
-          >
-            Pricing
-          </Link>
-          <Link 
             to="/testimonials" 
             className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
               isActive('/testimonials') ? 'text-sky-400' : ''
@@ -182,23 +175,27 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
                     <span className="font-medium text-lg">{getUserInitial()}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700">
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-500/20">
                       <span className="font-medium text-sky-400">{getUserInitial()}</span>
                     </div>
                     <div className="flex flex-col space-y-0.5">
-                      <p className="text-sm font-medium">{getUserDisplayName()}</p>
-                      <p className="text-xs text-slate-500">{user?.email}</p>
+                      <p className="text-sm font-medium text-white">{getUserDisplayName()}</p>
+                      <p className="text-xs text-slate-400">{user?.email}</p>
                     </div>
                   </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                  <DropdownMenuSeparator className="bg-slate-700" />
+                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer text-slate-300 hover:text-white hover:bg-slate-700">
                     <UserIcon className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 focus:text-red-500">
+                  <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer text-slate-300 hover:text-white hover:bg-slate-700">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-slate-700" />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-400 hover:text-red-300 hover:bg-red-950">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
                   </DropdownMenuItem>
@@ -236,14 +233,6 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
               About
             </Link>
             <Link 
-              to="/pricing" 
-              className={`text-slate-300 hover:text-sky-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
-                isActive('/pricing') ? 'bg-slate-800/70 text-sky-400' : ''
-              }`}
-            >
-              Pricing
-            </Link>
-            <Link 
               to="/testimonials" 
               className={`text-slate-300 hover:text-sky-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
                 isActive('/testimonials') ? 'bg-slate-800/70 text-sky-400' : ''
@@ -271,6 +260,20 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
                     <p className="text-xs text-slate-400">{user?.email}</p>
                   </div>
                 </div>
+                <Button 
+                  onClick={() => navigate("/profile")}
+                  className="bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 w-full py-3 rounded-lg font-medium transition-smooth"
+                >
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  Profile
+                </Button>
+                <Button 
+                  onClick={() => navigate("/dashboard")}
+                  className="bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 w-full py-3 rounded-lg font-medium transition-smooth"
+                >
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
                 <Button 
                   onClick={handleLogout}
                   className="bg-red-500/10 hover:bg-red-500/20 text-red-400 w-full py-3 rounded-lg font-medium transition-smooth mt-2"
