@@ -60,21 +60,25 @@ const Testimonials = () => {
   
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
+      entries.forEach((entry, entryIndex) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in');
-          observer.unobserve(entry.target);
+          // Add a small delay for staggered animation
+          setTimeout(() => {
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            entry.target.classList.remove('opacity-0', 'translate-y-8');
+          }, entryIndex * 150);
         }
       });
-    }, { threshold: 0.1 });
+    }, { 
+      threshold: 0.1,
+      rootMargin: '50px 0px'
+    });
     
     if (cardsRef.current) {
       const cards = cardsRef.current.querySelectorAll('.testimonial-card');
-      cards.forEach((card, index) => {
-        // Cast card to HTMLElement to access style property
-        const cardElement = card as HTMLElement;
-        cardElement.classList.add('opacity-0');
-        cardElement.style.transitionDelay = `${index * 0.1}s`;
+      cards.forEach((card) => {
+        // Set initial state
+        card.classList.add('opacity-0', 'translate-y-8', 'transition-all', 'duration-700');
         observer.observe(card);
       });
     }
@@ -90,7 +94,7 @@ const Testimonials = () => {
         <div className="absolute -bottom-[300px] -left-[300px] w-[500px] h-[500px] bg-brand-600/5 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
         
         <div className="container px-4 mx-auto relative z-10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 opacity-100">
             <span className="inline-block px-4 py-2 bg-brand-500/20 text-brand-400 rounded-full text-sm font-medium mb-4">
               User Success Stories
             </span>
@@ -118,10 +122,10 @@ const Testimonials = () => {
                   const rotateX = (y - centerY) / 30;
                   const rotateY = (centerX - x) / 30;
                   
-                  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                  e.currentTarget.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
                 }}
               >
                 <CardContent className="p-6 relative">
