@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -12,7 +11,7 @@ import CtaSection from "@/components/CtaSection";
 import { CreatePostFormValues } from "@/components/post/CreatePostForm";
 import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
 import { extractTopicFromPost } from "@/utils/postGenerationUtils";
-import { generateGeminiPost, optimizeGeminiPost, generateGeminiHashtags } from "@/services/geminiService";
+import { generateOpenAIPost, optimizeOpenAIPost, generateOpenAIHashtags } from "@/services/openaiService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -61,8 +60,8 @@ const Index = () => {
       setCurrentTone(values.tone);
       setCurrentIndustry(values.industry);
       
-      // Generate post using Gemini API
-      const generatedPost = await generateGeminiPost(
+      // Generate post using OpenAI API
+      const generatedPost = await generateOpenAIPost(
         values.topic,
         values.tone,
         values.keywords,
@@ -72,19 +71,37 @@ const Index = () => {
         values.industry
       );
       
-      // Calculate readability score - this could be enhanced with a real algorithm
-      const simulatedScore = Math.floor(Math.random() * 30) + 70; // 70-100 score
-      setReadabilityScore(simulatedScore);
+      // Calculate enhanced readability score based on content analysis
+      const calculateReadabilityScore = (text: string) => {
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const words = text.split(/\s+/).filter(w => w.length > 0);
+        const avgWordsPerSentence = words.length / sentences.length;
+        const avgCharsPerWord = text.replace(/\s/g, '').length / words.length;
+        
+        // LinkedIn-optimized scoring (shorter sentences = better)
+        let score = 100;
+        if (avgWordsPerSentence > 20) score -= 15;
+        else if (avgWordsPerSentence > 15) score -= 10;
+        if (avgCharsPerWord > 6) score -= 10;
+        else if (avgCharsPerWord > 5) score -= 5;
+        if (text.length > 1000) score -= 10;
+        else if (text.length > 600) score -= 5;
+        
+        return Math.max(70, Math.min(100, score));
+      };
       
-      // Generate related hashtags with Gemini API
-      const generatedHashtags = await generateGeminiHashtags(values.topic, values.industry, values.keywords);
+      const calculatedScore = calculateReadabilityScore(generatedPost);
+      setReadabilityScore(calculatedScore);
+      
+      // Generate related hashtags with OpenAI API
+      const generatedHashtags = await generateOpenAIHashtags(values.topic, values.industry, values.keywords);
       setHashtags(generatedHashtags);
       
       setGeneratedPost(generatedPost);
       
       toast({
-        title: "Post generated",
-        description: "Your LinkedIn post has been created successfully.",
+        title: "Post generated successfully",
+        description: "Your LinkedIn post has been created with AI-powered optimization.",
       });
     } catch (error) {
       console.error("Error generating post:", error);
@@ -108,22 +125,35 @@ const Index = () => {
       setCurrentTone(values.optimizationGoal);
       setCurrentIndustry("general");
       
-      // Optimize post using Gemini API
-      const optimizedPost = await optimizeGeminiPost(values.existingPost, values.optimizationGoal);
+      // Optimize post using OpenAI API
+      const optimizedPost = await optimizeOpenAIPost(values.existingPost, values.optimizationGoal);
       
-      // Calculate simulated readability score - could be enhanced with a real algorithm
-      const simulatedScore = Math.floor(Math.random() * 20) + 80; // 80-100 score (optimized should be better)
-      setReadabilityScore(simulatedScore);
+      // Calculate enhanced readability score
+      const calculateReadabilityScore = (text: string) => {
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const words = text.split(/\s+/).filter(w => w.length > 0);
+        const avgWordsPerSentence = words.length / sentences.length;
+        
+        let score = 100;
+        if (avgWordsPerSentence > 20) score -= 15;
+        else if (avgWordsPerSentence > 15) score -= 10;
+        
+        // Optimized posts should score higher
+        return Math.max(80, Math.min(100, score + 5));
+      };
+      
+      const calculatedScore = calculateReadabilityScore(optimizedPost);
+      setReadabilityScore(calculatedScore);
       
       // Generate related hashtags
-      const generatedHashtags = await generateGeminiHashtags(extractedTopic, "general", "");
+      const generatedHashtags = await generateOpenAIHashtags(extractedTopic, "general", "");
       setHashtags(generatedHashtags);
       
       setGeneratedPost(optimizedPost);
       
       toast({
-        title: "Post optimized",
-        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal}.`,
+        title: "Post optimized successfully",
+        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using AI.`,
       });
     } catch (error) {
       console.error("Error optimizing post:", error);
