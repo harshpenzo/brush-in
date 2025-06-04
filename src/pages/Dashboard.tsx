@@ -104,7 +104,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="py-10 bg-slate-50 dark:bg-slate-900 min-h-screen">
+      <div className="py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 min-h-screen">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
@@ -119,7 +119,7 @@ const Dashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => setShowProfile(!showProfile)}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-slate-300 dark:border-slate-600"
                   >
                     <User className="h-4 w-4" />
                     Profile
@@ -146,7 +146,7 @@ const Dashboard = () => {
                 </div>
                 <Button 
                   onClick={() => navigate("/")} 
-                  className="bg-brand-600 hover:bg-brand-700"
+                  className="bg-sky-600 hover:bg-sky-700 text-white"
                 >
                   Create New Post
                 </Button>
@@ -209,7 +209,7 @@ const Dashboard = () => {
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="flex-1" 
+                            className="flex-1 border-slate-300 dark:border-slate-600" 
                             onClick={() => handleCopy(post.content)}
                           >
                             <Copy className="h-4 w-4 mr-1" /> Copy
@@ -255,7 +255,7 @@ const Dashboard = () => {
                   <p className="text-slate-500 dark:text-slate-400 text-center mb-4">
                     Create your first LinkedIn post to get started
                   </p>
-                  <Button onClick={() => navigate("/")} className="bg-brand-600 hover:bg-brand-700">
+                  <Button onClick={() => navigate("/")} className="bg-sky-600 hover:bg-sky-700 text-white">
                     Create New Post
                   </Button>
                 </div>

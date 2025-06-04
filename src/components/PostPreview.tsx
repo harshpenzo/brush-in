@@ -1,11 +1,9 @@
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Copy, Eye, Heart, MessageCircle, Repeat2, Send, TrendingUp, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Linkedin, Share2, Hash, BarChart3 } from "lucide-react";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Progress } from "@/components/ui/progress";
-import SavePostButton from "./post/SavePostButton";
+import { SavePostButton } from "./post/SavePostButton";
 
 interface PostPreviewProps {
   post: string;
@@ -16,204 +14,209 @@ interface PostPreviewProps {
   industry?: string;
 }
 
-const PostPreview = ({ 
-  post, 
-  hashtags = [], 
-  readabilityScore = null,
-  topic = "",
-  tone = "",
-  industry = ""
-}: PostPreviewProps) => {
-  const [copied, setCopied] = useState(false);
-  const { toast } = useToast();
-  const charCount = post.length;
-  const maxChars = 3000; // LinkedIn's character limit
-  
-  // Extract hashtags from post for displaying separately if not provided
-  const extractHashtags = (text: string) => {
-    const hashtagRegex = /#(\w+)/g;
-    const matches = text.match(hashtagRegex) || [];
-    return matches.map(tag => tag.substring(1)); // Remove # prefix
-  };
-  
-  // Use provided hashtags or extract them from the post
-  const displayHashtags = hashtags.length > 0 ? hashtags : extractHashtags(post);
-  
-  // Format post with clickable hashtags for display
-  const formatPostForDisplay = (text: string) => {
-    if (!text) return "";
-    
-    // Replace hashtags with styled spans
-    const formattedText = text.replace(/#(\w+)/g, '<span class="text-brand-600 dark:text-brand-400 font-medium">$&</span>');
-    
-    // Replace line breaks with <br> tags for proper HTML display
-    return formattedText.replace(/\n/g, '<br>');
+const PostPreview = ({ post, hashtags = [], readabilityScore, topic, tone, industry }: PostPreviewProps) => {
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(post + "\n\n" + hashtags.map(tag => `#${tag}`).join(" "));
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(post);
-    setCopied(true);
-    toast({
-      title: "Copied to clipboard",
-      description: "Your post has been copied to the clipboard."
-    });
-    
-    setTimeout(() => setCopied(false), 2000);
+  const getScoreColor = (score: number | null) => {
+    if (!score) return "text-slate-400";
+    if (score >= 80) return "text-green-500";
+    if (score >= 60) return "text-yellow-500";
+    return "text-red-500";
   };
 
-  const handleShare = () => {
-    // In a real implementation, this would use LinkedIn's Share API
-    window.open('https://www.linkedin.com/feed/?shareActive=true', '_blank');
-    
-    toast({
-      title: "Ready to share",
-      description: "LinkedIn opened in a new tab. Paste your post to share."
-    });
-  };
-
-  // Get appropriate color for readability score
-  const getReadabilityScoreColor = (score: number | null) => {
-    if (!score) return "bg-gray-200 dark:bg-gray-700";
-    if (score >= 90) return "bg-green-500";
-    if (score >= 70) return "bg-brand-500";
-    if (score >= 50) return "bg-yellow-500";
-    return "bg-red-500";
+  const getScoreLabel = (score: number | null) => {
+    if (!score) return "Not calculated";
+    if (score >= 80) return "Excellent";
+    if (score >= 60) return "Good";
+    return "Needs improvement";
   };
 
   return (
-    <Card className="h-full bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
-      <CardContent className="p-6 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Post Preview</h2>
-          </div>
-          <div className={`text-xs font-medium px-2 py-1 rounded-md ${
-            charCount > maxChars 
-              ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' 
-              : 'bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400'
-          }`}>
-            {charCount}/{maxChars} chars
-          </div>
-        </div>
-        
-        {post ? (
-          <>
-            {readabilityScore !== null && (
-              <div className="mb-4 bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center text-sm font-medium text-slate-700 dark:text-slate-300">
-                    <BarChart3 className="mr-1 h-4 w-4" />
-                    <span>Readability Score</span>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-900 dark:text-white">{readabilityScore}/100</span>
-                </div>
-                <Progress 
-                  value={readabilityScore} 
-                  className="h-2" 
-                  indicatorClassName={getReadabilityScoreColor(readabilityScore)}
+    <div className="space-y-4">
+      {/* LinkedIn Post Preview */}
+      <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg text-slate-900 dark:text-white flex items-center gap-2">
+              <Eye className="h-5 w-5 text-sky-500" />
+              LinkedIn Preview
+            </CardTitle>
+            {post && (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={copyToClipboard}
+                  className="border-slate-300 dark:border-slate-600"
+                >
+                  <Copy className="h-4 w-4 mr-1" />
+                  Copy
+                </Button>
+                <SavePostButton 
+                  post={post}
+                  hashtags={hashtags}
+                  readabilityScore={readabilityScore}
+                  topic={topic || ""}
+                  tone={tone || "professional"}
+                  industry={industry || "general"}
                 />
               </div>
             )}
-            
-            <div className="relative bg-slate-50 dark:bg-slate-900 p-5 rounded-lg border border-slate-200 dark:border-slate-700 flex-grow overflow-auto mb-4 text-slate-700 dark:text-slate-300">
-              {/* LinkedIn-like UI container */}
-              <div className="flex items-center mb-3">
-                <div className="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
-                  <Linkedin className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-                </div>
-                <div className="ml-3">
-                  <div className="font-semibold text-slate-800 dark:text-slate-200">Your Name</div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">Just now • <span>🌐</span></div>
-                </div>
-              </div>
-              
-              {/* Post content with clickable hashtags */}
-              <div 
-                className="post-content whitespace-pre-line mb-2 animate-fade-in" 
-                dangerouslySetInnerHTML={{ __html: formatPostForDisplay(post) }}
-              />
-              
-              {/* LinkedIn-like engagement metrics */}
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex items-center">
-                <span className="flex items-center mr-3 hover:text-brand-600 dark:hover:text-brand-400 cursor-pointer transition-colors">
-                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-                  Like
-                </span>
-                <span className="flex items-center mr-3 hover:text-brand-600 dark:hover:text-brand-400 cursor-pointer transition-colors">
-                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                  Comment
-                </span>
-                <span className="flex items-center hover:text-brand-600 dark:hover:text-brand-400 cursor-pointer transition-colors">
-                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-                  Share
-                </span>
-              </div>
-            </div>
-            
-            {/* Hashtags section with improved animation */}
-            {displayHashtags.length > 0 && (
-              <div className="mb-4 animate-fade-in" style={{ animationDelay: "200ms" }}>
-                <div className="flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  <Hash className="mr-1 h-4 w-4" />
-                  <span>Hashtags</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {displayHashtags.map((tag, index) => (
-                    <span 
-                      key={index}
-                      className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-brand-100 text-brand-800 dark:bg-brand-900/30 dark:text-brand-300 hover:bg-brand-200 dark:hover:bg-brand-800/40 transition-colors cursor-pointer animate-fade-in"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <div className="flex flex-wrap gap-2 mt-auto">
-              <Button 
-                onClick={handleCopy} 
-                variant="outline" 
-                className="flex-1 bg-white dark:bg-transparent border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-all duration-300"
-              >
-                {copied ? <Check className="mr-2 h-4 w-4 text-green-500" /> : <Copy className="mr-2 h-4 w-4" />}
-                {copied ? "Copied" : "Copy"}
-              </Button>
-              
-              <SavePostButton 
-                post={post} 
-                hashtags={displayHashtags}
-                readabilityScore={readabilityScore}
-                topic={topic}
-                tone={tone}
-                industry={industry}
-              />
-              
-              <Button 
-                onClick={handleShare} 
-                className="flex-1 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-all duration-300 hover:shadow-md"
-              >
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="flex items-center justify-center flex-grow bg-slate-50 dark:bg-slate-900 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 p-6">
-            <div className="text-center">
-              <Linkedin className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-4 animate-pulse" />
-              <p className="text-slate-500 dark:text-slate-400 mb-2">
-                Generated post will appear here
-              </p>
-              <p className="text-xs text-slate-400 dark:text-slate-500">
-                Complete the form and click "Generate" to create content
-              </p>
-            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {post ? (
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+              {/* LinkedIn Post Header */}
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-sky-400 to-blue-500 rounded-full flex items-center justify-center">
+                  <User className="h-6 w-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-slate-900 dark:text-white">Your Name</h3>
+                    <Badge variant="secondary" className="text-xs bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300">
+                      Professional
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Your Title • 2nd</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-500">2m • 🌐</p>
+                </div>
+              </div>
+
+              {/* Post Content */}
+              <div className="mb-4">
+                <p className="text-slate-900 dark:text-white whitespace-pre-wrap leading-relaxed">
+                  {post}
+                </p>
+                {hashtags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-3">
+                    {hashtags.map((tag, index) => (
+                      <span key={index} className="text-sky-600 dark:text-sky-400 text-sm">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* LinkedIn Engagement Stats */}
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
+                <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400 mb-3">
+                  <div className="flex items-center gap-1">
+                    <div className="flex -space-x-1">
+                      <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                        <Heart className="h-3 w-3 text-white" />
+                      </div>
+                      <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                        <TrendingUp className="h-3 w-3 text-white" />
+                      </div>
+                    </div>
+                    <span>47 reactions</span>
+                  </div>
+                  <div className="flex gap-4">
+                    <span>12 comments</span>
+                    <span>8 reposts</span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-around border-t border-slate-200 dark:border-slate-700 pt-2">
+                  <button className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950">
+                    <Heart className="h-4 w-4" />
+                    <span className="text-sm font-medium">Like</span>
+                  </button>
+                  <button className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950">
+                    <MessageCircle className="h-4 w-4" />
+                    <span className="text-sm font-medium">Comment</span>
+                  </button>
+                  <button className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950">
+                    <Repeat2 className="h-4 w-4" />
+                    <span className="text-sm font-medium">Repost</span>
+                  </button>
+                  <button className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950">
+                    <Send className="h-4 w-4" />
+                    <span className="text-sm font-medium">Send</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 text-center border border-slate-200 dark:border-slate-700">
+              <div className="w-16 h-16 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Eye className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+              </div>
+              <p className="text-slate-500 dark:text-slate-400">Your generated post will appear here</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Analytics Card */}
+      {(readabilityScore || post) && (
+        <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg text-slate-900 dark:text-white flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-sky-500" />
+              Post Analytics
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
+                <div className={`text-2xl font-bold ${getScoreColor(readabilityScore)}`}>
+                  {readabilityScore || "--"}
+                </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Readability Score</div>
+                <div className={`text-xs ${getScoreColor(readabilityScore)}`}>
+                  {getScoreLabel(readabilityScore)}
+                </div>
+              </div>
+              <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
+                <div className="text-2xl font-bold text-green-500">
+                  {post ? Math.floor(post.length / 5) : 0}
+                </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Est. Reach</div>
+                <div className="text-xs text-green-500">Projected views</div>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Character count:</span>
+                <span className="text-slate-900 dark:text-white">{post?.length || 0}/3000</span>
+              </div>
+              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                <div 
+                  className="bg-sky-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${Math.min((post?.length || 0) / 3000 * 100, 100)}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {hashtags.length > 0 && (
+                <Badge variant="outline" className="border-sky-200 text-sky-700 dark:border-sky-800 dark:text-sky-300">
+                  {hashtags.length} hashtags
+                </Badge>
+              )}
+              {tone && (
+                <Badge variant="outline" className="border-purple-200 text-purple-700 dark:border-purple-800 dark:text-purple-300">
+                  {tone} tone
+                </Badge>
+              )}
+              {industry && (
+                <Badge variant="outline" className="border-orange-200 text-orange-700 dark:border-orange-800 dark:text-orange-300">
+                  {industry}
+                </Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 };
 
