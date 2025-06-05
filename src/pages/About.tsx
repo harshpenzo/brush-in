@@ -1,19 +1,22 @@
 
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const About = () => {
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    // Set loaded state immediately to ensure content is visible
+    setIsLoaded(true);
+
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.classList.add('opacity-100', 'translate-y-0');
-            entry.target.classList.remove('opacity-0', 'translate-y-8');
-          }, index * 200);
+          const element = entry.target as HTMLElement;
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
         }
       });
     }, { 
@@ -21,10 +24,20 @@ const About = () => {
       rootMargin: '50px 0px'
     });
 
-    sectionRefs.current.forEach((ref) => {
+    // Apply initial styles and observe elements
+    sectionRefs.current.forEach((ref, index) => {
       if (ref) {
-        ref.classList.add('opacity-0', 'translate-y-8', 'transition-all', 'duration-700');
-        observer.observe(ref);
+        // Ensure content is visible initially, then apply animation
+        ref.style.opacity = '0';
+        ref.style.transform = 'translateY(20px)';
+        ref.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+        
+        // Delay animation start to ensure content is rendered
+        setTimeout(() => {
+          if (ref) {
+            observer.observe(ref);
+          }
+        }, 100 + (index * 100));
       }
     });
 
@@ -33,14 +46,18 @@ const About = () => {
 
   return (
     <Layout>
-      <div className="py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+      <div className="min-h-screen py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute -top-[500px] -right-[500px] w-[800px] h-[800px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
         <div className="absolute -bottom-[300px] -left-[300px] w-[500px] h-[500px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none" style={{ animationDelay: '2s' }}></div>
         
-        <div className="container px-4 mx-auto relative z-10">
+        <div className="container px-4 mx-auto relative z-10 max-w-7xl">
           {/* Hero Section */}
-          <div ref={(el) => sectionRefs.current[0] = el} className="text-center mb-16">
+          <div 
+            ref={(el) => sectionRefs.current[0] = el} 
+            className="text-center mb-16"
+            style={{ opacity: isLoaded ? 1 : 0 }}
+          >
             <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-600 dark:text-sky-400 rounded-full text-sm font-medium mb-4">
               Our Story
             </span>
@@ -48,27 +65,30 @@ const About = () => {
               Empowering Professionals on LinkedIn
               <div className="absolute -top-8 -right-8 text-7xl text-sky-400/20 animate-bounce">✨</div>
             </h1>
-            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8 leading-relaxed">
               Brushin was founded with a simple mission: to help professionals create engaging, 
               high-quality LinkedIn content without the stress or time commitment.
             </p>
           </div>
 
           {/* Mission Section */}
-          <div ref={(el) => sectionRefs.current[1] = el} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-            <div>
+          <div 
+            ref={(el) => sectionRefs.current[1] = el} 
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20"
+          >
+            <div className="space-y-6">
               <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Our Mission</h2>
-              <p className="text-slate-600 dark:text-slate-300 mb-6">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 In today's fast-paced professional world, maintaining an active LinkedIn presence is 
                 crucial for career growth and networking. However, creating compelling content consistently 
                 can be time-consuming and challenging.
               </p>
-              <p className="text-slate-600 dark:text-slate-300 mb-6">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 We built Brushin to democratize content creation on LinkedIn, leveraging the power of AI 
                 to help professionals of all writing abilities share their expertise, insights, and 
                 experiences effectively.
               </p>
-              <p className="text-slate-600 dark:text-slate-300">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 Our goal is to remove the barriers to consistent professional communication, helping 
                 you build your personal brand and expand your network without sacrificing your valuable time.
               </p>
@@ -76,7 +96,7 @@ const About = () => {
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 md:p-12 border border-slate-200 dark:border-slate-700 shadow-lg">
               <div className="flex flex-col space-y-6">
                 <div>
-                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">We believe:</h3>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">We believe:</h3>
                   <ul className="space-y-4">
                     <li className="flex items-start">
                       <span className="bg-sky-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5 flex-shrink-0">1</span>
