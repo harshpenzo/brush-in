@@ -1,7 +1,5 @@
 
-import { createClient } from "@/integrations/supabase/client";
-
-const supabase = createClient();
+import { supabase } from "@/lib/supabase";
 
 /**
  * Generate enhanced LinkedIn post content using OpenAI via Supabase Edge Function
