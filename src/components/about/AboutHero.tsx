@@ -11,7 +11,10 @@ const AboutHero = ({ onSectionRef, isLoaded }: AboutHeroProps) => {
     <div 
       ref={(el) => onSectionRef(0, el)} 
       className="text-center mb-16"
-      style={{ opacity: isLoaded ? 1 : 0 }}
+      style={{ 
+        opacity: isLoaded ? 1 : 0,
+        transition: 'opacity 0.5s ease-in-out'
+      }}
     >
       <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-600 dark:text-sky-400 rounded-full text-sm font-medium mb-4">
         Our Story

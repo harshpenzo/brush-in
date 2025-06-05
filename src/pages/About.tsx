@@ -16,37 +16,51 @@ const About = () => {
   };
 
   useEffect(() => {
-    setIsLoaded(true);
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const element = entry.target as HTMLElement;
-          element.style.opacity = '1';
-          element.style.transform = 'translateY(0)';
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const element = entry.target as HTMLElement;
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+          }
+        });
+      }, 
+      { 
+        threshold: 0.1,
+        rootMargin: '50px 0px'
+      }
+    );
+
+    const observeElements = () => {
+      sectionRefs.current.forEach((ref, index) => {
+        if (ref) {
+          ref.style.opacity = '0';
+          ref.style.transform = 'translateY(20px)';
+          ref.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+          
+          setTimeout(() => {
+            if (ref) {
+              observer.observe(ref);
+            }
+          }, 100 + (index * 100));
         }
       });
-    }, { 
-      threshold: 0.1,
-      rootMargin: '50px 0px'
-    });
+    };
 
-    sectionRefs.current.forEach((ref, index) => {
-      if (ref) {
-        ref.style.opacity = '0';
-        ref.style.transform = 'translateY(20px)';
-        ref.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
-        
-        setTimeout(() => {
-          if (ref) {
-            observer.observe(ref);
-          }
-        }, 100 + (index * 100));
-      }
-    });
+    if (isLoaded) {
+      observeElements();
+    }
 
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+  }, [isLoaded]);
 
   return (
     <Layout>
