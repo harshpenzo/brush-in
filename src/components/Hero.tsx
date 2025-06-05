@@ -1,3 +1,4 @@
+
 import { ArrowDown, Sparkles, Linkedin, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef } from "react";
@@ -230,25 +231,32 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="max-w-2xl space-y-6 animate-fade-in fade-in-bottom backdrop-blur-sm bg-slate-900/30 p-8 rounded-2xl border border-slate-700/50">
             <span className="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-xs font-medium mb-2">
-              Professional LinkedIn Content
+              #1 AI LinkedIn Post Generator
             </span>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              Create engaging <span className="text-sky-400 relative">LinkedIn</span> content that drives results
+              Create <span className="text-sky-400 relative">viral LinkedIn content</span> with AI that drives real results
             </h1>
             
             <p className="text-lg md:text-xl text-slate-300 font-light">
-              Your AI companion for crafting professional LinkedIn posts that stand out, engage your network, and establish your personal brand.
+              Generate engaging LinkedIn posts that boost your professional brand. Our AI LinkedIn content writer helps you create viral content, increase engagement, and build authority in your industry.
             </p>
+
+            <div className="flex flex-wrap gap-2 text-sm text-slate-400 mb-4">
+              <span className="bg-slate-800/50 px-3 py-1 rounded-full">LinkedIn AI Tools</span>
+              <span className="bg-slate-800/50 px-3 py-1 rounded-full">AI Content Writer</span>
+              <span className="bg-slate-800/50 px-3 py-1 rounded-full">Professional Content</span>
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button 
                 size="lg" 
                 className="bg-sky-500 hover:bg-sky-600 text-white px-8 py-6 rounded-lg font-medium text-base shadow-lg hover:shadow-xl transition-smooth group"
                 onClick={() => onSelectOption("create")}
+                aria-label="Create new LinkedIn post with AI"
               >
                 <Sparkles className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
-                Create New Post
+                Generate LinkedIn Post
               </Button>
               
               <Button 
@@ -256,10 +264,15 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
                 variant="outline"
                 className="border-2 border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-white px-8 py-6 rounded-lg font-medium text-base transition-smooth hover:border-sky-400"
                 onClick={() => onSelectOption("optimize")}
+                aria-label="Optimize existing LinkedIn content"
               >
                 <Feather className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
-                Optimize Post
+                Optimize Content
               </Button>
+            </div>
+
+            <div className="pt-4 text-sm text-slate-400">
+              <p>✨ Trusted by 50,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 300%</p>
             </div>
           </div>
           
@@ -268,7 +281,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
               <div className="flex items-center gap-3 mb-4">
                 <img 
                   src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop" 
-                  alt="Satya Nadella Profile" 
+                  alt="Professional LinkedIn post example created with Brushin AI" 
                   className="w-12 h-12 rounded-full object-cover border-2 border-sky-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 />
                 <div>
@@ -287,9 +300,9 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
               
               <div className="flex justify-between items-center pt-2 border-t border-slate-700">
                 <div className="flex -space-x-2">
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="Avatar 1" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
-                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="Avatar 2" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="Avatar 3" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
                   <div className="w-8 h-8 rounded-full bg-slate-700 text-slate-300 text-xs flex items-center justify-center border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer">+124</div>
                 </div>
                 <p className="text-sm text-slate-400 font-medium">2.5K reactions</p>
@@ -304,7 +317,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       <div 
         className="absolute bottom-10 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none z-10 group"
         onClick={onScrollToFeatures}
-        aria-label="Scroll to features"
+        aria-label="Scroll to LinkedIn AI features section"
       >
         <div className="bg-sky-500/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-sky-500/30 transition-smooth">
           <ArrowDown size={24} className="text-sky-400" />
