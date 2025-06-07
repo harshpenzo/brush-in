@@ -32,7 +32,17 @@ export const generateOpenAIPost = async (
   }
 
   if (!data?.content) {
-    throw new Error('No content generated from OpenAI');
+    // Handle specific OpenAI API errors
+    if (data?.error) {
+      if (data.error.includes('quota') || data.error.includes('billing')) {
+        throw new Error('Your OpenAI API key has reached its usage limit. Please check your OpenAI billing or try using GPT-3.5-turbo which requires less quota.');
+      } else if (data.error.includes('invalid_api_key')) {
+        throw new Error('Invalid OpenAI API key. Please check your API key configuration in the settings.');
+      } else {
+        throw new Error(data.error);
+      }
+    }
+    throw new Error('No content generated from OpenAI. Your API key might need GPT-3.5 access or billing enabled.');
   }
 
   return data.content;
@@ -59,7 +69,17 @@ export const optimizeOpenAIPost = async (
   }
 
   if (!data?.content) {
-    throw new Error('No content generated from OpenAI');
+    // Handle specific OpenAI API errors
+    if (data?.error) {
+      if (data.error.includes('quota') || data.error.includes('billing')) {
+        throw new Error('Your OpenAI API key has reached its usage limit. Please check your OpenAI billing or upgrade your plan.');
+      } else if (data.error.includes('invalid_api_key')) {
+        throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
+      } else {
+        throw new Error(data.error);
+      }
+    }
+    throw new Error('No content generated from OpenAI. Your API key might need GPT-3.5 access or billing enabled.');
   }
 
   return data.content;
@@ -88,6 +108,12 @@ export const generateOpenAIHashtags = async (
   }
 
   if (!data?.content) {
+    // Handle specific OpenAI API errors with fallback hashtags
+    if (data?.error) {
+      console.error('OpenAI hashtag generation failed:', data.error);
+      // Return some basic hashtags as fallback
+      return ['linkedin', 'professional', 'networking', 'career', 'business'];
+    }
     throw new Error('No hashtags generated from OpenAI');
   }
 
