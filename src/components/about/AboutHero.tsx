@@ -9,7 +9,7 @@ interface AboutHeroProps {
 const AboutHero = ({ onSectionRef, isLoaded }: AboutHeroProps) => {
   return (
     <section 
-      ref={(el) => onSectionRef(0, el)} 
+      ref={(el) => onSectionRef(0, el as HTMLDivElement | null)} 
       className="text-center mb-16"
       style={{ 
         opacity: isLoaded ? 1 : 0,

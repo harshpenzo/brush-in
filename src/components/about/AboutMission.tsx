@@ -6,7 +6,7 @@ interface AboutMissionProps {
 const AboutMission = ({ onSectionRef }: AboutMissionProps) => {
   return (
     <section 
-      ref={(el) => onSectionRef(1, el)} 
+      ref={(el) => onSectionRef(1, el as HTMLDivElement | null)} 
       className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20"
       aria-labelledby="mission-heading"
     >

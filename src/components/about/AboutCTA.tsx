@@ -8,7 +8,7 @@ interface AboutCTAProps {
 const AboutCTA = ({ onSectionRef }: AboutCTAProps) => {
   return (
     <section 
-      ref={(el) => onSectionRef(4, el)} 
+      ref={(el) => onSectionRef(4, el as HTMLDivElement | null)} 
       className="text-center bg-white dark:bg-slate-800 rounded-2xl p-10 max-w-4xl mx-auto border border-slate-200 dark:border-slate-700 shadow-lg"
       aria-labelledby="cta-heading"
     >
