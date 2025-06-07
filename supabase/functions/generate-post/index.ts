@@ -4,8 +4,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -14,15 +12,28 @@ const corsHeaders = {
 // Reusable OpenAI API call function with improved error handling
 async function callOpenAI(messages: any[], action: string) {
   console.log(`Making OpenAI API call for action: ${action}`);
-  console.log(`OpenAI API Key present: ${openAIApiKey ? 'YES' : 'NO'}`);
-  console.log(`Using model: gpt-3.5-turbo`);
+  
+  // Get OpenAI API key from environment
+  const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+  console.log(`OpenAI API Key status: ${openAIApiKey ? 'PRESENT' : 'MISSING'}`);
+  console.log(`OpenAI API Key length: ${openAIApiKey ? openAIApiKey.length : 0}`);
   
   if (!openAIApiKey) {
-    throw new Error('OpenAI API key is not configured. Please add your API key to the environment variables.');
+    console.error('OpenAI API key is missing from environment variables');
+    throw new Error('OpenAI API key is not configured. Please add your API key to the Supabase secrets.');
   }
 
+  // Validate API key format (should start with sk-)
+  if (!openAIApiKey.startsWith('sk-')) {
+    console.error('Invalid OpenAI API key format - should start with sk-');
+    throw new Error('Invalid OpenAI API key format. Please check your API key.');
+  }
+
+  const model = 'gpt-3.5-turbo';
+  console.log(`Using OpenAI model: ${model}`);
+
   const requestBody = {
-    model: 'gpt-3.5-turbo',
+    model: model,
     messages: messages,
     temperature: action === 'hashtags' ? 0.3 : 0.85,
     max_tokens: action === 'hashtags' ? 100 : 600,
@@ -31,9 +42,15 @@ async function callOpenAI(messages: any[], action: string) {
     presence_penalty: 0.1,
   };
 
-  console.log('OpenAI request body:', JSON.stringify(requestBody, null, 2));
+  console.log('OpenAI request payload:', JSON.stringify({
+    model: requestBody.model,
+    messageCount: messages.length,
+    temperature: requestBody.temperature,
+    max_tokens: requestBody.max_tokens
+  }));
   
   try {
+    console.log('Sending request to OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -44,44 +61,65 @@ async function callOpenAI(messages: any[], action: string) {
     });
 
     console.log(`OpenAI API response status: ${response.status}`);
+    console.log(`OpenAI API response headers:`, Object.fromEntries(response.headers.entries()));
     
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error('OpenAI API Error Response:', errorData);
+      const errorText = await response.text();
+      console.error('OpenAI API Error Response:', errorText);
       
-      // Parse error for better user feedback
+      let errorMessage = 'Unknown OpenAI API error';
+      let errorCode = 'unknown_error';
+      
       try {
-        const errorJson = JSON.parse(errorData);
-        const errorMessage = errorJson.error?.message || 'Unknown OpenAI API error';
-        const errorCode = errorJson.error?.code || 'unknown_error';
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.error?.message || errorMessage;
+        errorCode = errorJson.error?.code || errorJson.error?.type || errorCode;
         
-        console.error(`OpenAI Error Code: ${errorCode}, Message: ${errorMessage}`);
+        console.error(`OpenAI Error - Code: ${errorCode}, Message: ${errorMessage}`);
         
-        if (errorCode === 'insufficient_quota' || errorMessage.includes('quota')) {
-          throw new Error('Your OpenAI API key has exceeded its quota. Please check your billing details or upgrade your plan.');
-        } else if (errorCode === 'invalid_api_key' || errorMessage.includes('invalid_api_key')) {
-          throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
-        } else if (errorJson.error?.type === 'invalid_request_error') {
+        // Handle specific error cases
+        if (errorCode === 'insufficient_quota' || errorMessage.includes('quota') || errorMessage.includes('billing')) {
+          throw new Error('Your OpenAI API key has exceeded its quota or billing limit. Please check your OpenAI billing settings.');
+        } else if (errorCode === 'invalid_api_key' || errorMessage.includes('invalid_api_key') || errorMessage.includes('Incorrect API key')) {
+          throw new Error('Invalid OpenAI API key. Please verify your API key is correct.');
+        } else if (errorCode === 'invalid_request_error') {
           throw new Error(`OpenAI API request error: ${errorMessage}`);
         } else {
-          throw new Error(`OpenAI API error: ${errorMessage}`);
+          throw new Error(`OpenAI API error (${response.status}): ${errorMessage}`);
         }
       } catch (parseError) {
         console.error('Failed to parse OpenAI error response:', parseError);
-        throw new Error(`OpenAI API error: ${response.status} - ${errorData}`);
+        if (response.status === 401) {
+          throw new Error('Authentication failed. Please check your OpenAI API key.');
+        } else if (response.status === 429) {
+          throw new Error('Rate limit exceeded. Please try again later or check your OpenAI billing.');
+        } else {
+          throw new Error(`OpenAI API error: HTTP ${response.status} - ${errorText}`);
+        }
       }
     }
 
     const data = await response.json();
-    console.log('OpenAI API call successful, response received');
+    console.log('OpenAI API call successful');
+    console.log('Response data structure:', {
+      hasChoices: !!data.choices,
+      choicesLength: data.choices?.length || 0,
+      hasMessage: !!(data.choices?.[0]?.message),
+      hasContent: !!(data.choices?.[0]?.message?.content),
+      usage: data.usage
+    });
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      console.error('Invalid OpenAI response format:', JSON.stringify(data, null, 2));
+      console.error('Invalid OpenAI response structure:', JSON.stringify(data, null, 2));
       throw new Error('Invalid response format from OpenAI API');
     }
 
     const content = data.choices[0].message.content;
-    console.log(`Generated content length: ${content ? content.length : 0} characters`);
+    console.log(`Generated content preview: ${content ? content.substring(0, 100) + '...' : 'No content'}`);
+    
+    if (!content || content.trim().length === 0) {
+      throw new Error('OpenAI returned empty content. Please try again.');
+    }
     
     return content;
   } catch (fetchError) {
@@ -99,7 +137,13 @@ serve(async (req) => {
     console.log('Edge function called, processing request...');
     
     const requestBody = await req.json();
-    console.log('Request body received:', JSON.stringify(requestBody, null, 2));
+    console.log('Request body received:', JSON.stringify({
+      action: requestBody.action,
+      topic: requestBody.topic?.substring(0, 50) + '...',
+      hasDescription: !!requestBody.description,
+      tone: requestBody.tone,
+      industry: requestBody.industry
+    }));
     
     const { 
       action,
@@ -114,7 +158,7 @@ serve(async (req) => {
       optimizationGoal 
     } = requestBody;
 
-    console.log(`Processing ${action} request for topic: ${topic || 'optimization'}`);
+    console.log(`Processing ${action} request`);
 
     let systemPrompt = '';
     let userPrompt = '';
@@ -249,7 +293,7 @@ Return only the hashtags without # symbols, separated by commas.`;
       
       if (error.message.includes('quota') || error.message.includes('billing')) {
         errorType = 'quota_exceeded';
-      } else if (error.message.includes('invalid_api_key')) {
+      } else if (error.message.includes('invalid_api_key') || error.message.includes('Authentication failed')) {
         errorType = 'invalid_api_key';
       } else if (error.message.includes('API key is not configured')) {
         errorType = 'missing_api_key';

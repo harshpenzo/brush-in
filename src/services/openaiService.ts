@@ -30,7 +30,7 @@ export const generateOpenAIPost = async (
 
   if (error) {
     console.error('Edge function error:', error);
-    throw new Error('Post generation failed. Please check your OpenAI key or usage limit.');
+    throw new Error('Connection to AI service failed. Please try again.');
   }
 
   if (!data?.content) {
@@ -39,16 +39,16 @@ export const generateOpenAIPost = async (
       console.error('OpenAI generation failed:', data.error);
       
       if (data.type === 'quota_exceeded') {
-        throw new Error('Your OpenAI API key has reached its usage limit. Please check your OpenAI billing or try using GPT-3.5-turbo which requires less quota.');
+        throw new Error('Your OpenAI API key has reached its usage limit. Please check your OpenAI billing or upgrade your plan.');
       } else if (data.type === 'invalid_api_key') {
-        throw new Error('Invalid OpenAI API key. Please check your API key configuration in the settings.');
+        throw new Error('Invalid OpenAI API key. Please verify your API key is correct and has the necessary permissions.');
       } else if (data.type === 'missing_api_key') {
-        throw new Error('OpenAI API key is missing. Please add your API key to continue.');
+        throw new Error('OpenAI API key is missing. Please add your API key to the Supabase secrets.');
       } else {
-        throw new Error(data.error || 'Post generation failed. Please check your OpenAI key or usage limit.');
+        throw new Error(data.error || 'Post generation failed. Please check your OpenAI key configuration.');
       }
     }
-    throw new Error('No content generated from OpenAI. Your API key might need GPT-3.5 access or billing enabled.');
+    throw new Error('No content generated. Your OpenAI API key might not have access to GPT-3.5-turbo or needs billing enabled.');
   }
 
   return data.content;
@@ -73,7 +73,7 @@ export const optimizeOpenAIPost = async (
 
   if (error) {
     console.error('Edge function error:', error);
-    throw new Error('Post optimization failed. Please check your OpenAI key or usage limit.');
+    throw new Error('Connection to AI service failed. Please try again.');
   }
 
   if (!data?.content) {
@@ -84,14 +84,14 @@ export const optimizeOpenAIPost = async (
       if (data.type === 'quota_exceeded') {
         throw new Error('Your OpenAI API key has reached its usage limit. Please check your OpenAI billing or upgrade your plan.');
       } else if (data.type === 'invalid_api_key') {
-        throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
+        throw new Error('Invalid OpenAI API key. Please verify your API key is correct and has the necessary permissions.');
       } else if (data.type === 'missing_api_key') {
-        throw new Error('OpenAI API key is missing. Please add your API key to continue.');
+        throw new Error('OpenAI API key is missing. Please add your API key to the Supabase secrets.');
       } else {
-        throw new Error(data.error || 'Post optimization failed. Please check your OpenAI key or usage limit.');
+        throw new Error(data.error || 'Post optimization failed. Please check your OpenAI key configuration.');
       }
     }
-    throw new Error('No content generated from OpenAI. Your API key might need GPT-3.5 access or billing enabled.');
+    throw new Error('No content generated. Your OpenAI API key might not have access to GPT-3.5-turbo or needs billing enabled.');
   }
 
   return data.content;
