@@ -13,6 +13,8 @@ export const generateOpenAIPost = async (
   postLength: string,
   industry: string
 ): Promise<string> => {
+  console.log('Calling generate-post edge function with OpenAI');
+  
   const { data, error } = await supabase.functions.invoke('generate-post', {
     body: {
       action: 'generate',
@@ -28,18 +30,22 @@ export const generateOpenAIPost = async (
 
   if (error) {
     console.error('Edge function error:', error);
-    throw new Error(error.message || 'Failed to generate post with OpenAI');
+    throw new Error('Post generation failed. Please check your OpenAI key or usage limit.');
   }
 
   if (!data?.content) {
-    // Handle specific OpenAI API errors
+    // Handle specific OpenAI API errors with user-friendly messages
     if (data?.error) {
-      if (data.error.includes('quota') || data.error.includes('billing')) {
+      console.error('OpenAI generation failed:', data.error);
+      
+      if (data.type === 'quota_exceeded') {
         throw new Error('Your OpenAI API key has reached its usage limit. Please check your OpenAI billing or try using GPT-3.5-turbo which requires less quota.');
-      } else if (data.error.includes('invalid_api_key')) {
+      } else if (data.type === 'invalid_api_key') {
         throw new Error('Invalid OpenAI API key. Please check your API key configuration in the settings.');
+      } else if (data.type === 'missing_api_key') {
+        throw new Error('OpenAI API key is missing. Please add your API key to continue.');
       } else {
-        throw new Error(data.error);
+        throw new Error(data.error || 'Post generation failed. Please check your OpenAI key or usage limit.');
       }
     }
     throw new Error('No content generated from OpenAI. Your API key might need GPT-3.5 access or billing enabled.');
@@ -55,6 +61,8 @@ export const optimizeOpenAIPost = async (
   post: string,
   optimizationGoal: string
 ): Promise<string> => {
+  console.log('Calling optimize-post edge function with OpenAI');
+  
   const { data, error } = await supabase.functions.invoke('generate-post', {
     body: {
       action: 'optimize',
@@ -65,18 +73,22 @@ export const optimizeOpenAIPost = async (
 
   if (error) {
     console.error('Edge function error:', error);
-    throw new Error(error.message || 'Failed to optimize post with OpenAI');
+    throw new Error('Post optimization failed. Please check your OpenAI key or usage limit.');
   }
 
   if (!data?.content) {
-    // Handle specific OpenAI API errors
+    // Handle specific OpenAI API errors with user-friendly messages
     if (data?.error) {
-      if (data.error.includes('quota') || data.error.includes('billing')) {
+      console.error('OpenAI optimization failed:', data.error);
+      
+      if (data.type === 'quota_exceeded') {
         throw new Error('Your OpenAI API key has reached its usage limit. Please check your OpenAI billing or upgrade your plan.');
-      } else if (data.error.includes('invalid_api_key')) {
+      } else if (data.type === 'invalid_api_key') {
         throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
+      } else if (data.type === 'missing_api_key') {
+        throw new Error('OpenAI API key is missing. Please add your API key to continue.');
       } else {
-        throw new Error(data.error);
+        throw new Error(data.error || 'Post optimization failed. Please check your OpenAI key or usage limit.');
       }
     }
     throw new Error('No content generated from OpenAI. Your API key might need GPT-3.5 access or billing enabled.');
@@ -93,6 +105,8 @@ export const generateOpenAIHashtags = async (
   industry: string,
   keywords: string
 ): Promise<string[]> => {
+  console.log('Calling hashtags generation with OpenAI');
+  
   const { data, error } = await supabase.functions.invoke('generate-post', {
     body: {
       action: 'hashtags',
@@ -104,7 +118,8 @@ export const generateOpenAIHashtags = async (
 
   if (error) {
     console.error('Edge function error:', error);
-    throw new Error(error.message || 'Failed to generate hashtags with OpenAI');
+    // Return fallback hashtags for hashtag generation failures
+    return ['linkedin', 'professional', 'networking', 'career', 'business'];
   }
 
   if (!data?.content) {
@@ -114,7 +129,8 @@ export const generateOpenAIHashtags = async (
       // Return some basic hashtags as fallback
       return ['linkedin', 'professional', 'networking', 'career', 'business'];
     }
-    throw new Error('No hashtags generated from OpenAI');
+    // Return fallback hashtags
+    return ['linkedin', 'professional', 'networking', 'career', 'business'];
   }
 
   // Process the hashtags response
@@ -125,5 +141,5 @@ export const generateOpenAIHashtags = async (
     .map((tag: string) => tag.startsWith('#') ? tag.substring(1) : tag)
     .slice(0, 5);
 
-  return hashtags;
+  return hashtags.length > 0 ? hashtags : ['linkedin', 'professional', 'networking', 'career', 'business'];
 };

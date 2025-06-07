@@ -11,60 +11,83 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Reusable OpenAI API call function
+// Reusable OpenAI API call function with improved error handling
 async function callOpenAI(messages: any[], action: string) {
   console.log(`Making OpenAI API call for action: ${action}`);
+  console.log(`OpenAI API Key present: ${openAIApiKey ? 'YES' : 'NO'}`);
+  console.log(`Using model: gpt-3.5-turbo`);
   
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${openAIApiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: messages,
-      temperature: action === 'hashtags' ? 0.3 : 0.85,
-      max_tokens: action === 'hashtags' ? 100 : 600,
-      top_p: 0.9,
-      frequency_penalty: 0.2,
-      presence_penalty: 0.1,
-    }),
-  });
+  if (!openAIApiKey) {
+    throw new Error('OpenAI API key is not configured. Please add your API key to the environment variables.');
+  }
 
-  console.log(`OpenAI API response status: ${response.status}`);
+  const requestBody = {
+    model: 'gpt-3.5-turbo',
+    messages: messages,
+    temperature: action === 'hashtags' ? 0.3 : 0.85,
+    max_tokens: action === 'hashtags' ? 100 : 600,
+    top_p: 0.9,
+    frequency_penalty: 0.2,
+    presence_penalty: 0.1,
+  };
+
+  console.log('OpenAI request body:', JSON.stringify(requestBody, null, 2));
   
-  if (!response.ok) {
-    const errorData = await response.text();
-    console.error('OpenAI API Error:', errorData);
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    console.log(`OpenAI API response status: ${response.status}`);
     
-    // Parse error for better user feedback
-    try {
-      const errorJson = JSON.parse(errorData);
-      const errorMessage = errorJson.error?.message || 'Unknown OpenAI API error';
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('OpenAI API Error Response:', errorData);
       
-      if (errorJson.error?.code === 'insufficient_quota') {
-        throw new Error('Your OpenAI API key has exceeded its quota. Please check your billing details or upgrade your plan.');
-      } else if (errorJson.error?.code === 'invalid_api_key') {
-        throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
-      } else if (errorJson.error?.type === 'invalid_request_error') {
-        throw new Error(`OpenAI API request error: ${errorMessage}`);
-      } else {
-        throw new Error(`OpenAI API error: ${errorMessage}`);
+      // Parse error for better user feedback
+      try {
+        const errorJson = JSON.parse(errorData);
+        const errorMessage = errorJson.error?.message || 'Unknown OpenAI API error';
+        const errorCode = errorJson.error?.code || 'unknown_error';
+        
+        console.error(`OpenAI Error Code: ${errorCode}, Message: ${errorMessage}`);
+        
+        if (errorCode === 'insufficient_quota' || errorMessage.includes('quota')) {
+          throw new Error('Your OpenAI API key has exceeded its quota. Please check your billing details or upgrade your plan.');
+        } else if (errorCode === 'invalid_api_key' || errorMessage.includes('invalid_api_key')) {
+          throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
+        } else if (errorJson.error?.type === 'invalid_request_error') {
+          throw new Error(`OpenAI API request error: ${errorMessage}`);
+        } else {
+          throw new Error(`OpenAI API error: ${errorMessage}`);
+        }
+      } catch (parseError) {
+        console.error('Failed to parse OpenAI error response:', parseError);
+        throw new Error(`OpenAI API error: ${response.status} - ${errorData}`);
       }
-    } catch (parseError) {
-      throw new Error(`OpenAI API error: ${response.status} - ${errorData}`);
     }
-  }
 
-  const data = await response.json();
-  console.log('OpenAI API call successful');
-  
-  if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-    throw new Error('Invalid response format from OpenAI API');
-  }
+    const data = await response.json();
+    console.log('OpenAI API call successful, response received');
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid OpenAI response format:', JSON.stringify(data, null, 2));
+      throw new Error('Invalid response format from OpenAI API');
+    }
 
-  return data.choices[0].message.content;
+    const content = data.choices[0].message.content;
+    console.log(`Generated content length: ${content ? content.length : 0} characters`);
+    
+    return content;
+  } catch (fetchError) {
+    console.error('OpenAI API fetch error:', fetchError);
+    throw fetchError;
+  }
 }
 
 serve(async (req) => {
@@ -73,10 +96,11 @@ serve(async (req) => {
   }
 
   try {
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured. Please add your OpenAI API key to the environment variables.');
-    }
-
+    console.log('Edge function called, processing request...');
+    
+    const requestBody = await req.json();
+    console.log('Request body received:', JSON.stringify(requestBody, null, 2));
+    
     const { 
       action,
       topic, 
@@ -88,7 +112,7 @@ serve(async (req) => {
       industry,
       existingPost,
       optimizationGoal 
-    } = await req.json();
+    } = requestBody;
 
     console.log(`Processing ${action} request for topic: ${topic || 'optimization'}`);
 
@@ -210,20 +234,32 @@ Return only the hashtags without # symbols, separated by commas.`;
 
     return new Response(JSON.stringify({ content: generatedContent }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
     });
   } catch (error) {
     console.error('Error in generate-post function:', error);
+    console.error('Error stack:', error.stack);
     
-    // Return user-friendly error messages
-    let errorMessage = 'Failed to generate content with OpenAI';
+    // Return structured error response
+    let errorMessage = 'Post generation failed. Please check your OpenAI key or usage limit.';
+    let errorType = 'unknown_error';
     
     if (error.message) {
       errorMessage = error.message;
+      
+      if (error.message.includes('quota') || error.message.includes('billing')) {
+        errorType = 'quota_exceeded';
+      } else if (error.message.includes('invalid_api_key')) {
+        errorType = 'invalid_api_key';
+      } else if (error.message.includes('API key is not configured')) {
+        errorType = 'missing_api_key';
+      }
     }
     
     return new Response(JSON.stringify({ 
       error: errorMessage,
-      type: 'openai_error'
+      type: errorType,
+      success: false
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
