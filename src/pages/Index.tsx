@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -10,7 +11,6 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
 import { CreatePostFormValues } from "@/components/post/CreatePostForm";
 import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
-import { extractTopicFromPost } from "@/utils/postGenerationUtils";
 import { generateOpenAIPost, optimizeOpenAIPost, generateOpenAIHashtags } from "@/services/openaiService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -60,12 +60,12 @@ const Index = () => {
       setCurrentTone(values.tone);
       setCurrentIndustry(values.industry);
       
-      // Generate post using OpenAI API
+      // Generate post using OpenAI API only
       const generatedPost = await generateOpenAIPost(
         values.topic,
         values.tone,
-        values.keywords,
-        values.description,
+        values.keywords || "",
+        values.description || "",
         values.contentStyle,
         values.postLength,
         values.industry
@@ -94,20 +94,24 @@ const Index = () => {
       setReadabilityScore(calculatedScore);
       
       // Generate related hashtags with OpenAI API
-      const generatedHashtags = await generateOpenAIHashtags(values.topic, values.industry, values.keywords);
+      const generatedHashtags = await generateOpenAIHashtags(
+        values.topic, 
+        values.industry, 
+        values.keywords || ""
+      );
       setHashtags(generatedHashtags);
       
       setGeneratedPost(generatedPost);
       
       toast({
         title: "Post generated successfully",
-        description: "Your LinkedIn post has been created with AI-powered optimization.",
+        description: "Your LinkedIn post has been created with OpenAI.",
       });
     } catch (error) {
       console.error("Error generating post:", error);
       toast({
         title: "Generation failed",
-        description: "There was an error generating your post. Please try again.",
+        description: error instanceof Error ? error.message : "There was an error generating your post. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -119,14 +123,17 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      // Extract topic from post for metadata
-      const extractedTopic = extractTopicFromPost(values.existingPost);
-      setCurrentTopic(extractedTopic);
+      // Extract basic topic from post for metadata
+      const words = values.existingPost.split(/\s+/).slice(0, 5).join(" ");
+      setCurrentTopic(words);
       setCurrentTone(values.optimizationGoal);
       setCurrentIndustry("general");
       
-      // Optimize post using OpenAI API
-      const optimizedPost = await optimizeOpenAIPost(values.existingPost, values.optimizationGoal);
+      // Optimize post using OpenAI API only
+      const optimizedPost = await optimizeOpenAIPost(
+        values.existingPost, 
+        values.optimizationGoal
+      );
       
       // Calculate enhanced readability score
       const calculateReadabilityScore = (text: string) => {
@@ -146,20 +153,20 @@ const Index = () => {
       setReadabilityScore(calculatedScore);
       
       // Generate related hashtags
-      const generatedHashtags = await generateOpenAIHashtags(extractedTopic, "general", "");
+      const generatedHashtags = await generateOpenAIHashtags(words, "general", "");
       setHashtags(generatedHashtags);
       
       setGeneratedPost(optimizedPost);
       
       toast({
         title: "Post optimized successfully",
-        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using AI.`,
+        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using OpenAI.`,
       });
     } catch (error) {
       console.error("Error optimizing post:", error);
       toast({
         title: "Optimization failed",
-        description: "There was an error optimizing your post. Please try again.",
+        description: error instanceof Error ? error.message : "There was an error optimizing your post. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -191,18 +198,18 @@ const Index = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-8 fade-in-bottom">
               <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
-                AI Content Generator
+                OpenAI-Powered Content Generator
               </span>
               <h2 className="text-3xl font-bold text-white mb-3 relative">
                 {activeOption === "create" 
-                  ? "Create Your LinkedIn Post" 
-                  : "Optimize Your LinkedIn Post"}
-                <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse">✍️</div>
+                  ? "Create Your LinkedIn Post with OpenAI" 
+                  : "Optimize Your LinkedIn Post with OpenAI"}
+                <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse">🤖</div>
               </h2>
               <p className="text-lg text-slate-300 max-w-2xl mx-auto">
                 {activeOption === "create"
-                  ? "Generate engaging content for your professional network with our AI-powered tools."
-                  : "Enhance your existing post to maximize engagement and professional impact."}
+                  ? "Generate authentic, engaging LinkedIn content powered entirely by OpenAI's advanced AI technology."
+                  : "Enhance your existing post for maximum engagement using OpenAI's intelligent optimization."}
               </p>
             </div>
             

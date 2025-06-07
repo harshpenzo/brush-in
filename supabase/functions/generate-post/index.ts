@@ -1,5 +1,5 @@
 
-// Updated 2025-06-05 to use research-driven OpenAI prompt instead of Lovable templates
+// OpenAI-only LinkedIn post generation system
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -38,41 +38,36 @@ serve(async (req) => {
     let userPrompt = '';
 
     if (action === 'generate') {
-      // Research-driven system prompt for authentic LinkedIn content
-      systemPrompt = `You are a professional LinkedIn content strategist and researcher with deep expertise in ${industry} industry trends, audience psychology, and viral content creation. Your mission is to create authentic, research-backed LinkedIn posts that feel genuinely human and drive meaningful professional engagement.
+      systemPrompt = `You are an expert LinkedIn content strategist and AI specialist with deep expertise in ${industry} industry trends, audience psychology, and viral content creation. Your mission is to create authentic, engaging LinkedIn posts that drive meaningful professional engagement and go viral.
 
-Research Framework:
-1. Industry Context: Draw upon current ${industry} trends, challenges, and opportunities
-2. Audience Psychology: Understand what motivates professionals in this space
-3. Engagement Patterns: Apply proven storytelling and formatting techniques
-4. Authority Building: Position the author as a thoughtful industry voice
-
-Content Philosophy:
-- Lead with genuine insight, not generic advice
+Content Creation Philosophy:
+- Lead with genuine insight and industry expertise
 - Use specific examples and concrete details
 - Create emotional connection through storytelling
-- Avoid buzzwords and corporate speak
+- Avoid generic advice and corporate buzzwords
 - Focus on practical value and actionable takeaways
+- Make content shareable and discussion-worthy
 
-Formatting Requirements:
+Professional Formatting:
 - Hook: Start with a compelling question, surprising statistic, or bold statement
-- Story Arc: Use narrative structure with setup, conflict, and resolution
+- Structure: Use clear narrative flow with setup, insight, and resolution
 - Readability: Short paragraphs (1-3 sentences), strategic line breaks
-- Call-to-Action: End with genuine curiosity or meaningful question
-- Length: ${postLength === 'short' ? '150-300' : postLength === 'medium' ? '300-600' : '600-1000'} characters
+- Engagement: End with genuine questions or meaningful calls-to-action
+- Length: ${postLength === 'short' ? '150-400' : postLength === 'medium' ? '400-800' : '800-1200'} characters
 - Tone: ${tone} but always authentic and conversational
 
-Visual Elements:
+Visual Enhancement:
 - Strategic emoji use (2-4 relevant emojis maximum)
 - Bullet points or numbered lists when appropriate
 - White space for enhanced readability
+- Bold text for emphasis on key points
 
-The post should feel like it came from a real professional sharing genuine insights, not an AI or marketing template.`;
+The post should feel like it came from a real industry professional sharing genuine insights, not generic AI content.`;
 
       const keywordsList = keywords ? keywords.split(",").map((k: string) => k.trim()).filter((k: string) => k) : [];
       const keywordsText = keywordsList.length > 0 ? `Keywords to naturally incorporate: ${keywordsList.join(", ")}` : "";
       
-      userPrompt = `Create a research-driven LinkedIn post about: ${topic}
+      userPrompt = `Create a high-quality LinkedIn post about: ${topic}
 
 Industry Context: ${industry}
 Content Style: ${contentStyle}
@@ -82,32 +77,35 @@ ${keywordsText}
 ${description ? `Additional Context: ${description}` : ''}
 
 Requirements:
-1. Start with a compelling hook that makes people stop scrolling
+1. Start with a compelling hook that stops scrollers
 2. Include specific, researched insights about the topic
-3. Use storytelling elements to create emotional connection
+3. Use storytelling elements for emotional connection
 4. Provide genuine value and actionable takeaways
 5. End with an engaging question or call-to-action
 6. Include 3-5 relevant hashtags at the end
 7. Format with short paragraphs and strategic white space
+8. Make it authentic and professional, not robotic
 
-Make this feel like authentic professional insight, not generic AI content.`;
+Create content that feels like genuine professional insight and drives real engagement.`;
+
     } else if (action === 'optimize') {
       systemPrompt = `You are an expert LinkedIn content optimizer specializing in ${optimizationGoal}. Your role is to enhance existing posts while maintaining their authentic voice and core message.
 
 Optimization Focus: ${optimizationGoal}
 
 Enhancement Framework:
-- Strengthen the opening hook for maximum impact
+- Strengthen the opening hook for maximum scroll-stopping impact
 - Improve narrative flow and readability
 - Add specific details and concrete examples
 - Enhance emotional resonance and relatability
-- Optimize for the specific goal while maintaining authenticity
+- Optimize specifically for ${optimizationGoal} while maintaining authenticity
 - Improve formatting and visual appeal
 - Strengthen the call-to-action or engagement prompt
+- Make content more shareable and discussion-worthy
 
 Maintain the original:
 - Core message and intent
-- Author's authentic voice
+- Author's authentic voice and perspective
 - Key insights and value propositions
 - Professional tone and credibility`;
 
@@ -123,8 +121,10 @@ Requirements:
 5. Include 3-5 relevant hashtags if not present
 6. Enhance the call-to-action or engagement question
 7. Focus specifically on improving ${optimizationGoal}
+8. Make it more likely to go viral while staying professional
 
 The optimized version should feel more engaging and effective while staying true to the original intent.`;
+
     } else if (action === 'hashtags') {
       systemPrompt = `You are a LinkedIn hashtag strategist with expertise in maximizing post visibility and engagement across professional networks.`;
       
@@ -134,8 +134,9 @@ ${keywords ? `Consider these keywords: ${keywords}` : ''}
 Requirements:
 - Mix of popular and niche hashtags for optimal reach
 - Relevant to both the topic and industry
-- Avoid overly saturated hashtags
+- Avoid overly saturated hashtags (#entrepreneur, #motivation)
 - Focus on professional networking value
+- Ensure hashtags are actively used and engaging
 
 Return only the hashtags without # symbols, separated by commas.`;
     }
@@ -153,7 +154,7 @@ Return only the hashtags without # symbols, separated by commas.`;
           { role: 'user', content: userPrompt }
         ],
         temperature: action === 'hashtags' ? 0.3 : 0.85,
-        max_tokens: action === 'hashtags' ? 100 : 600,
+        max_tokens: action === 'hashtags' ? 100 : 700,
         top_p: 0.9,
         frequency_penalty: 0.2,
         presence_penalty: 0.1,
@@ -162,10 +163,16 @@ Return only the hashtags without # symbols, separated by commas.`;
 
     if (!response.ok) {
       const errorData = await response.text();
-      throw new Error(`OpenAI API error: ${errorData}`);
+      console.error('OpenAI API Error:', errorData);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorData}`);
     }
 
     const data = await response.json();
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Invalid response from OpenAI API');
+    }
+
     const generatedContent = data.choices[0].message.content;
 
     return new Response(JSON.stringify({ content: generatedContent }), {
@@ -173,7 +180,9 @@ Return only the hashtags without # symbols, separated by commas.`;
     });
   } catch (error) {
     console.error('Error in generate-post function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message || 'Failed to generate content with OpenAI'
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
