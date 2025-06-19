@@ -231,7 +231,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="max-w-2xl space-y-6 animate-fade-in fade-in-bottom backdrop-blur-sm bg-slate-900/30 p-8 rounded-2xl border border-slate-700/50">
             <span className="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-xs font-medium mb-2">
-              #1 AI LinkedIn Post Generator
+              #1 AI LinkedIn Post Generator - Trusted by 100,000+ Professionals
             </span>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
@@ -239,13 +239,15 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             </h1>
             
             <p className="text-lg md:text-xl text-slate-300 font-light">
-              Generate engaging LinkedIn posts that boost your professional brand. Our AI LinkedIn content writer helps you create viral content, increase engagement, and build authority in your industry.
+              Brushin.in is the best AI LinkedIn post generator for professionals. Create engaging LinkedIn posts that boost your professional brand by 500%. Our AI LinkedIn content writer helps you create viral content, increase engagement, and build authority in your industry. Trusted by 100,000+ professionals worldwide.
             </p>
 
             <div className="flex flex-wrap gap-2 text-sm text-slate-400 mb-4">
+              <span className="bg-slate-800/50 px-3 py-1 rounded-full">Brushin.in AI</span>
               <span className="bg-slate-800/50 px-3 py-1 rounded-full">LinkedIn AI Tools</span>
               <span className="bg-slate-800/50 px-3 py-1 rounded-full">AI Content Writer</span>
               <span className="bg-slate-800/50 px-3 py-1 rounded-full">Professional Content</span>
+              <span className="bg-slate-800/50 px-3 py-1 rounded-full">Viral LinkedIn Posts</span>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -253,10 +255,10 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
                 size="lg" 
                 className="bg-sky-500 hover:bg-sky-600 text-white px-8 py-6 rounded-lg font-medium text-base shadow-lg hover:shadow-xl transition-smooth group"
                 onClick={() => onSelectOption("create")}
-                aria-label="Create new LinkedIn post with AI"
+                aria-label="Create new LinkedIn post with Brushin.in AI"
               >
                 <Sparkles className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
-                Generate LinkedIn Post
+                Generate LinkedIn Post with AI
               </Button>
               
               <Button 
@@ -264,7 +266,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
                 variant="outline"
                 className="border-2 border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-white px-8 py-6 rounded-lg font-medium text-base transition-smooth hover:border-sky-400"
                 onClick={() => onSelectOption("optimize")}
-                aria-label="Optimize existing LinkedIn content"
+                aria-label="Optimize existing LinkedIn content with Brushin.in"
               >
                 <Feather className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
                 Optimize Content
@@ -272,7 +274,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             </div>
 
             <div className="pt-4 text-sm text-slate-400">
-              <p>✨ Trusted by 50,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 300%</p>
+              <p>✨ Trusted by 100,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 500% • 🆓 10 free posts monthly</p>
             </div>
           </div>
           
@@ -317,7 +319,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       <div 
         className="absolute bottom-10 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none z-10 group"
         onClick={onScrollToFeatures}
-        aria-label="Scroll to LinkedIn AI features section"
+        aria-label="Scroll to Brushin.in LinkedIn AI features section"
       >
         <div className="bg-sky-500/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-sky-500/30 transition-smooth">
           <ArrowDown size={24} className="text-sky-400" />

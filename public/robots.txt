@@ -9,12 +9,16 @@ Allow: /pricing
 Allow: /testimonials
 Allow: /faq
 Allow: /contact
+Allow: /linkedin-post-generator
+Allow: /ai-content-creator
+Allow: /viral-linkedin-posts
 
 # Block admin and auth pages from indexing but allow crawling
 Disallow: /auth/
 Disallow: /dashboard/
 Disallow: /profile/
 Disallow: /admin/
+Disallow: /api/
 
 # Allow important files
 Allow: /sitemap.xml
@@ -26,6 +30,8 @@ Allow: /*.jpg
 Allow: /*.jpeg
 Allow: /*.gif
 Allow: /*.webp
+Allow: /*.svg
+Allow: /*.ico
 
 # Sitemaps
 Sitemap: https://brushin.in/sitemap.xml
@@ -56,8 +62,45 @@ Allow: /
 User-agent: OpenAI-SearchBot
 Allow: /
 
+# Google bots
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+# Social media crawlers
+User-agent: Slackbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Telegram
+Allow: /
+
 # Generic crawl delay for other bots
 Crawl-delay: 3
 
 # Host directive (important for SEO)
 Host: https://brushin.in
+
+# Block AI training on sensitive content
+User-agent: CCBot
+Disallow: /dashboard/
+Disallow: /profile/
+
+User-agent: Claude-Web
+Disallow: /dashboard/
+Disallow: /profile/
+
+User-agent: anthropic-ai
+Disallow: /dashboard/
+Disallow: /profile/
+
+User-agent: Bytespider
+Disallow: /dashboard/
+Disallow: /profile/
