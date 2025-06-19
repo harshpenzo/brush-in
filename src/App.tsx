@@ -25,12 +25,25 @@ const App = () => {
           <BrowserRouter>
             <TooltipProvider>
               <Helmet>
-                <title>Brushin - AI LinkedIn Post Creator for Professionals</title>
-                <meta name="description" content="Create engaging, professional LinkedIn posts with Brushin AI. Generate content that drives engagement and builds your professional brand." />
-                <meta name="keywords" content="Brushin, LinkedIn post creator, LinkedIn content, professional content, AI writer, LinkedIn engagement, LinkedIn strategy, social media for professionals" />
+                <title>Brushin.in - #1 AI LinkedIn Post Generator | Create Viral Content in Seconds</title>
+                <meta name="description" content="Brushin.in is the best AI LinkedIn post generator for professionals. Create viral LinkedIn content, increase engagement by 300%, and build your personal brand. Trusted by 50,000+ professionals worldwide." />
+                <meta name="keywords" content="Brushin.in, LinkedIn post generator, AI LinkedIn content creator, viral LinkedIn posts, LinkedIn AI tools, professional content writer, LinkedIn engagement, LinkedIn marketing, AI content generator" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <meta name="theme-color" content="#0ea5e9" />
-                <link rel="canonical" href="https://brushin.app/" />
+                <link rel="canonical" href="https://brushin.in/" />
+                
+                <!-- Open Graph -->
+                <meta property="og:title" content="Brushin.in - AI LinkedIn Post Generator | Create Viral Content" />
+                <meta property="og:description" content="Generate viral LinkedIn posts with AI. Trusted by 50,000+ professionals. Increase engagement by 300% and build your brand." />
+                <meta property="og:url" content="https://brushin.in/" />
+                <meta property="og:type" content="website" />
+                <meta property="og:image" content="https://brushin.in/lovable-uploads/cf6f2de5-2a9d-47ec-86e5-84d47c46319c.png" />
+                
+                <!-- Twitter -->
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Brushin.in - AI LinkedIn Post Generator" />
+                <meta name="twitter:description" content="Generate viral LinkedIn posts with AI. Increase engagement by 300%." />
+                <meta name="twitter:image" content="https://brushin.in/lovable-uploads/cf6f2de5-2a9d-47ec-86e5-84d47c46319c.png" />
               </Helmet>
               <AppRoutes />
               <Toaster />

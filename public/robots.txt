@@ -1,5 +1,5 @@
 
-# Brushin AI LinkedIn Post Generator Robots.txt
+# Brushin.in AI LinkedIn Post Generator Robots.txt
 User-agent: *
 Allow: /
 
@@ -10,13 +10,25 @@ Allow: /testimonials
 Allow: /faq
 Allow: /contact
 
-# Block admin and auth pages from indexing
-Disallow: /auth
-Disallow: /dashboard
-Disallow: /profile
+# Block admin and auth pages from indexing but allow crawling
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /admin/
+
+# Allow important files
+Allow: /sitemap.xml
+Allow: /robots.txt
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.webp
 
 # Sitemaps
-Sitemap: https://brushin.app/sitemap.xml
+Sitemap: https://brushin.in/sitemap.xml
 
 # Specific Rules for Major Search Engines
 User-agent: Googlebot
@@ -37,8 +49,15 @@ Allow: /
 User-agent: LinkedInBot
 Allow: /
 
-# Generic crawl delay for other bots
-Crawl-delay: 5
+# OpenAI bots for training (optional - can disallow if preferred)
+User-agent: ChatGPT-User
+Allow: /
 
-# Host directive
-Host: https://brushin.app
+User-agent: OpenAI-SearchBot
+Allow: /
+
+# Generic crawl delay for other bots
+Crawl-delay: 3
+
+# Host directive (important for SEO)
+Host: https://brushin.in
