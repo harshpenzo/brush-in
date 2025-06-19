@@ -32,14 +32,14 @@ const App = () => {
                 <meta name="theme-color" content="#0ea5e9" />
                 <link rel="canonical" href="https://brushin.in/" />
                 
-                <!-- Open Graph -->
+                {/* Open Graph */}
                 <meta property="og:title" content="Brushin.in - AI LinkedIn Post Generator | Create Viral Content" />
                 <meta property="og:description" content="Generate viral LinkedIn posts with AI. Trusted by 50,000+ professionals. Increase engagement by 300% and build your brand." />
                 <meta property="og:url" content="https://brushin.in/" />
                 <meta property="og:type" content="website" />
                 <meta property="og:image" content="https://brushin.in/lovable-uploads/cf6f2de5-2a9d-47ec-86e5-84d47c46319c.png" />
                 
-                <!-- Twitter -->
+                {/* Twitter */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content="Brushin.in - AI LinkedIn Post Generator" />
                 <meta name="twitter:description" content="Generate viral LinkedIn posts with AI. Increase engagement by 300%." />
