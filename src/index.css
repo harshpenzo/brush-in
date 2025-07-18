@@ -272,6 +272,12 @@
     75% { transform: translateY(4px) rotate(-8deg); }
     100% { transform: translateY(0) rotate(0); }
   }
+
+  /* Touch target utility for better mobile accessibility */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
   
   /* Enhanced orb animation */
   @keyframes floatOrb {

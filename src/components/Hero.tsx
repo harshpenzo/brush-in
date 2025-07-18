@@ -218,7 +218,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen flex flex-col items-center justify-center pt-20 px-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden relative">
+    <div ref={containerRef} className="min-h-screen flex flex-col items-center justify-center pt-16 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden relative">
       {/* SVG filter for hand-drawn effect */}
       <svg width="0" height="0" className="absolute">
         <filter id="hand-drawn-filter">
@@ -227,87 +227,87 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
         </filter>
       </svg>
       
-      <div className="container mx-auto max-w-6xl relative z-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="max-w-2xl space-y-6 animate-fade-in fade-in-bottom backdrop-blur-sm bg-slate-900/30 p-8 rounded-2xl border border-slate-700/50">
-            <span className="inline-block px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-xs font-medium mb-2">
+      <div className="container mx-auto max-w-7xl relative z-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+          <div className="w-full lg:max-w-2xl space-y-4 sm:space-y-6 animate-fade-in fade-in-bottom backdrop-blur-sm bg-slate-900/30 p-4 sm:p-6 lg:p-8 rounded-xl lg:rounded-2xl border border-slate-700/50">
+            <span className="inline-block px-2 sm:px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-xs font-medium mb-2">
               #1 AI LinkedIn Post Generator - Trusted by 100,000+ Professionals
             </span>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
               Create <span className="text-sky-400 relative">viral LinkedIn content</span> with AI that drives real results
             </h1>
             
-            <p className="text-lg md:text-xl text-slate-300 font-light">
+            <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-light leading-relaxed">
               Brushin.in is the best AI LinkedIn post generator for professionals. Create engaging LinkedIn posts that boost your professional brand by 500%. Our AI LinkedIn content writer helps you create viral content, increase engagement, and build authority in your industry. Trusted by 100,000+ professionals worldwide.
             </p>
 
-            <div className="flex flex-wrap gap-2 text-sm text-slate-400 mb-4">
-              <span className="bg-slate-800/50 px-3 py-1 rounded-full">Brushin.in AI</span>
-              <span className="bg-slate-800/50 px-3 py-1 rounded-full">LinkedIn AI Tools</span>
-              <span className="bg-slate-800/50 px-3 py-1 rounded-full">AI Content Writer</span>
-              <span className="bg-slate-800/50 px-3 py-1 rounded-full">Professional Content</span>
-              <span className="bg-slate-800/50 px-3 py-1 rounded-full">Viral LinkedIn Posts</span>
+            <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-slate-400 mb-4">
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">Brushin.in AI</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">LinkedIn AI Tools</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">AI Content Writer</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full hidden sm:inline-block">Professional Content</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full hidden sm:inline-block">Viral LinkedIn Posts</span>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col gap-3 sm:gap-4 pt-4">
               <Button 
                 size="lg" 
-                className="bg-sky-500 hover:bg-sky-600 text-white px-8 py-6 rounded-lg font-medium text-base shadow-lg hover:shadow-xl transition-smooth group"
+                className="w-full sm:w-auto bg-sky-500 hover:bg-sky-600 text-white px-6 sm:px-8 py-4 sm:py-6 rounded-lg font-medium text-sm sm:text-base shadow-lg hover:shadow-xl transition-smooth group min-h-[48px] touch-target"
                 onClick={() => onSelectOption("create")}
                 aria-label="Create new LinkedIn post with Brushin.in AI"
               >
-                <Sparkles className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
-                Generate LinkedIn Post with AI
+                <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-12" />
+                <span className="truncate">Generate LinkedIn Post with AI</span>
               </Button>
               
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-white px-8 py-6 rounded-lg font-medium text-base transition-smooth hover:border-sky-400"
+                className="w-full sm:w-auto border-2 border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-white px-6 sm:px-8 py-4 sm:py-6 rounded-lg font-medium text-sm sm:text-base transition-smooth hover:border-sky-400 min-h-[48px] touch-target"
                 onClick={() => onSelectOption("optimize")}
                 aria-label="Optimize existing LinkedIn content with Brushin.in"
               >
-                <Feather className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
-                Optimize Content
+                <Feather className="mr-2 h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-12" />
+                <span className="truncate">Optimize Content</span>
               </Button>
             </div>
 
-            <div className="pt-4 text-sm text-slate-400">
-              <p>✨ Trusted by 100,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 500% • 🆓 10 free posts monthly</p>
+            <div className="pt-4 text-xs sm:text-sm text-slate-400">
+              <p className="leading-relaxed">✨ Trusted by 100,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 500% • 🆓 10 free posts monthly</p>
             </div>
           </div>
           
-          <div className="relative w-full max-w-md animate-fade-in fade-in-bottom" style={{ animationDelay: "300ms" }}>
-            <div className="card-depth bg-white/5 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-6 relative z-10 transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-sky-500/20">
-              <div className="flex items-center gap-3 mb-4">
+          <div className="relative w-full max-w-sm lg:max-w-md animate-fade-in fade-in-bottom order-first lg:order-last" style={{ animationDelay: "300ms" }}>
+            <div className="card-depth bg-white/5 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-4 sm:p-6 relative z-10 transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-sky-500/20">
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                 <img 
                   src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop" 
                   alt="Professional LinkedIn post example created with Brushin AI" 
-                  className="w-12 h-12 rounded-full object-cover border-2 border-sky-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-sky-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-shrink-0"
                 />
-                <div>
-                  <p className="font-medium text-white">Satya Nadella</p>
-                  <p className="text-sm text-slate-400">CEO at Microsoft</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-white text-sm sm:text-base truncate">Satya Nadella</p>
+                  <p className="text-xs sm:text-sm text-slate-400 truncate">CEO at Microsoft</p>
                 </div>
               </div>
               
-              <div className="space-y-3 mb-4">
-                <p className="text-slate-300">Excited to announce Microsoft's continued commitment to AI innovation and responsible development. Our latest breakthroughs in machine learning are not just advancing technology—they're transforming how we work, learn, and connect. 🚀</p>
-                <p className="text-slate-300">The future of AI is collaborative, ethical, and accessible to all. Looking forward to sharing more at our upcoming AI Summit.</p>
-                <p className="text-slate-300 font-medium">
-                  <span className="text-sky-400">#AI</span> <span className="text-sky-400">#Innovation</span> <span className="text-sky-400">#Technology</span> <span className="text-sky-400">#Leadership</span>
+              <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">Excited to announce Microsoft's continued commitment to AI innovation and responsible development. Our latest breakthroughs in machine learning are not just advancing technology—they're transforming how we work, learn, and connect. 🚀</p>
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed hidden sm:block">The future of AI is collaborative, ethical, and accessible to all. Looking forward to sharing more at our upcoming AI Summit.</p>
+                <p className="text-slate-300 font-medium text-sm sm:text-base">
+                  <span className="text-sky-400">#AI</span> <span className="text-sky-400">#Innovation</span> <span className="text-sky-400">#Technology</span> <span className="text-sky-400 hidden sm:inline">#Leadership</span>
                 </p>
               </div>
               
               <div className="flex justify-between items-center pt-2 border-t border-slate-700">
-                <div className="flex -space-x-2">
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
-                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-8 h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
-                  <div className="w-8 h-8 rounded-full bg-slate-700 text-slate-300 text-xs flex items-center justify-center border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer">+124</div>
+                <div className="flex -space-x-1 sm:-space-x-2">
+                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-slate-700 text-slate-300 text-xs flex items-center justify-center border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer">+124</div>
                 </div>
-                <p className="text-sm text-slate-400 font-medium">2.5K reactions</p>
+                <p className="text-xs sm:text-sm text-slate-400 font-medium truncate">2.5K reactions</p>
               </div>
             </div>
             
@@ -317,12 +317,12 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       </div>
       
       <div 
-        className="absolute bottom-10 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none z-10 group"
+        className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 cursor-pointer transition-transform duration-300 animate-bounce hover:animate-none z-10 group touch-target"
         onClick={onScrollToFeatures}
         aria-label="Scroll to Brushin.in LinkedIn AI features section"
       >
-        <div className="bg-sky-500/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-sky-500/30 transition-smooth">
-          <ArrowDown size={24} className="text-sky-400" />
+        <div className="bg-sky-500/20 backdrop-blur-sm p-2 sm:p-3 rounded-full group-hover:bg-sky-500/30 transition-smooth min-h-[44px] min-w-[44px] flex items-center justify-center">
+          <ArrowDown size={20} className="text-sky-400 sm:w-6 sm:h-6" />
         </div>
       </div>
     </div>
