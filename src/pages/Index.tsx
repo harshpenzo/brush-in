@@ -11,7 +11,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
 import { CreatePostFormValues } from "@/components/post/CreatePostForm";
 import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
-import { generateOpenAIPost, optimizeOpenAIPost, generateOpenAIHashtags } from "@/services/openaiService";
+import { generateGeminiPost, optimizeGeminiPost, generateGeminiHashtags } from "@/services/geminiService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -60,12 +60,24 @@ const Index = () => {
       setCurrentTone(values.tone);
       setCurrentIndustry(values.industry);
       
-      // Generate post using OpenAI API only
-      const generatedPost = await generateOpenAIPost(
+      // Generate post using Gemini API by default (falls back locally if no key)
+      const humanizedDescription = values.humanize
+        ? `${values.description || ""}
+
+Humanization guidelines:
+- First-person voice and authentic perspective
+- Use natural contractions
+- Include a brief, specific anecdote or micro-story if relevant
+- Vary sentence lengths; keep paragraphs 1–3 sentences
+- Add a thoughtful question at the end
+- Include 3–5 relevant, niche+popular mix hashtags`
+        : values.description || "";
+
+      const generatedPost = await generateGeminiPost(
         values.topic,
         values.tone,
         values.keywords || "",
-        values.description || "",
+        humanizedDescription,
         values.contentStyle,
         values.postLength,
         values.industry
@@ -93,8 +105,8 @@ const Index = () => {
       const calculatedScore = calculateReadabilityScore(generatedPost);
       setReadabilityScore(calculatedScore);
       
-      // Generate related hashtags with OpenAI API
-      const generatedHashtags = await generateOpenAIHashtags(
+      // Generate related hashtags with Gemini API
+      const generatedHashtags = await generateGeminiHashtags(
         values.topic, 
         values.industry, 
         values.keywords || ""
@@ -105,7 +117,7 @@ const Index = () => {
       
       toast({
         title: "Post generated successfully",
-        description: "Your LinkedIn post has been created with OpenAI.",
+        description: "Your LinkedIn post has been created with Gemini.",
       });
     } catch (error) {
       console.error("Error generating post:", error);
@@ -129,10 +141,13 @@ const Index = () => {
       setCurrentTone(values.optimizationGoal);
       setCurrentIndustry("general");
       
-      // Optimize post using OpenAI API only
-      const optimizedPost = await optimizeOpenAIPost(
+      // Optimize post using Gemini API
+      const enhancedGoal = values.humanize 
+        ? `${values.optimizationGoal} with humanized tone (first-person, natural contractions, brief anecdote where relevant, short paragraphs, end with a thoughtful question, add 3–5 relevant hashtags)`
+        : values.optimizationGoal;
+      const optimizedPost = await optimizeGeminiPost(
         values.existingPost, 
-        values.optimizationGoal
+        enhancedGoal
       );
       
       // Calculate enhanced readability score
@@ -153,14 +168,14 @@ const Index = () => {
       setReadabilityScore(calculatedScore);
       
       // Generate related hashtags
-      const generatedHashtags = await generateOpenAIHashtags(words, "general", "");
+      const generatedHashtags = await generateGeminiHashtags(words, "general", "");
       setHashtags(generatedHashtags);
       
       setGeneratedPost(optimizedPost);
       
       toast({
         title: "Post optimized successfully",
-        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using OpenAI.`,
+        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using Gemini.`,
       });
     } catch (error) {
       console.error("Error optimizing post:", error);
@@ -198,18 +213,18 @@ const Index = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-8 fade-in-bottom">
               <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
-                OpenAI-Powered Content Generator
+                Gemini AI Content Generator
               </span>
               <h2 className="text-3xl font-bold text-white mb-3 relative">
                 {activeOption === "create" 
-                  ? "Create Your LinkedIn Post with OpenAI" 
-                  : "Optimize Your LinkedIn Post with OpenAI"}
+                  ? "Create Your LinkedIn Post with Gemini" 
+                  : "Optimize Your LinkedIn Post with Gemini"}
                 <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse">🤖</div>
               </h2>
               <p className="text-lg text-slate-300 max-w-2xl mx-auto">
                 {activeOption === "create"
-                  ? "Generate authentic, engaging LinkedIn content powered entirely by OpenAI's advanced AI technology."
-                  : "Enhance your existing post for maximum engagement using OpenAI's intelligent optimization."}
+                  ? "Generate authentic, engaging LinkedIn content powered by Google's Gemini."
+                  : "Enhance your existing post for maximum engagement using Gemini's intelligent optimization."}
               </p>
             </div>
             

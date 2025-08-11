@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RefreshCw, Loader2 } from "lucide-react";
@@ -20,11 +19,13 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { Switch } from "@/components/ui/switch";
 
 // Create Schema for form validation
 const optimizePostSchema = z.object({
   existingPost: z.string().min(10, { message: "Please enter at least 10 characters" }),
   optimizationGoal: z.string().default("engagement"),
+  humanize: z.boolean().default(true),
 });
 
 export type OptimizePostFormValues = z.infer<typeof optimizePostSchema>;
@@ -40,12 +41,14 @@ export const OptimizePostForm = ({ onOptimize, isGenerating }: OptimizePostFormP
     defaultValues: {
       existingPost: "",
       optimizationGoal: "engagement",
+      humanize: true,
     },
   });
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onOptimize)} className="space-y-4">
+        {/* Existing Post */}
         <FormField
           control={form.control}
           name="existingPost"
@@ -64,7 +67,8 @@ export const OptimizePostForm = ({ onOptimize, isGenerating }: OptimizePostFormP
             </FormItem>
           )}
         />
-        
+
+        {/* Optimization Goal */}
         <FormField
           control={form.control}
           name="optimizationGoal"
@@ -88,9 +92,26 @@ export const OptimizePostForm = ({ onOptimize, isGenerating }: OptimizePostFormP
             </FormItem>
           )}
         />
-        
-        <Button 
-          type="submit" 
+
+        {/* Humanize toggle */}
+        <FormField
+          control={form.control}
+          name="humanize"
+          render={({ field }) => (
+            <FormItem className="flex items-center justify-between rounded-md border border-slate-300 dark:border-slate-600 p-3">
+              <div>
+                <FormLabel className="text-slate-900 dark:text-slate-300 font-medium">Humanize tone</FormLabel>
+                <p className="text-sm text-slate-500 mt-1">First-person voice, natural contractions, short paragraphs, end with a thoughtful question.</p>
+              </div>
+              <FormControl>
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <Button
+          type="submit"
           className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-2.5 rounded-md transition-all"
           disabled={isGenerating}
         >

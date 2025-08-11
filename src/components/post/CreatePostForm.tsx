@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +21,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { Switch } from "@/components/ui/switch";
 
 // Create Schema for form validation
 const createPostSchema = z.object({
@@ -32,6 +32,7 @@ const createPostSchema = z.object({
   postLength: z.string().default("medium"),
   keywords: z.string().optional(),
   industry: z.string().default("technology"),
+  humanize: z.boolean().default(true),
 });
 
 export type CreatePostFormValues = z.infer<typeof createPostSchema>;
@@ -52,12 +53,14 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
       postLength: "medium",
       keywords: "",
       industry: "technology",
+      humanize: true,
     },
   });
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onGenerate)} className="space-y-4">
+        {/* Topic */}
         <FormField
           control={form.control}
           name="topic"
@@ -76,6 +79,7 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
           )}
         />
 
+        {/* Description */}
         <FormField
           control={form.control}
           name="description"
@@ -94,7 +98,7 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
             </FormItem>
           )}
         />
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -119,7 +123,7 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="contentStyle"
@@ -144,7 +148,7 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
             )}
           />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -168,7 +172,7 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="industry"
@@ -195,7 +199,7 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
             )}
           />
         </div>
-        
+
         <FormField
           control={form.control}
           name="keywords"
@@ -218,8 +222,25 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
             </FormItem>
           )}
         />
-        
-        <Button 
+
+        {/* Humanize toggle */}
+        <FormField
+          control={form.control}
+          name="humanize"
+          render={({ field }) => (
+            <FormItem className="flex items-center justify-between rounded-md border border-slate-300 dark:border-slate-600 p-3">
+              <div>
+                <FormLabel className="text-slate-900 dark:text-slate-300 font-medium">Humanize writing</FormLabel>
+                <p className="text-sm text-slate-500 mt-1">First-person voice, contractions, micro-story, short paragraphs, end with a thoughtful question.</p>
+              </div>
+              <FormControl>
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <Button
           type="submit"
           className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-2.5 rounded-md transition-all"
           disabled={isGenerating}
