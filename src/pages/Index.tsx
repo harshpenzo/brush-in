@@ -117,7 +117,7 @@ Humanization guidelines:
       
       toast({
         title: "Post generated successfully",
-        description: "Your LinkedIn post has been created with Gemini.",
+        description: "Your LinkedIn post has been created with AI.",
       });
     } catch (error) {
       console.error("Error generating post:", error);
@@ -175,7 +175,7 @@ Humanization guidelines:
       
       toast({
         title: "Post optimized successfully",
-        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using Gemini.`,
+        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using AI.`,
       });
     } catch (error) {
       console.error("Error optimizing post:", error);
@@ -213,18 +213,18 @@ Humanization guidelines:
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-8 fade-in-bottom">
               <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
-                Gemini AI Content Generator
+                AI Content Generator
               </span>
               <h2 className="text-3xl font-bold text-white mb-3 relative">
                 {activeOption === "create" 
-                  ? "Create Your LinkedIn Post with Gemini" 
-                  : "Optimize Your LinkedIn Post with Gemini"}
+                  ? "Create Your LinkedIn Post with AI" 
+                  : "Optimize Your LinkedIn Post with AI"}
                 <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse">🤖</div>
               </h2>
               <p className="text-lg text-slate-300 max-w-2xl mx-auto">
                 {activeOption === "create"
-                  ? "Generate authentic, engaging LinkedIn content powered by Google's Gemini."
-                  : "Enhance your existing post for maximum engagement using Gemini's intelligent optimization."}
+                  ? "Generate authentic, engaging LinkedIn content powered by AI."
+                  : "Enhance your existing post for maximum engagement using AI-driven optimization."}
               </p>
             </div>
             

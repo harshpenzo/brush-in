@@ -230,8 +230,8 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
       <div className="container mx-auto max-w-7xl relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           <div className="w-full lg:max-w-2xl space-y-4 sm:space-y-6 animate-fade-in fade-in-bottom backdrop-blur-sm bg-slate-900/30 p-4 sm:p-6 lg:p-8 rounded-xl lg:rounded-2xl border border-slate-700/50">
-            <span className="inline-block px-2 sm:px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-xs font-medium mb-2">
-              #1 AI LinkedIn Post Generator - Trusted by 100,000+ Professionals
+            <span className="inline-block px-2 sm:px-3 py-1 bg-sky-500/20 text-sky-400 rounded-full text-xs font-medium mb-2" aria-label="Achievement: Helped 10,000+ professionals">
+              #1 AI LinkedIn Post Generator — Helped 10,000+ Professionals
             </span>
             
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
@@ -239,7 +239,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             </h1>
             
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-light leading-relaxed">
-              Brushin.in is the best AI LinkedIn post generator for professionals. Create engaging LinkedIn posts that boost your professional brand by 500%. Our AI LinkedIn content writer helps you create viral content, increase engagement, and build authority in your industry. Trusted by 100,000+ professionals worldwide.
+              Brushin.in is the best AI LinkedIn post generator for professionals. Create engaging LinkedIn posts that boost your professional brand by 500%. Our AI LinkedIn content writer helps you create viral content, increase engagement, and build authority in your industry. Helped 10,000+ professionals worldwide.
             </p>
 
             <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-slate-400 mb-4">
@@ -274,7 +274,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             </div>
 
             <div className="pt-4 text-xs sm:text-sm text-slate-400">
-              <p className="leading-relaxed">✨ Trusted by 100,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 500% • 🆓 10 free posts monthly</p>
+              <p className="leading-relaxed">✨ Helped 10,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 500% • 🆓 10 free posts monthly</p>
             </div>
           </div>
           
@@ -282,8 +282,8 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             <div className="card-depth bg-white/5 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-4 sm:p-6 relative z-10 transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-sky-500/20">
               <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                 <img 
-                  src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop" 
-                  alt="Professional LinkedIn post example created with Brushin AI" 
+                  src="/images/satya-nadella.jpg" 
+                  alt="Satya Nadella profile photo" 
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-sky-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-shrink-0"
                 />
                 <div className="min-w-0 flex-1">
