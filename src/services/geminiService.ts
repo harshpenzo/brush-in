@@ -127,7 +127,7 @@ Make sure the post sounds natural, professional, and engaging.`;
 
     if (!response.ok) {
       const errorData = await response.json() as GeminiErrorResponse;
-      throw new Error(`Gemini API error: ${errorData.error?.message || response.statusText}`);
+      throw new Error(`AI service error: ${errorData.error?.message || response.statusText}`);
     }
 
     const data = await response.json() as GeminiSuccessResponse;
@@ -146,7 +146,7 @@ Make sure the post sounds natural, professional, and engaging.`;
   } catch (error) {
     console.error("Error generating content with Gemini:", error);
     toast({
-      title: "Gemini API Error",
+      title: "AI service error",
       description: "Falling back to local generation. Check console for details.",
       variant: "destructive"
     });
@@ -219,7 +219,7 @@ Enhance the overall tone to make it more professional yet authentic.`;
 
     if (!response.ok) {
       const errorData = await response.json() as GeminiErrorResponse;
-      throw new Error(`Gemini API error: ${errorData.error?.message || response.statusText}`);
+      throw new Error(`AI service error: ${errorData.error?.message || response.statusText}`);
     }
 
     const data = await response.json() as GeminiSuccessResponse;
@@ -233,7 +233,7 @@ Enhance the overall tone to make it more professional yet authentic.`;
   } catch (error) {
     console.error("Error optimizing content with Gemini:", error);
     toast({
-      title: "Gemini API Error",
+      title: "AI service error",
       description: "Falling back to local optimization. Check console for details.",
       variant: "destructive"
     });
@@ -301,7 +301,7 @@ Return only the hashtags without the # symbol, separated by comma, no numbering 
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.statusText}`);
+      throw new Error(`AI service error: ${response.statusText}`);
     }
 
     const data = await response.json() as GeminiSuccessResponse;
