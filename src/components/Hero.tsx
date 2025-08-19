@@ -239,7 +239,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             </h1>
             
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-light leading-relaxed">
-              Brushin.in is the best AI LinkedIn post generator for professionals. Create engaging LinkedIn posts that boost your professional brand by 500%. Our AI LinkedIn content writer helps you create viral content, increase engagement, and build authority in your industry. Helped 10,000+ professionals worldwide.
+              Transform your LinkedIn presence with the #1 AI LinkedIn post generator. Brushin.in helps professionals create engaging content that boosts visibility by 500%. Generate viral LinkedIn posts, optimize engagement, and build your personal brand effortlessly. Trusted by 10,000+ professionals worldwide.
             </p>
 
             <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-slate-400 mb-4">

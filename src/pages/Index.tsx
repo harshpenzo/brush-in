@@ -195,38 +195,42 @@ Humanization guidelines:
 
   return (
     <Layout onScrollToFeatures={scrollToFeatures}>
-      <Hero 
-        onScrollToFeatures={scrollToFeatures} 
-        onSelectOption={checkAuthAndProceed} 
-      />
+      {/* SEO: Semantic HTML structure */}
+      <main>
+        <section aria-label="Hero section">
+          <Hero 
+            onScrollToFeatures={scrollToFeatures} 
+            onSelectOption={checkAuthAndProceed} 
+          />
+        </section>
+        
+        <section ref={featuresRef} className="scroll-mt-16" aria-label="Features section">
+          <Features onSelectOption={checkAuthAndProceed} />
+        </section>
       
-      <div ref={featuresRef} className="scroll-mt-16">
-        <Features onSelectOption={checkAuthAndProceed} />
-      </div>
-      
-      {showPostCreator && (
-        <div ref={postCreatorRef} className="py-16 bg-slate-800 relative overflow-hidden scroll-mt-16">
-          {/* Animated background elements */}
-          <div className="absolute -top-[300px] -right-[300px] w-[600px] h-[600px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none"></div>
-          <div className="absolute -bottom-[200px] -left-[200px] w-[400px] h-[400px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
-          
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="text-center mb-8 fade-in-bottom">
-              <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
-                AI Content Generator
-              </span>
-              <h2 className="text-3xl font-bold text-white mb-3 relative">
-                {activeOption === "create" 
-                  ? "Create Your LinkedIn Post with AI" 
-                  : "Optimize Your LinkedIn Post with AI"}
-                <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse">🤖</div>
-              </h2>
-              <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-                {activeOption === "create"
-                  ? "Generate authentic, engaging LinkedIn content powered by AI."
-                  : "Enhance your existing post for maximum engagement using AI-driven optimization."}
-              </p>
-            </div>
+        {showPostCreator && (
+          <section ref={postCreatorRef} className="py-16 bg-slate-800 relative overflow-hidden scroll-mt-16" aria-label="Post creation section">
+            {/* Animated background elements */}
+            <div className="absolute -top-[300px] -right-[300px] w-[600px] h-[600px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none"></div>
+            <div className="absolute -bottom-[200px] -left-[200px] w-[400px] h-[400px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
+            
+            <div className="container mx-auto px-4 relative z-10">
+              <header className="text-center mb-8 fade-in-bottom">
+                <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
+                  AI Content Generator
+                </span>
+                <h2 className="text-3xl font-bold text-white mb-3 relative">
+                  {activeOption === "create" 
+                    ? "Create Your LinkedIn Post with AI" 
+                    : "Optimize Your LinkedIn Post with AI"}
+                  <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse" aria-hidden="true">🤖</div>
+                </h2>
+                <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+                  {activeOption === "create"
+                    ? "Generate authentic, engaging LinkedIn content powered by AI."
+                    : "Enhance your existing post for maximum engagement using AI-driven optimization."}
+                </p>
+              </header>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <div className="lg:col-span-2 space-y-6 fade-in-bottom perspective-1000" style={{ animationDelay: "100ms" }}>
@@ -257,12 +261,18 @@ Humanization guidelines:
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-      
-      <TestimonialsSection />
-      <CtaSection />
+            </div>
+          </section>
+        )}
+        
+        <section aria-label="Customer testimonials">
+          <TestimonialsSection />
+        </section>
+        
+        <section aria-label="Call to action">
+          <CtaSection />
+        </section>
+      </main>
     </Layout>
   );
 };
