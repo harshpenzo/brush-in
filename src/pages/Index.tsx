@@ -19,6 +19,9 @@ import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
 import AdvancedSEO from "@/components/AdvancedSEO";
 import TechnicalSEO from "@/components/TechnicalSEO";
 import DomainAuthorityInfo from "@/components/DomainAuthorityInfo";
+import InternalLinkingHub from "@/components/InternalLinkingHub";
+import AdvancedTechnicalSEO from "@/components/AdvancedTechnicalSEO";
+import SocialProofSEO from "@/components/SocialProofSEO";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -322,10 +325,13 @@ Humanization guidelines:
           <CtaSection />
         </section>
         
-        {/* Advanced SEO and keyword optimization */}
+        {/* Comprehensive SEO optimization suite */}
         <KeywordOptimizedContent />
         <AdvancedSEO />
         <DomainAuthorityInfo />
+        <InternalLinkingHub />
+        <AdvancedTechnicalSEO />
+        <SocialProofSEO />
       </main>
     </Layout>
     </>
