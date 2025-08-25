@@ -18,6 +18,7 @@ import SEOMetaTags from "@/components/SEOMetaTags";
 import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
 import AdvancedSEO from "@/components/AdvancedSEO";
 import TechnicalSEO from "@/components/TechnicalSEO";
+import DomainAuthorityInfo from "@/components/DomainAuthorityInfo";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -324,6 +325,7 @@ Humanization guidelines:
         {/* Advanced SEO and keyword optimization */}
         <KeywordOptimizedContent />
         <AdvancedSEO />
+        <DomainAuthorityInfo />
       </main>
     </Layout>
     </>
