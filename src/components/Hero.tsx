@@ -235,19 +235,20 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             </span>
             
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
-              Create <span className="text-sky-400 relative">viral LinkedIn content</span> with AI that drives real results
+              <span className="text-sky-400">Brushin.in</span> - Create <span className="text-sky-400 relative">viral LinkedIn posts</span> with the #1 AI LinkedIn Post Generator
             </h1>
             
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-light leading-relaxed">
-              Transform your LinkedIn presence with the #1 AI LinkedIn post generator. Brushin.in helps professionals create engaging content that boosts visibility by 500%. Generate viral LinkedIn posts, optimize engagement, and build your personal brand effortlessly. Trusted by 10,000+ professionals worldwide.
+              Transform your LinkedIn presence with <strong>Brushin.in</strong> - the premier AI LinkedIn post generator that has helped 10,000+ professionals worldwide. Create viral LinkedIn content, boost engagement by 500%, and dominate your LinkedIn presence with our advanced AI LinkedIn post generator. Generate authentic, high-converting LinkedIn posts instantly.
             </p>
 
             <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-slate-400 mb-4">
-              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">Brushin.in AI</span>
-              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">LinkedIn AI Tools</span>
-              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">AI Content Writer</span>
-              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full hidden sm:inline-block">Professional Content</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">Brushin.in</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">LinkedIn Post Generator</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full">AI LinkedIn Content</span>
               <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full hidden sm:inline-block">Viral LinkedIn Posts</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full hidden sm:inline-block">LinkedIn AI Tools</span>
+              <span className="bg-slate-800/50 px-2 sm:px-3 py-1 rounded-full hidden md:inline-block">Professional Branding</span>
             </div>
             
             <div className="flex flex-col gap-3 sm:gap-4 pt-4">
@@ -274,7 +275,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
             </div>
 
             <div className="pt-4 text-xs sm:text-sm text-slate-400">
-              <p className="leading-relaxed">✨ Helped 10,000+ professionals • ⚡ Generate viral content in seconds • 🚀 Boost engagement by 500% • 🆓 10 free posts monthly</p>
+              <p className="leading-relaxed">✨ Brushin.in helped 10,000+ professionals • ⚡ #1 LinkedIn post generator • 🚀 500% engagement boost • 🆓 Free LinkedIn AI posts</p>
             </div>
           </div>
           

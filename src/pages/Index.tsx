@@ -14,6 +14,10 @@ import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
 import { generateGeminiPost, optimizeGeminiPost, generateGeminiHashtags } from "@/services/geminiService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import SEOMetaTags from "@/components/SEOMetaTags";
+import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
+import AdvancedSEO from "@/components/AdvancedSEO";
+import TechnicalSEO from "@/components/TechnicalSEO";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -193,8 +197,52 @@ Humanization guidelines:
     featuresRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Brushin.in - AI LinkedIn Post Generator | Create Viral LinkedIn Content",
+    "description": "The #1 AI LinkedIn post generator. Create viral LinkedIn posts, boost engagement by 500%, and build your professional brand with Brushin.in. Free LinkedIn AI posts available.",
+    "url": "https://brushin.in/",
+    "mainEntity": {
+      "@type": "SoftwareApplication",
+      "name": "Brushin.in LinkedIn Post Generator",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://brushin.in/"
+        },
+        {
+          "@type": "ListItem", 
+          "position": 2,
+          "name": "AI LinkedIn Post Generator",
+          "item": "https://brushin.in/"
+        }
+      ]
+    }
+  };
+
   return (
-    <Layout onScrollToFeatures={scrollToFeatures}>
+    <>
+      <SEOMetaTags 
+        title="Brushin.in - #1 AI LinkedIn Post Generator | Create Viral LinkedIn Content in Minutes"
+        description="Transform your LinkedIn presence with Brushin.in - the premier AI LinkedIn post generator. Create viral LinkedIn posts, boost engagement by 500%, and build your professional brand. Helped 10,000+ professionals worldwide. Get 10 free LinkedIn posts monthly!"
+        keywords="Brushin.in, Brushin, brushin ai, AI LinkedIn post generator, linkedin post generator, viral LinkedIn content, LinkedIn post creator, professional content generator, LinkedIn AI tools, social media automation, LinkedIn engagement, viral LinkedIn posts, LinkedIn marketing, content creation AI, LinkedIn optimization, professional branding, LinkedIn growth tool, linkedin content creator, ai content generator, linkedin ai, brushin linkedin, linkedin post maker, viral post generator"
+        schemaMarkup={structuredData}
+      />
+      <TechnicalSEO />
+      <Layout onScrollToFeatures={scrollToFeatures}>
       {/* SEO: Semantic HTML structure */}
       <main>
         <section aria-label="Hero section">
@@ -272,8 +320,13 @@ Humanization guidelines:
         <section aria-label="Call to action">
           <CtaSection />
         </section>
+        
+        {/* Advanced SEO and keyword optimization */}
+        <KeywordOptimizedContent />
+        <AdvancedSEO />
       </main>
     </Layout>
+    </>
   );
 };
 
