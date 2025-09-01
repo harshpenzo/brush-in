@@ -42,12 +42,15 @@ export default defineConfig(({ mode }) => ({
           return `js/[name]-[hash].js`;
         },
         assetFileNames: (assetInfo) => {
-          const info = assetInfo.name.split('.');
+          const name = assetInfo.name;
+          if (!name) return 'assets/[name]-[hash][ext]';
+          
+          const info = name.split('.');
           const ext = info[info.length - 1];
-          if (/\.(css)$/.test(assetInfo.name)) {
+          if (/\.(css)$/.test(name)) {
             return `css/[name]-[hash].${ext}`;
           }
-          if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(assetInfo.name)) {
+          if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(name)) {
             return `images/[name]-[hash].${ext}`;
           }
           return `assets/[name]-[hash].${ext}`;

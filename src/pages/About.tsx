@@ -143,21 +143,19 @@ const About = () => {
         url="https://brushin.in/about"
         schemaMarkup={aboutSchemaMarkup}
       />
-      <main>
-        <div className="min-h-screen py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
-          {/* Animated background elements */}
-          <div className="absolute -top-[500px] -right-[500px] w-[800px] h-[800px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
-          <div className="absolute -bottom-[300px] -left-[300px] w-[500px] h-[500px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none" style={{ animationDelay: '2s' }}></div>
-          
-          <div className="container px-4 mx-auto relative z-10 max-w-7xl">
-            <AboutHero onSectionRef={setSectionRef} isLoaded={isLoaded} />
-            <AboutMission onSectionRef={setSectionRef} />
-            <AboutTeam onSectionRef={setSectionRef} />
-            <AboutValues onSectionRef={setSectionRef} />
-            <AboutCTA onSectionRef={setSectionRef} />
-          </div>
+      <div className="min-h-screen py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute -top-[500px] -right-[500px] w-[800px] h-[800px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
+        <div className="absolute -bottom-[300px] -left-[300px] w-[500px] h-[500px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none" style={{ animationDelay: '2s' }}></div>
+        
+        <div className="container px-4 mx-auto relative z-10 max-w-7xl">
+          <AboutHero onSectionRef={setSectionRef} isLoaded={isLoaded} />
+          <AboutMission onSectionRef={setSectionRef} />
+          <AboutTeam onSectionRef={setSectionRef} />
+          <AboutValues onSectionRef={setSectionRef} />
+          <AboutCTA onSectionRef={setSectionRef} />
         </div>
-      </main>
+      </div>
     </Layout>
   );
 };
