@@ -21,7 +21,7 @@ const Contact = () => {
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
               Have questions about our services or need help with your LinkedIn content strategy?
-              Our team in New Delhi is here to help you succeed.
+              Our team in Delhi NCR, Ghaziabad (Christ University) is here to help you succeed.
             </p>
           </div>
 
@@ -121,8 +121,8 @@ const Contact = () => {
                     <p className="text-slate-600 dark:text-slate-300 mb-2">
                       Our support team is available Monday through Friday, 10am to 7pm IST.
                     </p>
-                    <a href="mailto:support@brushin.com" className="text-sky-600 dark:text-sky-400 hover:underline inline-flex items-center gap-1 hover:gap-2 transition-all duration-300">
-                      support@brushin.com
+                    <a href="mailto:work.harsh.batheja@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline inline-flex items-center gap-1 hover:gap-2 transition-all duration-300">
+                      work.harsh.batheja@gmail.com
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
@@ -143,8 +143,8 @@ const Contact = () => {
                     <p className="text-slate-600 dark:text-slate-300 mb-2">
                       For partnerships, press, or business development opportunities.
                     </p>
-                    <a href="mailto:business@brushin.com" className="text-sky-600 dark:text-sky-400 hover:underline inline-flex items-center gap-1 hover:gap-2 transition-all duration-300">
-                      business@brushin.com
+                    <a href="mailto:work.harsh.batheja@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline inline-flex items-center gap-1 hover:gap-2 transition-all duration-300">
+                      work.harsh.batheja@gmail.com
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
@@ -165,7 +165,7 @@ const Contact = () => {
                     <p className="text-slate-600 dark:text-slate-300 mb-2">
                       125 Cyber Hub<br />
                       Sector 24<br />
-                      Gurugram, Delhi NCR 122002
+                      Delhi NCR, Ghaziabad, Christ University
                     </p>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ const Contact = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent pointer-events-none z-10"></div>
                 <iframe
                   title="Office Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224345.83923192776!2d77.06889754528188!3d28.52758200617608!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1714296204875!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224345.83923192776!2d77.06889754528188!3d28.52758200617608!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sChrist%20University%2C%20Ghaziabad!5e0!3m2!1sen!2sin!4v1714296204875!5m2!1sen!2sin"
                   className="w-full h-[400px]"
                   style={{ border: 0 }}
                   allowFullScreen

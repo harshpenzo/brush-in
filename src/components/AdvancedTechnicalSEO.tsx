@@ -81,7 +81,7 @@ const AdvancedTechnicalSEO = () => {
         { property: 'business:contact_data:street_address', content: 'Global Remote' },
         { property: 'business:contact_data:locality', content: 'Worldwide' },
         { property: 'business:contact_data:country_name', content: 'Global' },
-        { property: 'business:contact_data:email', content: 'hello@brushin.in' },
+        { property: 'business:contact_data:email', content: 'work.harsh.batheja@gmail.com' },
         { property: 'business:contact_data:website', content: 'https://brushin.in' },
         
         // Additional SEO meta tags
@@ -131,7 +131,7 @@ const AdvancedTechnicalSEO = () => {
           "availableLanguage": "English",
           "priceRange": "Free - $99",
           "telephone": "+1-555-BRUSHIN",
-          "email": "hello@brushin.in"
+          "email": "work.harsh.batheja@gmail.com"
         },
         
         // Educational Organization Schema

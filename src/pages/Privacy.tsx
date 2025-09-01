@@ -123,9 +123,9 @@ const Privacy = () => {
                 </ul>
                 <p>
                   To exercise these rights, please contact us at{" "}
-                  <a href="mailto:privacy@brushin.in" className="text-sky-600 dark:text-sky-400 hover:underline">
-                    privacy@brushin.in
-                  </a>
+                          <a href="mailto:work.harsh.batheja@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">
+          work.harsh.batheja@gmail.com
+        </a>
                 </p>
               </div>
             </Card>
@@ -157,9 +157,9 @@ const Privacy = () => {
                   please contact us:
                 </p>
                 <div className="space-y-2">
-                  <p><strong>Email:</strong> <a href="mailto:privacy@brushin.in" className="text-sky-600 dark:text-sky-400 hover:underline">privacy@brushin.in</a></p>
-                  <p><strong>Address:</strong> 125 Cyber Hub, Sector 24, Gurugram, Delhi NCR 122002, India</p>
-                  <p><strong>Data Protection Officer:</strong> <a href="mailto:dpo@brushin.in" className="text-sky-600 dark:text-sky-400 hover:underline">dpo@brushin.in</a></p>
+                  <p><strong>Email:</strong> <a href="mailto:work.harsh.batheja@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">work.harsh.batheja@gmail.com</a></p>
+                                      <p><strong>Address:</strong> Delhi NCR, Ghaziabad, Christ University, India</p>
+                  <p><strong>Data Protection Officer:</strong> <a href="mailto:work.harsh.batheja@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">work.harsh.batheja@gmail.com</a></p>
                 </div>
               </div>
             </Card>
