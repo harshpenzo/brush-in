@@ -52,6 +52,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, loading, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
+    // When using asChild, we can't add the loading spinner as it would create multiple children
+    if (asChild && loading) {
+      console.warn("Loading state is not supported when using asChild prop")
+    }
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, loading, className }))}
@@ -59,7 +64,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {children}
-        {loading && (
+        {!asChild && loading && (
           <div className="absolute inset-0 flex items-center justify-center">
             <Loader2 className="h-[1.2em] w-[1.2em] animate-spin" />
           </div>
