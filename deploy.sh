@@ -35,6 +35,12 @@ echo "📊 Analyzing bundle sizes..."
 du -sh dist/js/*.js
 du -sh dist/css/*.css
 
+# Copy deployment configuration files to dist
+echo "📋 Copying deployment configuration files..."
+cp public/_redirects dist/ 2>/dev/null || echo "⚠️  _redirects not found"
+cp vercel.json dist/ 2>/dev/null || echo "⚠️  vercel.json not found"
+cp netlify.toml dist/ 2>/dev/null || echo "⚠️  netlify.toml not found"
+
 # Verify critical files exist
 echo "🔍 Verifying critical files..."
 required_files=(
@@ -53,6 +59,20 @@ for file in "${required_files[@]}"; do
     fi
 done
 
+# Test routing configuration
+echo "🔗 Checking routing configuration..."
+if [ -f "dist/_redirects" ]; then
+    echo "✅ Netlify redirects configured"
+else
+    echo "⚠️  Netlify redirects not found - may cause routing issues"
+fi
+
+if [ -f "dist/vercel.json" ]; then
+    echo "✅ Vercel configuration found"
+else
+    echo "⚠️  Vercel configuration not found - may cause routing issues"
+fi
+
 # Create deployment archive
 echo "📦 Creating deployment archive..."
 tar -czf brushin-production-$(date +%Y%m%d-%H%M%S).tar.gz dist/
@@ -65,5 +85,10 @@ echo "Next steps:"
 echo "1. Upload dist/ contents to your web server"
 echo "2. Configure HTTPS/SSL certificate"
 echo "3. Set up environment variables"
-echo "4. Test all routes and functionality"
-echo "5. Monitor performance and errors"
+echo "4. Configure SPA routing (CRITICAL for /about page):"
+echo "   - Netlify: Uses _redirects file (already included)"
+echo "   - Vercel: Uses vercel.json (already included)"
+echo "   - Apache: Add RewriteRule ^(?!.*\\.).*$ /index.html [L]"
+echo "   - Nginx: Add try_files \$uri \$uri/ /index.html;"
+echo "5. Test all routes and functionality"
+echo "6. Monitor performance and errors"
