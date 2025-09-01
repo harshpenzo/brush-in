@@ -61,7 +61,7 @@ const Footer = () => {
                 <Link to="/contact" className="hover:text-sky-400 transition-colors py-1 block touch-target">Contact</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-sky-400 transition-colors py-1 block touch-target">Blog</a>
+                <Link to="/blog" className="hover:text-sky-400 transition-colors py-1 block touch-target">Blog</Link>
               </li>
             </ul>
           </div>
@@ -70,13 +70,13 @@ const Footer = () => {
             <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-white">Legal</h3>
             <ul className="space-y-2 sm:space-y-3 text-slate-400 text-sm sm:text-base">
               <li>
-                <a href="#" className="hover:text-sky-400 transition-colors py-1 block touch-target">Terms of Service</a>
+                <Link to="/terms" className="hover:text-sky-400 transition-colors py-1 block touch-target">Terms of Service</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-sky-400 transition-colors py-1 block touch-target">Privacy Policy</a>
+                <Link to="/privacy" className="hover:text-sky-400 transition-colors py-1 block touch-target">Privacy Policy</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-sky-400 transition-colors py-1 block touch-target">Cookie Policy</a>
+                <Link to="/cookie-policy" className="hover:text-sky-400 transition-colors py-1 block touch-target">Cookie Policy</Link>
               </li>
             </ul>
           </div>

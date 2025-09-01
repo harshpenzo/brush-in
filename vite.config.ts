@@ -26,20 +26,50 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2020",
     outDir: "dist",
-    sourcemap: true,
+    sourcemap: mode === 'development', // Disable source maps in production
+    minify: mode === 'production' ? 'terser' : false,
     rollupOptions: {
       output: {
         manualChunks: {
           react: ["react", "react-dom"],
           router: ["react-router-dom"],
           ui: ["@radix-ui/react-toast", "@radix-ui/react-tooltip", "@radix-ui/react-tabs"],
+          utils: ["@tanstack/react-query", "react-helmet-async"],
+        },
+        // Optimize chunk naming for better caching
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
+          return `js/[name]-[hash].js`;
+        },
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/\.(css)$/.test(assetInfo.name)) {
+            return `css/[name]-[hash].${ext}`;
+          }
+          if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(assetInfo.name)) {
+            return `images/[name]-[hash].${ext}`;
+          }
+          return `assets/[name]-[hash].${ext}`;
         },
       },
     },
+    // Enable terser for better minification in production
+    terserOptions: mode === 'production' ? {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    } : undefined,
   },
   server: {
     host: true,
     port: 8080,
     strictPort: true,
+  },
+  // Environment-specific configurations
+  define: {
+    __DEV__: mode === 'development',
+    __PROD__: mode === 'production',
   },
 }));
