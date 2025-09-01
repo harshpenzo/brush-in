@@ -136,24 +136,26 @@ const About = () => {
 
   return (
     <Layout>
-      <SEOMetaTags
-        title="About Brushin.in - AI LinkedIn Post Generator | Our Story & Mission"
-        description="Discover how Brushin.in became the #1 AI LinkedIn post generator. Learn about our mission to help professionals create viral content and build their personal brand with AI technology."
-        keywords="about Brushin.in, AI LinkedIn generator company, LinkedIn content creation team, AI writing tool developers, professional content creation"
-        url="https://brushin.in/about"
-        schemaMarkup={aboutSchemaMarkup}
-      />
-      <div className="min-h-screen py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute -top-[500px] -right-[500px] w-[800px] h-[800px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
-        <div className="absolute -bottom-[300px] -left-[300px] w-[500px] h-[500px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none" style={{ animationDelay: '2s' }}></div>
-        
-        <div className="container px-4 mx-auto relative z-10 max-w-7xl">
-          <AboutHero onSectionRef={setSectionRef} isLoaded={isLoaded} />
-          <AboutMission onSectionRef={setSectionRef} />
-          <AboutTeam onSectionRef={setSectionRef} />
-          <AboutValues onSectionRef={setSectionRef} />
-          <AboutCTA onSectionRef={setSectionRef} />
+      <div>
+        <SEOMetaTags
+          title="About Brushin.in - AI LinkedIn Post Generator | Our Story & Mission"
+          description="Discover how Brushin.in became the #1 AI LinkedIn post generator. Learn about our mission to help professionals create viral content and build their personal brand with AI technology."
+          keywords="about Brushin.in, AI LinkedIn generator company, LinkedIn content creation team, AI writing tool developers, professional content creation"
+          url="https://brushin.in/about"
+          schemaMarkup={aboutSchemaMarkup}
+        />
+        <div className="min-h-screen py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+          {/* Animated background elements */}
+          <div className="absolute -top-[500px] -right-[500px] w-[800px] h-[800px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
+          <div className="absolute -bottom-[300px] -left-[300px] w-[500px] h-[500px] bg-sky-500/5 rounded-full blur-3xl animate-pulse pointer-events-none" style={{ animationDelay: '2s' }}></div>
+          
+          <div className="container px-4 mx-auto relative z-10 max-w-7xl">
+            <AboutHero onSectionRef={setSectionRef} isLoaded={isLoaded} />
+            <AboutMission onSectionRef={setSectionRef} />
+            <AboutTeam onSectionRef={setSectionRef} />
+            <AboutValues onSectionRef={setSectionRef} />
+            <AboutCTA onSectionRef={setSectionRef} />
+          </div>
         </div>
       </div>
     </Layout>
