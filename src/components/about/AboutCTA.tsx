@@ -20,11 +20,11 @@ const AboutCTA = ({ onSectionRef }: AboutCTAProps) => {
         the best AI LinkedIn post generator. Create engaging content that drives real engagement!
       </p>
       <div className="flex flex-col sm:flex-row justify-center gap-4">
-        <Button size="lg" className="bg-sky-600 hover:bg-sky-700 text-white" asChild>
-          <a href="/" aria-label="Start creating LinkedIn posts with Brushin AI">Try Brushin AI Free</a>
+        <Button size="lg" className="bg-sky-600 hover:bg-sky-700 text-white" onClick={() => window.location.href = '/'}>
+          Try Brushin AI Free
         </Button>
-        <Button size="lg" variant="outline" className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" asChild>
-          <a href="/testimonials" aria-label="Read success stories from LinkedIn content creators">Read Success Stories</a>
+        <Button size="lg" variant="outline" className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" onClick={() => window.location.href = '/testimonials'}>
+          Read Success Stories
         </Button>
       </div>
     </section>
