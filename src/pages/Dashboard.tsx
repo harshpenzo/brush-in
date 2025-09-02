@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Edit, Copy, Calendar, BarChart3, User, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import UsageTracker from "@/components/UsageTracker";
 
 const Dashboard = () => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -150,6 +151,34 @@ const Dashboard = () => {
                 >
                   Create New Post
                 </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+              <div className="lg:col-span-1">
+                <UsageTracker />
+              </div>
+              <div className="lg:col-span-3">
+                <Card className="border-slate-200 dark:border-slate-700">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Button 
+                        onClick={() => navigate("/")} 
+                        className="bg-sky-600 hover:bg-sky-700 text-white h-12"
+                      >
+                        Create New Post
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => navigate("/pricing")}
+                        className="h-12 border-slate-300 dark:border-slate-600"
+                      >
+                        View Pricing
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 

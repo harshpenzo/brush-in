@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider, Helmet } from "react-helmet-async";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import AppRoutes from "./AppRoutes";
 
 // Create a client
@@ -21,9 +22,10 @@ const App = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
       <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <TooltipProvider>
+        <ErrorBoundary>
+          <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+              <TooltipProvider>
               <Helmet>
                 <title>Brushin.in - Best AI LinkedIn Post Generator 2025 | Create Viral Content in Seconds</title>
                 <meta name="description" content="Brushin.in is the #1 AI LinkedIn post generator trusted by 100,000+ professionals. Create viral LinkedIn content, boost engagement by 500%, and build your personal brand with our advanced AI LinkedIn content creator. Get 10 free posts monthly!" />
@@ -100,7 +102,8 @@ const App = () => {
             </TooltipProvider>
           </BrowserRouter>
         </QueryClientProvider>
-      </HelmetProvider>
+      </ErrorBoundary>
+    </HelmetProvider>
     </div>
   );
 };

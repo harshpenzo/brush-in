@@ -14,6 +14,7 @@ import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
 import { generateGeminiPost, optimizeGeminiPost, generateGeminiHashtags } from "@/services/geminiService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { canCreatePost, incrementPostCount } from "@/services/usageService";
 import SEOMetaTags from "@/components/SEOMetaTags";
 import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
 import AdvancedSEO from "@/components/AdvancedSEO";
@@ -38,7 +39,7 @@ const Index = () => {
   const postCreatorRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   // Check if user is authenticated before proceeding
   const checkAuthAndProceed = (option: "create" | "optimize") => {
@@ -60,6 +61,27 @@ const Index = () => {
   };
 
   const handleGeneratePost = async (values: CreatePostFormValues) => {
+    if (!user?.id) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to generate posts",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check usage limits before generating
+    const { canCreate, usage } = await canCreatePost(user.id);
+    if (!canCreate) {
+      toast({
+        title: "Usage limit reached",
+        description: `You've reached your monthly limit of ${usage?.monthly_limit || 50} posts. Upgrade for unlimited access!`,
+        variant: "destructive"
+      });
+      navigate("/pricing");
+      return;
+    }
+
     setIsGenerating(true);
     
     try {
@@ -122,6 +144,9 @@ Humanization guidelines:
       setHashtags(generatedHashtags);
       
       setGeneratedPost(generatedPost);
+
+      // Increment usage count after successful generation
+      await incrementPostCount(user.id);
       
       toast({
         title: "Post generated successfully",
@@ -140,6 +165,27 @@ Humanization guidelines:
   };
 
   const handleOptimizePost = async (values: OptimizePostFormValues) => {
+    if (!user?.id) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to optimize posts",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check usage limits before optimizing
+    const { canCreate, usage } = await canCreatePost(user.id);
+    if (!canCreate) {
+      toast({
+        title: "Usage limit reached",
+        description: `You've reached your monthly limit of ${usage?.monthly_limit || 50} posts. Upgrade for unlimited access!`,
+        variant: "destructive"
+      });
+      navigate("/pricing");
+      return;
+    }
+
     setIsGenerating(true);
     
     try {
@@ -180,6 +226,9 @@ Humanization guidelines:
       setHashtags(generatedHashtags);
       
       setGeneratedPost(optimizedPost);
+
+      // Increment usage count after successful optimization
+      await incrementPostCount(user.id);
       
       toast({
         title: "Post optimized successfully",

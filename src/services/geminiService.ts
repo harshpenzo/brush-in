@@ -45,18 +45,56 @@ interface GeminiErrorResponse {
   };
 }
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
+import { apiConfig } from '@/lib/environment';
+
+const GEMINI_API_KEY = apiConfig.geminiApiKey;
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent";
 
-// Function to create a system prompt for LinkedIn content creation
-const createLinkedInSystemPrompt = (tone: string, industry: string) => {
-  return `You are an expert LinkedIn content creator specializing in ${industry} industry content.
-Your task is to create highly engaging, professional LinkedIn posts that feel authentic and human-written.
-Write in a ${tone} tone that resonates with professional audiences.
-Focus on creating content that drives genuine engagement through thoughtful insights, questions, or stories.
-Avoid clichés, generic advice, and overly promotional language.
-Format the post appropriately for LinkedIn with proper spacing, occasional emojis where relevant, and appropriate hashtags.
-The post should be concise but substantive, with clear value for the reader.`;
+// Advanced LinkedIn content creation prompt with structured formatting
+const createAdvancedLinkedInPrompt = (tone: string, industry: string, contentStyle: string, postLength: string) => {
+  const lengthGuidelines = {
+    short: "100-200 characters - Perfect for quick insights or announcements",
+    medium: "200-400 characters - Ideal for storytelling with engagement hooks", 
+    long: "400-700 characters - Comprehensive posts with detailed insights and CTAs"
+  };
+
+  const styleInstructions = {
+    storytelling: "Use narrative structure with a clear beginning, middle, and end. Include personal anecdotes or case studies.",
+    listicle: "Present information in numbered or bulleted format. Use clear, actionable points.",
+    "question-based": "Start with thought-provoking questions to drive engagement. Encourage responses and discussions.",
+    educational: "Share valuable insights, tips, or industry knowledge. Focus on teaching something new.",
+    inspirational: "Use motivational language and success stories. Include uplifting messages and calls to action."
+  };
+
+  return `You are an expert LinkedIn content strategist specializing in ${industry} industry content.
+
+CONTENT REQUIREMENTS:
+- Length: ${lengthGuidelines[postLength as keyof typeof lengthGuidelines] || lengthGuidelines.medium}
+- Style: ${styleInstructions[contentStyle as keyof typeof styleInstructions] || styleInstructions.educational}
+- Tone: ${tone} and professional
+
+FORMATTING GUIDELINES:
+- Use strategic line breaks for readability (maximum 2-3 lines per paragraph)
+- Include 1-2 relevant emojis per post (not excessive)
+- Add 3-5 strategic hashtags at the end
+- Include a clear call-to-action or question to drive engagement
+
+CONTENT STRATEGY:
+- Hook: Start with an attention-grabbing opening line
+- Value: Provide genuine insights or actionable advice
+- Engagement: End with a question or call-to-action
+- Authenticity: Write in a human, conversational style
+- Industry Focus: Tailor content specifically for ${industry} professionals
+
+AVOID:
+- Generic motivational quotes
+- Overly salesy language
+- Excessive hashtags or emojis
+- Clichéd business jargon
+- Controversial or polarizing topics
+
+FORMAT OUTPUT:
+Provide the post content with proper formatting, including line breaks and hashtags.`;
 };
 
 /**
@@ -93,8 +131,8 @@ Make sure the post sounds natural, professional, and engaging.`;
     const requestPayload: GeminiRequest = {
       contents: [
         {
-          parts: [{ text: createLinkedInSystemPrompt(tone, industry) }],
-          role: "system"
+          parts: [{ text: createAdvancedLinkedInPrompt(tone, industry, contentStyle, postLength) }],
+          role: "user"
         },
         {
           parts: [{ text: userPrompt }],
