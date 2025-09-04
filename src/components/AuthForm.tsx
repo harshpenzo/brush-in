@@ -184,10 +184,10 @@ const AuthForm = () => {
                       </div>
                     </CardContent>
                     
-                    <CardFooter className="space-y-4">
+                    <CardFooter className="space-y-4 pt-6">
                       <Button 
                         type="submit" 
-                        className="w-full hover-lift" 
+                        className="w-full h-11 font-medium" 
                         disabled={loading}
                         size="lg"
                       >
@@ -204,10 +204,12 @@ const AuthForm = () => {
                         )}
                       </Button>
                       
-                      <div className="relative">
-                        <Separator />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="bg-background px-2 text-xs text-muted-foreground">
+                      <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                          <Separator className="w-full" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-card px-3 text-muted-foreground font-medium">
                             OR
                           </span>
                         </div>
@@ -216,7 +218,7 @@ const AuthForm = () => {
                       <Button 
                         type="button"
                         variant="outline" 
-                        className="w-full hover-lift" 
+                        className="w-full h-11 font-medium border-border hover:bg-accent" 
                         disabled={loading}
                         size="lg"
                         onClick={loginWithGoogle}
@@ -321,10 +323,10 @@ const AuthForm = () => {
                       </div>
                     </CardContent>
                     
-                    <CardFooter className="space-y-4">
+                    <CardFooter className="space-y-4 pt-6">
                       <Button 
                         type="submit" 
-                        className="w-full hover-lift" 
+                        className="w-full h-11 font-medium" 
                         disabled={loading || !termsAccepted}
                         size="lg"
                       >
@@ -341,10 +343,12 @@ const AuthForm = () => {
                         )}
                       </Button>
                       
-                      <div className="relative">
-                        <Separator />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="bg-background px-2 text-xs text-muted-foreground">
+                      <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                          <Separator className="w-full" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-card px-3 text-muted-foreground font-medium">
                             OR
                           </span>
                         </div>
@@ -353,7 +357,7 @@ const AuthForm = () => {
                       <Button 
                         type="button"
                         variant="outline" 
-                        className="w-full hover-lift" 
+                        className="w-full h-11 font-medium border-border hover:bg-accent" 
                         disabled={loading}
                         size="lg"
                         onClick={loginWithGoogle}
