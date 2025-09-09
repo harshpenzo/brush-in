@@ -9,7 +9,6 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
 }
@@ -219,8 +218,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         options: {
           data: {
             name
-          },
-          emailRedirectTo: `${window.location.origin}/auth`,
+          }
         }
       });
 
@@ -240,19 +238,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             title: "Account already exists",
             description: "An account with this email already exists. Please log in instead.",
           });
-          
-          // Switch to login tab
           return;
-        } else if (!data.user.email_confirmed_at) {
-          toast({
-            title: "Account created!",
-            description: "Please check your email to confirm your account before logging in.",
-          });
         } else {
-          // Auto login if email confirmation not required
           toast({
-            title: "Account created",
-            description: "Your account has been created successfully!",
+            title: "Account created successfully!",
+            description: "You can now sign in with your credentials.",
           });
           
           // Navigate programmatically rather than refreshing the page
@@ -266,35 +256,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const loginWithGoogle = async () => {
-    try {
-      setLoading(true);
-      
-      // Clean up existing state first
-      cleanupAuthState();
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth`
-        }
-      });
-
-      if (error) {
-        toast({
-          title: "Google sign-in failed",
-          description: error.message,
-          variant: "destructive"
-        });
-        throw error;
-      }
-
-      // OAuth redirect will handle the rest
-    } catch (error) {
-      console.error('Google login error:', error);
-      setLoading(false);
-    }
-  };
 
   const logout = async () => {
     try {
@@ -329,7 +290,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, signUp, loginWithGoogle, logout, loading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, signUp, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
