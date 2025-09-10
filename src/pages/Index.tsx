@@ -11,7 +11,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
 import { CreatePostFormValues } from "@/components/post/CreatePostForm";
 import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
-import { generateGeminiPost, optimizeGeminiPost, generateGeminiHashtags } from "@/services/geminiService";
+import { generateMultiAIPost, optimizeMultiAIPost, generateMultiAIHashtags } from "@/services/multiAIService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { canCreatePost, incrementPostCount } from "@/services/usageService";
@@ -103,15 +103,15 @@ Humanization guidelines:
 - Include 3–5 relevant, niche+popular mix hashtags`
         : values.description || "";
 
-      const generatedPost = await generateGeminiPost(
-        values.topic,
-        values.tone,
-        values.keywords || "",
-        humanizedDescription,
-        values.contentStyle,
-        values.postLength,
-        values.industry
-      );
+      const generatedPost = await generateMultiAIPost({
+        topic: values.topic,
+        tone: values.tone,
+        keywords: values.keywords || "",
+        description: humanizedDescription,
+        contentStyle: values.contentStyle,
+        postLength: values.postLength,
+        industry: values.industry
+      });
       
       // Calculate enhanced readability score based on content analysis
       const calculateReadabilityScore = (text: string) => {
@@ -135,12 +135,12 @@ Humanization guidelines:
       const calculatedScore = calculateReadabilityScore(generatedPost);
       setReadabilityScore(calculatedScore);
       
-      // Generate related hashtags with Gemini API
-      const generatedHashtags = await generateGeminiHashtags(
-        values.topic, 
-        values.industry, 
-        values.keywords || ""
-      );
+      // Generate related hashtags with Multi-AI approach
+      const generatedHashtags = await generateMultiAIHashtags({
+        topic: values.topic, 
+        industry: values.industry, 
+        keywords: values.keywords || ""
+      });
       setHashtags(generatedHashtags);
       
       setGeneratedPost(generatedPost);
@@ -199,10 +199,10 @@ Humanization guidelines:
       const enhancedGoal = values.humanize 
         ? `${values.optimizationGoal} with humanized tone (first-person, natural contractions, brief anecdote where relevant, short paragraphs, end with a thoughtful question, add 3–5 relevant hashtags)`
         : values.optimizationGoal;
-      const optimizedPost = await optimizeGeminiPost(
-        values.existingPost, 
-        enhancedGoal
-      );
+      const optimizedPost = await optimizeMultiAIPost({
+        post: values.existingPost, 
+        optimizationGoal: enhancedGoal
+      });
       
       // Calculate enhanced readability score
       const calculateReadabilityScore = (text: string) => {
@@ -222,7 +222,11 @@ Humanization guidelines:
       setReadabilityScore(calculatedScore);
       
       // Generate related hashtags
-      const generatedHashtags = await generateGeminiHashtags(words, "general", "");
+      const generatedHashtags = await generateMultiAIHashtags({
+        topic: words, 
+        industry: "general", 
+        keywords: ""
+      });
       setHashtags(generatedHashtags);
       
       setGeneratedPost(optimizedPost);

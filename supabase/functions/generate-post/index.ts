@@ -29,17 +29,17 @@ async function callOpenAI(messages: any[], action: string) {
     throw new Error('Invalid OpenAI API key format. Please check your API key.');
   }
 
-  const model = 'gpt-3.5-turbo';
+  const model = 'gpt-5-2025-08-07'; // Latest GPT-5 model for superior content generation
   console.log(`Using OpenAI model: ${model}`);
 
   const requestBody = {
     model: model,
     messages: messages,
-    temperature: action === 'hashtags' ? 0.3 : 0.85,
-    max_tokens: action === 'hashtags' ? 100 : 600,
+    max_completion_tokens: action === 'hashtags' ? 150 : 1200, // Using max_completion_tokens for GPT-5
+    // Note: temperature not supported in GPT-5, defaults to 1.0 for optimal creativity
     top_p: 0.9,
-    frequency_penalty: 0.2,
-    presence_penalty: 0.1,
+    frequency_penalty: 0.3,
+    presence_penalty: 0.2,
   };
 
   console.log('OpenAI request payload:', JSON.stringify({
@@ -164,55 +164,96 @@ serve(async (req) => {
     let userPrompt = '';
 
     if (action === 'generate') {
-      systemPrompt = `You are an expert LinkedIn content strategist and AI specialist with deep expertise in ${industry} industry trends, audience psychology, and viral content creation. Your mission is to create authentic, engaging LinkedIn posts that drive meaningful professional engagement and go viral.
+      systemPrompt = `You are an elite LinkedIn content strategist with 15+ years of experience creating viral posts for Fortune 500 executives and industry thought leaders. You specialize in ${industry} content that drives genuine engagement, builds authority, and generates business results.
 
-Content Creation Philosophy:
-- Lead with genuine insight and industry expertise
-- Use specific examples and concrete details
-- Create emotional connection through storytelling
-- Avoid generic advice and corporate buzzwords
-- Focus on practical value and actionable takeaways
-- Make content shareable and discussion-worthy
+🎯 CONTENT STRATEGY FRAMEWORK:
 
-Professional Formatting:
-- Hook: Start with a compelling question, surprising statistic, or bold statement
-- Structure: Use clear narrative flow with setup, insight, and resolution
-- Readability: Short paragraphs (1-3 sentences), strategic line breaks
-- Engagement: End with genuine questions or meaningful calls-to-action
-- Length: ${postLength === 'short' ? '150-400' : postLength === 'medium' ? '400-800' : '800-1200'} characters
-- Tone: ${tone} but always authentic and conversational
+1. PSYCHOLOGY-DRIVEN HOOKS:
+   • Use pattern interrupts that break scroll momentum
+   • Start with contrarian takes or surprising insights
+   • Include specific numbers, percentages, or timeframes
+   • Pose questions that create instant curiosity gaps
+   • Challenge conventional wisdom in the ${industry} space
 
-Visual Enhancement:
-- Strategic emoji use (2-4 relevant emojis maximum)
-- Bullet points or numbered lists when appropriate
-- White space for enhanced readability
-- Bold text for emphasis on key points
+2. VALUE-FIRST STORYTELLING:
+   • Share real experiences with lessons learned
+   • Include specific examples with measurable outcomes
+   • Use the "Problem → Insight → Solution → Result" structure
+   • Add personal vulnerability for authentic connection
+   • Provide frameworks or templates others can use
 
-The post should feel like it came from a real industry professional sharing genuine insights, not generic AI content.`;
+3. ENGAGEMENT OPTIMIZATION:
+   • Write for ${industry} professionals actively seeking growth
+   • Use conversational tone that feels like peer-to-peer advice
+   • Include actionable takeaways in every paragraph
+   • End with thought-provoking questions that spark debate
+   • Create content worth saving and sharing
+
+4. FORMAT FOR MAXIMUM IMPACT:
+   • Length: ${postLength === 'short' ? '200-350' : postLength === 'medium' ? '400-650' : '700-1000'} characters
+   • Structure: 1-2 sentence paragraphs with strategic white space
+   • Tone: ${tone} yet approachable and human
+   • Emojis: 2-3 strategically placed for visual breaks
+   • Hashtags: 3-5 high-value tags that expand reach
+
+5. AUTHENTICITY MARKERS:
+   • Avoid corporate jargon and buzzword bingo
+   • Include specific details that prove credibility
+   • Use "I" statements for personal connection
+   • Share both successes AND failures
+   • Write like you're talking to a colleague over coffee
+
+🚀 VIRAL CONTENT ELEMENTS:
+- Controversial but defensible opinions
+- Behind-the-scenes industry insights
+- Contrarian frameworks that challenge status quo
+- Specific examples with real numbers/results
+- Content that makes readers think "I wish I knew this earlier"
+
+Remember: The best LinkedIn posts feel like valuable conversations with industry insiders, not marketing copy.`;
 
       const keywordsList = keywords ? keywords.split(",").map((k: string) => k.trim()).filter((k: string) => k) : [];
       const keywordsText = keywordsList.length > 0 ? `Keywords to naturally incorporate: ${keywordsList.join(", ")}` : "";
       
-      userPrompt = `Create a high-quality LinkedIn post about: ${topic}
+      userPrompt = `Create a breakthrough LinkedIn post about: "${topic}"
 
-Industry Context: ${industry}
-Content Style: ${contentStyle}
-Tone: ${tone}
-Post Length: ${postLength}
-${keywordsText}
-${description ? `Additional Context: ${description}` : ''}
+🎯 TARGET AUDIENCE: ${industry} professionals seeking competitive advantage
+📊 CONTENT APPROACH: ${contentStyle} style with ${tone} tone
+📏 OPTIMAL LENGTH: ${postLength} format for maximum engagement
+🔑 STRATEGIC KEYWORDS: ${keywordsText || 'Focus on industry-relevant terms'}
+💡 CONTEXT: ${description || 'Leverage your expertise to provide unique insights on this topic'}
 
-Requirements:
-1. Start with a compelling hook that stops scrollers
-2. Include specific, researched insights about the topic
-3. Use storytelling elements for emotional connection
-4. Provide genuine value and actionable takeaways
-5. End with an engaging question or call-to-action
-6. Include 3-5 relevant hashtags at the end
-7. Format with short paragraphs and strategic white space
-8. Make it authentic and professional, not robotic
+🚀 EXECUTION REQUIREMENTS:
 
-Create content that feels like genuine professional insight and drives real engagement.`;
+HOOK (First 1-2 lines):
+- Create an immediate pattern interrupt
+- Use specific numbers, surprising facts, or contrarian statements
+- Make readers think "Wait, what?" or "I need to know more"
+- Challenge common assumptions in ${industry}
+
+BODY (Main content):
+- Share a specific example, case study, or personal experience
+- Include actionable insights readers can implement immediately
+- Use the structure: Insight → Evidence → Application
+- Add credibility markers (numbers, specific companies, real outcomes)
+- Write in short, scannable paragraphs (1-2 sentences max)
+
+ENGAGEMENT TRIGGER (Final section):
+- End with a thought-provoking question that sparks debate
+- OR provide a framework/template others can use
+- OR ask for specific experiences/opinions from the audience
+- Make it impossible for engaged readers NOT to comment
+
+FORMATTING FOR VIRALITY:
+✓ Strategic line breaks for mobile readability
+✓ 2-3 relevant emojis for visual appeal (not excessive)
+✓ Bullet points or numbered lists when appropriate
+✓ 3-5 high-impact hashtags that industry leaders actually use
+✓ Content that begs to be shared or saved
+
+🎯 FINAL GOAL: Create a post that established ${industry} professionals would share with their networks because it makes them look smart and provides genuine value.
+
+Write this as if you're sharing hard-earned wisdom with ambitious peers who respect expertise over fluff.`;
 
     } else if (action === 'optimize') {
       systemPrompt = `You are an expert LinkedIn content optimizer specializing in ${optimizationGoal}. Your role is to enhance existing posts while maintaining their authentic voice and core message.
