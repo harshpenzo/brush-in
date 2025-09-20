@@ -5,7 +5,117 @@ import { toast } from "@/hooks/use-toast";
 /**
  * Multi-AI service that uses multiple AI providers for enhanced content generation
  * This provides fallback options and can combine results from different models
+ * Enhanced with robust error handling, retry mechanisms, and error categorization
  */
+
+// Error types for better categorization
+enum ErrorType {
+  NETWORK = 'NETWORK',
+  API_LIMIT = 'API_LIMIT', 
+  VALIDATION = 'VALIDATION',
+  AUTHENTICATION = 'AUTHENTICATION',
+  UNKNOWN = 'UNKNOWN'
+}
+
+interface CategorizedError {
+  type: ErrorType;
+  message: string;
+  originalError: any;
+  retryable: boolean;
+}
+
+/**
+ * Categorize errors based on their characteristics
+ */
+const categorizeError = (error: any): CategorizedError => {
+  const message = error?.message?.toLowerCase() || '';
+  const status = error?.status || error?.response?.status;
+
+  if (message.includes('network') || message.includes('fetch') || !status) {
+    return {
+      type: ErrorType.NETWORK,
+      message: 'Network connection error',
+      originalError: error,
+      retryable: true
+    };
+  }
+
+  if (status === 429 || message.includes('rate limit') || message.includes('quota')) {
+    return {
+      type: ErrorType.API_LIMIT,
+      message: 'API rate limit exceeded',
+      originalError: error,
+      retryable: true
+    };
+  }
+
+  if (status === 401 || status === 403 || message.includes('unauthorized') || message.includes('api key')) {
+    return {
+      type: ErrorType.AUTHENTICATION,
+      message: 'Authentication failed',
+      originalError: error,
+      retryable: false
+    };
+  }
+
+  if (status === 400 || message.includes('validation') || message.includes('invalid')) {
+    return {
+      type: ErrorType.VALIDATION,
+      message: 'Invalid request parameters',
+      originalError: error,
+      retryable: false
+    };
+  }
+
+  return {
+    type: ErrorType.UNKNOWN,
+    message: error?.message || 'Unknown error occurred',
+    originalError: error,
+    retryable: true
+  };
+};
+
+/**
+ * Retry mechanism with exponential backoff
+ */
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> => {
+  let lastError: CategorizedError;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = categorizeError(error);
+      
+      console.warn(`Attempt ${attempt + 1}/${maxRetries} failed:`, {
+        type: lastError.type,
+        message: lastError.message,
+        retryable: lastError.retryable
+      });
+
+      // Don't retry non-retryable errors
+      if (!lastError.retryable) {
+        throw lastError;
+      }
+
+      // Don't wait after the last attempt
+      if (attempt === maxRetries - 1) {
+        throw lastError;
+      }
+
+      // Exponential backoff with jitter
+      const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
+      console.log(`Retrying in ${Math.round(delay)}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError!;
+};
 
 interface PostGenerationOptions {
   topic: string;
@@ -31,50 +141,75 @@ interface HashtagOptions {
 /**
  * Generate a LinkedIn post using the best available AI service
  * Tries OpenAI first (GPT-5), then falls back to Gemini if needed
+ * Enhanced with retry logic and proper error handling
  */
 export const generateMultiAIPost = async (options: PostGenerationOptions): Promise<string> => {
   const { topic, tone, keywords, description, contentStyle, postLength, industry } = options;
   
-  console.log('Multi-AI post generation started with advanced strategy');
+  console.log('Multi-AI post generation started with enhanced error handling');
   
   try {
-    // Primary: Use OpenAI with GPT-5 for best results
+    // Primary: Use OpenAI with GPT-5 with retry logic
     console.log('Attempting generation with OpenAI GPT-5...');
-    const openAIResult = await generateOpenAIPost(
-      topic, tone, keywords, description, contentStyle, postLength, industry
+    const openAIResult = await retryWithBackoff(
+      async () => {
+        const result = await generateOpenAIPost(
+          topic, tone, keywords, description, contentStyle, postLength, industry
+        );
+        
+        if (!result || result.trim().length < 50) {
+          throw new Error('OpenAI result too short or empty');
+        }
+        
+        return result;
+      },
+      3, // max retries
+      1000 // base delay
     );
     
-    if (openAIResult && openAIResult.trim().length > 50) {
-      console.log('OpenAI generation successful');
-      return openAIResult;
-    }
-    
-    throw new Error('OpenAI result too short or empty');
+    console.log('OpenAI generation successful');
+    return openAIResult;
     
   } catch (openAIError) {
-    console.warn('OpenAI generation failed, trying Gemini fallback:', openAIError);
+    const categorizedError = categorizeError(openAIError);
+    console.warn('OpenAI generation failed, trying Gemini fallback:', {
+      type: categorizedError.type,
+      message: categorizedError.message
+    });
     
     try {
-      // Fallback: Use Gemini Pro
+      // Fallback: Use Gemini Pro with retry logic
       console.log('Attempting generation with Gemini Pro...');
-      const geminiResult = await generateGeminiPost(
-        topic, tone, keywords, description, contentStyle, postLength, industry
+      const geminiResult = await retryWithBackoff(
+        async () => {
+          const result = await generateGeminiPost(
+            topic, tone, keywords, description, contentStyle, postLength, industry
+          );
+          
+          if (!result || result.trim().length < 50) {
+            throw new Error('Gemini result too short or empty');
+          }
+          
+          return result;
+        },
+        2, // fewer retries for fallback
+        1500 // slightly longer delay
       );
       
-      if (geminiResult && geminiResult.trim().length > 50) {
-        console.log('Gemini generation successful as fallback');
-        toast({
-          title: "Using Gemini AI",
-          description: "OpenAI was unavailable, used Gemini Pro as backup",
-          variant: "default"
-        });
-        return geminiResult;
-      }
-      
-      throw new Error('Gemini result too short or empty');
+      console.log('Gemini generation successful as fallback');
+      toast({
+        title: "Using Gemini AI",
+        description: "OpenAI was unavailable, used Gemini Pro as backup",
+        variant: "default"
+      });
+      return geminiResult;
       
     } catch (geminiError) {
-      console.error('Both AI services failed:', { openAIError, geminiError });
+      const geminiCategorizedError = categorizeError(geminiError);
+      console.error('Both AI services failed:', {
+        openAI: categorizedError,
+        gemini: geminiCategorizedError
+      });
       
       // Final fallback to local generation
       const { generateEnhancedPost } = await import("@/utils/postGenerationUtils");
@@ -90,46 +225,71 @@ export const generateMultiAIPost = async (options: PostGenerationOptions): Promi
 
 /**
  * Optimize a LinkedIn post using the best available AI service
+ * Enhanced with retry logic and proper error handling
  */
 export const optimizeMultiAIPost = async (options: OptimizationOptions): Promise<string> => {
   const { post, optimizationGoal } = options;
   
-  console.log('Multi-AI post optimization started');
+  console.log('Multi-AI post optimization started with enhanced error handling');
   
   try {
-    // Primary: Use OpenAI with GPT-5
+    // Primary: Use OpenAI with GPT-5 with retry logic
     console.log('Attempting optimization with OpenAI GPT-5...');
-    const openAIResult = await optimizeOpenAIPost(post, optimizationGoal);
+    const openAIResult = await retryWithBackoff(
+      async () => {
+        const result = await optimizeOpenAIPost(post, optimizationGoal);
+        
+        if (!result || result.trim().length < 50) {
+          throw new Error('OpenAI optimization result too short');
+        }
+        
+        return result;
+      },
+      3, // max retries
+      1000 // base delay
+    );
     
-    if (openAIResult && openAIResult.trim().length > 50) {
-      console.log('OpenAI optimization successful');
-      return openAIResult;
-    }
-    
-    throw new Error('OpenAI optimization result too short');
+    console.log('OpenAI optimization successful');
+    return openAIResult;
     
   } catch (openAIError) {
-    console.warn('OpenAI optimization failed, trying Gemini fallback:', openAIError);
+    const categorizedError = categorizeError(openAIError);
+    console.warn('OpenAI optimization failed, trying Gemini fallback:', {
+      type: categorizedError.type,
+      message: categorizedError.message
+    });
     
     try {
-      // Fallback: Use Gemini Pro
+      // Fallback: Use Gemini Pro with retry logic
       console.log('Attempting optimization with Gemini Pro...');
-      const geminiResult = await optimizeGeminiPost(post, optimizationGoal);
+      const geminiResult = await retryWithBackoff(
+        async () => {
+          const result = await optimizeGeminiPost(post, optimizationGoal);
+          
+          if (!result || result.trim().length < 50) {
+            throw new Error('Gemini optimization result too short');
+          }
+          
+          return result;
+        },
+        2, // fewer retries for fallback
+        1500 // slightly longer delay
+      );
       
-      if (geminiResult && geminiResult.trim().length > 50) {
-        console.log('Gemini optimization successful as fallback');
-        toast({
-          title: "Using Gemini AI",
-          description: "OpenAI was unavailable, used Gemini Pro for optimization",
-          variant: "default"
-        });
-        return geminiResult;
-      }
-      
-      throw new Error('Gemini optimization result too short');
+      console.log('Gemini optimization successful as fallback');
+      toast({
+        title: "Using Gemini AI",
+        description: "OpenAI was unavailable, used Gemini Pro for optimization",
+        variant: "default"
+      });
+      return geminiResult;
       
     } catch (geminiError) {
-      console.error('Both AI services failed for optimization:', { openAIError, geminiError });
+      const geminiCategorizedError = categorizeError(geminiError);
+      console.error('Both AI services failed for optimization:', {
+        openAI: categorizedError,
+        gemini: geminiCategorizedError
+      });
       
       // Final fallback to local optimization
       const { optimizeEnhancedPost } = await import("@/utils/postGenerationUtils");
@@ -145,41 +305,66 @@ export const optimizeMultiAIPost = async (options: OptimizationOptions): Promise
 
 /**
  * Generate hashtags using the best available AI service
+ * Enhanced with retry logic and proper error handling
  */
 export const generateMultiAIHashtags = async (options: HashtagOptions): Promise<string[]> => {
   const { topic, industry, keywords } = options;
   
-  console.log('Multi-AI hashtag generation started');
+  console.log('Multi-AI hashtag generation started with enhanced error handling');
   
   try {
-    // Primary: Use OpenAI with GPT-5
+    // Primary: Use OpenAI with GPT-5 with retry logic
     console.log('Attempting hashtag generation with OpenAI GPT-5...');
-    const openAIResult = await generateOpenAIHashtags(topic, industry, keywords);
+    const openAIResult = await retryWithBackoff(
+      async () => {
+        const result = await generateOpenAIHashtags(topic, industry, keywords);
+        
+        if (!result || result.length === 0) {
+          throw new Error('OpenAI hashtag result empty');
+        }
+        
+        return result;
+      },
+      3, // max retries
+      1000 // base delay
+    );
     
-    if (openAIResult && openAIResult.length > 0) {
-      console.log('OpenAI hashtag generation successful');
-      return openAIResult;
-    }
-    
-    throw new Error('OpenAI hashtag result empty');
+    console.log('OpenAI hashtag generation successful');
+    return openAIResult;
     
   } catch (openAIError) {
-    console.warn('OpenAI hashtag generation failed, trying Gemini fallback:', openAIError);
+    const categorizedError = categorizeError(openAIError);
+    console.warn('OpenAI hashtag generation failed, trying Gemini fallback:', {
+      type: categorizedError.type,
+      message: categorizedError.message
+    });
     
     try {
-      // Fallback: Use Gemini Pro
+      // Fallback: Use Gemini Pro with retry logic
       console.log('Attempting hashtag generation with Gemini Pro...');
-      const geminiResult = await generateGeminiHashtags(topic, industry, keywords);
+      const geminiResult = await retryWithBackoff(
+        async () => {
+          const result = await generateGeminiHashtags(topic, industry, keywords);
+          
+          if (!result || result.length === 0) {
+            throw new Error('Gemini hashtag result empty');
+          }
+          
+          return result;
+        },
+        2, // fewer retries for fallback
+        1500 // slightly longer delay
+      );
       
-      if (geminiResult && geminiResult.length > 0) {
-        console.log('Gemini hashtag generation successful as fallback');
-        return geminiResult;
-      }
-      
-      throw new Error('Gemini hashtag result empty');
+      console.log('Gemini hashtag generation successful as fallback');
+      return geminiResult;
       
     } catch (geminiError) {
-      console.error('Both AI services failed for hashtags:', { openAIError, geminiError });
+      const geminiCategorizedError = categorizeError(geminiError);
+      console.error('Both AI services failed for hashtags:', {
+        openAI: categorizedError,
+        gemini: geminiCategorizedError
+      });
       
       // Final fallback to local generation
       const { generateHashtags } = await import("@/utils/postGenerationUtils");
