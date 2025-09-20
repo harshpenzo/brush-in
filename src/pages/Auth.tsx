@@ -69,9 +69,11 @@ const Auth = () => {
     );
   }
   
-  // Redirect to dashboard if user is already logged in
+  // Redirect to intended destination if user is already logged in
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    const destination = sessionStorage.getItem('redirectAfterAuth') || '/dashboard';
+    sessionStorage.removeItem('redirectAfterAuth');
+    return <Navigate to={destination} replace />;
   }
 
   // Render the AuthForm with animated background to match home page

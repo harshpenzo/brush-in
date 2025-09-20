@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getAndClearRedirectDestination } from './useAuthGuard';
 
 interface AuthContextType {
   user: User | null;
@@ -72,10 +73,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(data.session.user);
         setIsAuthenticated(true);
         
-        // If this was an auth redirect, go to dashboard after successful login
+        // If this was an auth redirect, redirect to intended destination
         if (isAuthRedirect && location.pathname === '/auth') {
-          console.log('Redirecting to dashboard after successful auth...');
-          navigate('/dashboard', { replace: true });
+          const destination = getAndClearRedirectDestination();
+          console.log('Redirecting after successful auth to:', destination);
+          navigate(destination, { replace: true });
         }
       } else if (isAuthRedirect && !data?.session) {
         // Auth redirect with error
@@ -119,7 +121,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Use a timeout to avoid potential deadlocks with Supabase client
           setTimeout(() => {
             if (location.pathname === '/auth') {
-              navigate('/dashboard', { replace: true });
+              const destination = getAndClearRedirectDestination();
+              navigate(destination, { replace: true });
             }
           }, 0);
         }
@@ -195,8 +198,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: "You've successfully signed in",
         });
         
-        // Navigate programmatically rather than refreshing the page
-        navigate('/dashboard', { replace: true });
+        // Navigate to intended destination or dashboard
+        const destination = getAndClearRedirectDestination();
+        navigate(destination, { replace: true });
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -245,8 +249,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             description: "You can now sign in with your credentials.",
           });
           
-          // Navigate programmatically rather than refreshing the page
-          navigate('/dashboard', { replace: true });
+          // Navigate to intended destination or dashboard
+          const destination = getAndClearRedirectDestination();
+          navigate(destination, { replace: true });
         }
       }
     } catch (error) {
