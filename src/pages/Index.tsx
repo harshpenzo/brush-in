@@ -15,6 +15,7 @@ import { generateMultiAIPost, optimizeMultiAIPost, generateMultiAIHashtags } fro
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { canCreatePost, incrementPostCount } from "@/services/usageService";
+import { useGeneratePostMutation, useOptimizePostMutation, useGenerateHashtags } from "@/hooks/usePostQueries";
 import SEOMetaTags from "@/components/SEOMetaTags";
 import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
 import AdvancedSEO from "@/components/AdvancedSEO";
@@ -40,6 +41,10 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  
+  // React Query mutations for better caching and error handling
+  const generatePostMutation = useGeneratePostMutation();
+  const optimizePostMutation = useOptimizePostMutation();
 
   // Check if user is authenticated before proceeding
   const checkAuthAndProceed = (option: "create" | "optimize") => {
@@ -90,28 +95,8 @@ const Index = () => {
       setCurrentTone(values.tone);
       setCurrentIndustry(values.industry);
       
-      // Generate post using Gemini API by default (falls back locally if no key)
-      const humanizedDescription = values.humanize
-        ? `${values.description || ""}
-
-Humanization guidelines:
-- First-person voice and authentic perspective
-- Use natural contractions
-- Include a brief, specific anecdote or micro-story if relevant
-- Vary sentence lengths; keep paragraphs 1–3 sentences
-- Add a thoughtful question at the end
-- Include 3–5 relevant, niche+popular mix hashtags`
-        : values.description || "";
-
-      const generatedPost = await generateMultiAIPost({
-        topic: values.topic,
-        tone: values.tone,
-        keywords: values.keywords || "",
-        description: humanizedDescription,
-        contentStyle: values.contentStyle,
-        postLength: values.postLength,
-        industry: values.industry
-      });
+      // Use cached mutation for better performance
+      const generatedPost = await generatePostMutation.mutateAsync(values);
       
       // Calculate enhanced readability score based on content analysis
       const calculateReadabilityScore = (text: string) => {
@@ -195,14 +180,8 @@ Humanization guidelines:
       setCurrentTone(values.optimizationGoal);
       setCurrentIndustry("general");
       
-      // Optimize post using Gemini API
-      const enhancedGoal = values.humanize 
-        ? `${values.optimizationGoal} with humanized tone (first-person, natural contractions, brief anecdote where relevant, short paragraphs, end with a thoughtful question, add 3–5 relevant hashtags)`
-        : values.optimizationGoal;
-      const optimizedPost = await optimizeMultiAIPost({
-        post: values.existingPost, 
-        optimizationGoal: enhancedGoal
-      });
+      // Use cached mutation for better performance
+      const optimizedPost = await optimizePostMutation.mutateAsync(values);
       
       // Calculate enhanced readability score
       const calculateReadabilityScore = (text: string) => {

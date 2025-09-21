@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Wand2, Loader2, Hash } from "lucide-react";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useGeneratePost } from "@/hooks/usePostQueries";
+import PostPreviewLive from "@/components/PostPreviewLive";
 import {
   Select,
   SelectContent,
@@ -40,9 +43,10 @@ export type CreatePostFormValues = z.infer<typeof createPostSchema>;
 interface CreatePostFormProps {
   onGenerate: (values: CreatePostFormValues) => void;
   isGenerating: boolean;
+  showPreview?: boolean;
 }
 
-export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps) => {
+export const CreatePostForm = ({ onGenerate, isGenerating, showPreview = true }: CreatePostFormProps) => {
   const form = useForm<CreatePostFormValues>({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
@@ -57,9 +61,28 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
     },
   });
 
+  // Watch form values for live preview
+  const formValues = form.watch();
+  const debouncedValues = useDebounce(formValues, 500);
+  
+  // Generate preview with cached query
+  const { data: preview, isLoading: isPreviewLoading } = useGeneratePost({
+    ...debouncedValues,
+    enabled: showPreview && !!debouncedValues.topic && debouncedValues.topic.length > 2,
+  });
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onGenerate)} className="space-y-4">
+    <div className="space-y-6">
+      {showPreview && (
+        <PostPreviewLive 
+          preview={preview} 
+          isLoading={isPreviewLoading}
+          isEnabled={!!debouncedValues.topic && debouncedValues.topic.length > 2}
+        />
+      )}
+      
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onGenerate)} className="space-y-4">
         {/* Topic */}
         <FormField
           control={form.control}
@@ -257,7 +280,8 @@ export const CreatePostForm = ({ onGenerate, isGenerating }: CreatePostFormProps
             </>
           )}
         </Button>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </div>
   );
 };
