@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
+import SEOMetaTags from "@/components/SEOMetaTags";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchUserPosts, deletePost, Post } from "@/lib/supabase";
 import { Card, CardContent } from "@/components/ui/card";
@@ -104,7 +105,14 @@ const Dashboard = () => {
   };
 
   return (
-    <Layout>
+    <>
+      <SEOMetaTags 
+        title="Dashboard - Manage Your LinkedIn Posts | Brushin.in"
+        description="Access your LinkedIn content dashboard. Manage saved posts, track performance, and create new viral LinkedIn content with AI. Free dashboard for professional content creators."
+        keywords="LinkedIn dashboard, content management, post analytics, LinkedIn content creator dashboard, social media management"
+        url="https://brushin.in/dashboard"
+      />
+      <Layout>
       <div className="py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 min-h-screen">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
@@ -294,6 +302,7 @@ const Dashboard = () => {
         </div>
       </div>
     </Layout>
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import Layout from "@/components/Layout";
+import SEOMetaTags from "@/components/SEOMetaTags";
 import { Quote } from "lucide-react";
 import { useEffect, useRef } from "react";
 
@@ -58,6 +59,27 @@ const testimonialsData = [
 const Testimonials = () => {
   const cardsRef = useRef<HTMLDivElement>(null);
   
+  const testimonialsSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Customer Testimonials - Brushin.in",
+    "description": "Read success stories from professionals using Brushin.in AI LinkedIn content creator. See how our users increased engagement by 200%+ and grew their professional networks.",
+    "review": testimonialsData.map(testimonial => ({
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": testimonial.name,
+        "jobTitle": testimonial.role
+      },
+      "reviewBody": testimonial.quote,
+      "reviewRating": {
+        "@type": "Rating", 
+        "ratingValue": "5",
+        "bestRating": "5"
+      }
+    }))
+  };
+  
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, entryIndex) => {
@@ -87,7 +109,15 @@ const Testimonials = () => {
   }, []);
   
   return (
-    <Layout>
+    <>
+      <SEOMetaTags 
+        title="Customer Success Stories - LinkedIn Content Creator | Brushin.in"
+        description="Read testimonials from 10,000+ professionals who transformed their LinkedIn presence with Brushin.in. See real results: 200%+ engagement increase, viral content creation, and network growth."
+        keywords="LinkedIn success stories, AI content creator testimonials, professional networking testimonials, LinkedIn marketing results, content creation reviews"
+        url="https://brushin.in/testimonials"
+        schemaMarkup={testimonialsSchema}
+      />
+      <Layout>
       <div className="py-16 bg-slate-900 text-white relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute -top-[500px] -right-[500px] w-[800px] h-[800px] bg-brand-600/5 rounded-full blur-3xl animate-float pointer-events-none"></div>
@@ -164,6 +194,7 @@ const Testimonials = () => {
         </div>
       </div>
     </Layout>
+    </>
   );
 };
 

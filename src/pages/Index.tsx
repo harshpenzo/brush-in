@@ -20,6 +20,7 @@ import SEOMetaTags from "@/components/SEOMetaTags";
 import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
 import AdvancedSEO from "@/components/AdvancedSEO";
 import TechnicalSEO from "@/components/TechnicalSEO";
+import EnhancedSchemas from "@/components/EnhancedSchemas";
 import DomainAuthorityInfo from "@/components/DomainAuthorityInfo";
 import InternalLinkingHub from "@/components/InternalLinkingHub";
 import AdvancedTechnicalSEO from "@/components/AdvancedTechnicalSEO";
@@ -360,6 +361,7 @@ const Index = () => {
         {/* Comprehensive SEO optimization suite */}
         <KeywordOptimizedContent />
         <AdvancedSEO />
+        <EnhancedSchemas />
         <DomainAuthorityInfo />
         <InternalLinkingHub />
         <AdvancedTechnicalSEO />

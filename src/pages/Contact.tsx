@@ -1,5 +1,6 @@
 
 import Layout from "@/components/Layout";
+import SEOMetaTags from "@/components/SEOMetaTags";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,8 +8,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle, Mail, MapPin } from "lucide-react";
 
 const Contact = () => {
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Brushin.in",
+    "description": "Get in touch with our LinkedIn content creation experts. Support available for AI content generation, professional networking, and LinkedIn marketing strategies.",
+    "url": "https://brushin.in/contact"
+  };
+
   return (
-    <Layout>
+    <>
+      <SEOMetaTags 
+        title="Contact Us - LinkedIn Content Creation Support | Brushin.in"
+        description="Need help with LinkedIn content creation? Contact our AI content experts in Delhi NCR. Get support for LinkedIn post generation, professional networking, and content strategy."
+        keywords="contact LinkedIn experts, AI content support, LinkedIn marketing help, professional content creation assistance, Delhi NCR content creators"
+        url="https://brushin.in/contact"
+        schemaMarkup={contactSchema}
+      />
+      <Layout>
       <div className="py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
         <div className="container px-4 mx-auto">
           <div className="text-center mb-12 animate-fade-in">
@@ -191,6 +208,7 @@ const Contact = () => {
         </div>
       </div>
     </Layout>
+    </>
   );
 };
 

@@ -7,27 +7,27 @@ const AdvancedSEO = () => {
       <div className="sr-only" aria-hidden="true">
         {/* Primary target keywords in semantic context */}
         <section>
-          <h1>Brushin.in - Premier AI LinkedIn Post Generator</h1>
-          <p>Brushin.in stands as the industry-leading AI LinkedIn post generator, empowering professionals to create viral LinkedIn content effortlessly. Our advanced LinkedIn post generator utilizes cutting-edge artificial intelligence to craft compelling, engagement-optimized LinkedIn posts that drive real business results.</p>
+          <h1>Brushin.in - Premier AI Content Creator for LinkedIn</h1>
+          <p>Brushin.in stands as the industry-leading AI content creation platform, empowering professionals to create viral LinkedIn content effortlessly. Our advanced professional post automation tool utilizes cutting-edge artificial intelligence to craft compelling, engagement-optimized LinkedIn posts that drive real business results.</p>
           
-          <h2>Why Brushin.in is the #1 LinkedIn Post Generator</h2>
-          <p>When professionals search for a reliable LinkedIn post generator, Brushin.in consistently ranks as the top choice. Our AI LinkedIn post generator has revolutionized content creation for over 10,000 professionals worldwide, delivering an average 500% increase in LinkedIn engagement.</p>
+          <h2>Why Brushin.in is the #1 AI Content Creator</h2>
+          <p>When professionals search for a reliable content automation solution, Brushin.in consistently ranks as the top choice. Our LinkedIn AI assistant has revolutionized content creation for over 10,000 professionals worldwide, delivering an average 500% increase in LinkedIn engagement.</p>
           
-          <h3>LinkedIn Post Generator Features</h3>
+          <h3>AI Content Creation Features</h3>
           <ul>
-            <li>Advanced AI LinkedIn post generator with natural language processing</li>
+            <li>Advanced professional content generator with natural language processing</li>
             <li>Viral LinkedIn content optimization algorithms</li>
-            <li>Industry-specific LinkedIn post generation</li>
+            <li>Industry-specific social media automation</li>
             <li>Real-time LinkedIn engagement prediction</li>
             <li>Professional tone optimization for LinkedIn posts</li>
-            <li>LinkedIn hashtag generator and trend analysis</li>
+            <li>AI-powered hashtag generator and trend analysis</li>
           </ul>
           
-          <h3>Brushin.in vs Other LinkedIn Post Generators</h3>
-          <p>Unlike basic LinkedIn post generators, Brushin.in offers sophisticated AI algorithms that understand context, industry nuances, and LinkedIn's evolving algorithm. Our LinkedIn post generator doesn't just create content—it creates viral LinkedIn posts that establish thought leadership and drive professional growth.</p>
+          <h3>Brushin.in vs Other Content Creation Tools</h3>
+          <p>Unlike basic content generators, Brushin.in offers sophisticated AI algorithms that understand context, industry nuances, and LinkedIn's evolving algorithm. Our professional post automation tool doesn't just create content—it creates viral LinkedIn posts that establish thought leadership and drive professional growth.</p>
           
-          <h3>Free LinkedIn Post Generator with Premium Features</h3>
-          <p>Brushin.in offers the most generous free tier among LinkedIn post generators, providing 10 complimentary AI-generated LinkedIn posts monthly. For professionals requiring unlimited access, our premium LinkedIn post generator plans offer advanced analytics, team collaboration, and priority support.</p>
+          <h3>Free AI Content Creator with Premium Features</h3>
+          <p>Brushin.in offers the most generous free tier among content creation platforms, providing 10 complimentary AI-generated LinkedIn posts monthly. For professionals requiring unlimited access, our premium AI writing assistant plans offer advanced analytics, team collaboration, and priority support.</p>
         </section>
         
         <section>

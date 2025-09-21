@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEOMetaTags from "@/components/SEOMetaTags";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,8 +8,46 @@ import { useNavigate } from "react-router-dom";
 const Pricing = () => {
   const navigate = useNavigate();
 
+  const pricingSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Brushin.in AI LinkedIn Content Creator",
+    "description": "AI-powered LinkedIn content creation platform with free and premium plans",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Starter Plan",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer", 
+        "name": "Pro Plan",
+        "price": "29",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "Business Plan",
+        "price": "99", 
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    ]
+  };
+
   return (
-    <Layout>
+    <>
+      <SEOMetaTags 
+        title="Pricing Plans - LinkedIn AI Content Creator | Brushin.in"
+        description="Choose the perfect plan for your LinkedIn content needs. Free tier available with 10 posts/month. Pro and Business plans for unlimited AI-generated LinkedIn posts. Start free today!"
+        keywords="LinkedIn content creator pricing, AI writing tool cost, LinkedIn post generator plans, social media tool pricing, content creation subscription"
+        url="https://brushin.in/pricing"
+        schemaMarkup={pricingSchema}
+      />
+      <Layout>
       <div className="py-16 bg-slate-900 text-white">
         <div className="container px-4 mx-auto">
           {/* Free Banner */}
@@ -258,6 +297,7 @@ const Pricing = () => {
         </div>
       </div>
     </Layout>
+    </>
   );
 };
 
