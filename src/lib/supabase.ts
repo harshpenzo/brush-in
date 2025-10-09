@@ -1,33 +1,10 @@
-
-import { createClient } from '@supabase/supabase-js';
+// Re-export the centralized Supabase client to avoid multiple instances
+import { supabase } from '@/integrations/supabase/client';
+export { supabase };
 import type { Database } from '@/integrations/supabase/types';
-
-// Supabase client setup
-// Use default values for development when environment variables are not available
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://adhjacvblsxpzshkwsww.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkaGphY3ZibHN4cHpzaGt3c3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNjg1NjAsImV4cCI6MjA2MDc0NDU2MH0.bWAFpRmDOOHEbW824DvWl4LnVLF0othCDu_zb7LxsKg';
 
 // Type definition for our database schema
 export type Post = Database['public']['Tables']['posts']['Row'];
-
-// Check if the required Supabase credentials are provided
-if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-  console.warn(
-    'Supabase credentials missing or invalid. Please check your .env file. ' +
-    'Using fallback values for now.'
-  );
-}
-
-// Initialize the Supabase client with explicit auth configuration
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    flowType: 'implicit',
-  }
-});
 
 // Helper functions for post operations
 export async function fetchUserPosts(userId: string) {

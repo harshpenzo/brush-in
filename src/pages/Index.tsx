@@ -14,6 +14,7 @@ import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
 import { generateMultiAIPost, optimizeMultiAIPost, generateMultiAIHashtags } from "@/services/multiAIService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useAnonymousGeneration } from "@/hooks/useAnonymousGeneration";
 import { canCreatePost, incrementPostCount } from "@/services/usageService";
 import { useGeneratePostMutation, useOptimizePostMutation, useGenerateHashtags } from "@/hooks/usePostQueries";
 import SEOMetaTags from "@/components/SEOMetaTags";
@@ -25,6 +26,8 @@ import DomainAuthorityInfo from "@/components/DomainAuthorityInfo";
 import InternalLinkingHub from "@/components/InternalLinkingHub";
 import AdvancedTechnicalSEO from "@/components/AdvancedTechnicalSEO";
 import SocialProofSEO from "@/components/SocialProofSEO";
+import { Button } from "@/components/ui/button";
+import { Sparkles, Lock } from "lucide-react";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
@@ -42,23 +45,15 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const anonymousGeneration = useAnonymousGeneration();
   
   // React Query mutations for better caching and error handling
   const generatePostMutation = useGeneratePostMutation();
   const optimizePostMutation = useOptimizePostMutation();
 
-  // Check if user is authenticated before proceeding
+  // Allow users to try without authentication (2 free generations)
   const checkAuthAndProceed = (option: "create" | "optimize") => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in or sign up to create posts",
-      });
-      navigate("/auth");
-      return;
-    }
-    
-    // If authenticated, proceed with post creation
+    // Always allow to proceed - auth check happens during generation
     setActiveOption(option);
     setShowPostCreator(true);
     setTimeout(() => {
@@ -67,25 +62,37 @@ const Index = () => {
   };
 
   const handleGeneratePost = async (values: CreatePostFormValues) => {
-    if (!user?.id) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to generate posts",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Check usage limits before generating
-    const { canCreate, usage } = await canCreatePost(user.id);
-    if (!canCreate) {
-      toast({
-        title: "Usage limit reached",
-        description: `You've reached your monthly limit of ${usage?.monthly_limit || 50} posts. Upgrade for unlimited access!`,
-        variant: "destructive"
-      });
-      navigate("/pricing");
-      return;
+    // Check anonymous usage limit for non-authenticated users
+    if (!isAuthenticated) {
+      if (!anonymousGeneration.canGenerate) {
+        toast({
+          title: "Free Trial Limit Reached",
+          description: "Sign up for free to continue generating LinkedIn posts!",
+          variant: "destructive",
+          action: (
+            <Button
+              size="sm"
+              onClick={() => navigate('/auth')}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Sign Up Free
+            </Button>
+          ),
+        });
+        return;
+      }
+    } else {
+      // Check usage limits for authenticated users
+      const { canCreate, usage } = await canCreatePost(user!.id);
+      if (!canCreate) {
+        toast({
+          title: "Usage limit reached",
+          description: `You've reached your monthly limit of ${usage?.monthly_limit || 50} posts. Upgrade for unlimited access!`,
+          variant: "destructive"
+        });
+        navigate("/pricing");
+        return;
+      }
     }
 
     setIsGenerating(true);
@@ -131,13 +138,38 @@ const Index = () => {
       
       setGeneratedPost(generatedPost);
 
-      // Increment usage count after successful generation
-      await incrementPostCount(user.id);
-      
-      toast({
-        title: "Post generated successfully",
-        description: "Your LinkedIn post has been created with AI.",
-      });
+      // Handle usage tracking
+      if (!isAuthenticated) {
+        anonymousGeneration.incrementUsage();
+        
+        if (anonymousGeneration.remainingGenerations === 1) {
+          toast({
+            title: "Last Free Generation!",
+            description: "This is your last free post. Sign up to generate unlimited posts!",
+            action: (
+              <Button
+                size="sm"
+                onClick={() => navigate('/auth')}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Sign Up Free
+              </Button>
+            ),
+          });
+        } else {
+          toast({
+            title: "Post generated successfully",
+            description: `Your LinkedIn post has been created with AI. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
+          });
+        }
+      } else {
+        // Increment usage count for authenticated users
+        await incrementPostCount(user!.id);
+        toast({
+          title: "Post generated successfully",
+          description: "Your LinkedIn post has been created with AI.",
+        });
+      }
     } catch (error) {
       console.error("Error generating post:", error);
       toast({
@@ -300,6 +332,33 @@ const Index = () => {
             <div className="absolute -bottom-[200px] -left-[200px] w-[400px] h-[400px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
             
             <div className="container mx-auto px-4 relative z-10">
+              {!isAuthenticated && (
+                <div className="mb-6 max-w-2xl mx-auto p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500 rounded-full">
+                        <Sparkles className="h-4 w-4 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          Try Before You Sign Up!
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          {anonymousGeneration.remainingGenerations} free {anonymousGeneration.remainingGenerations === 1 ? 'generation' : 'generations'} remaining
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate('/auth')}
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Lock className="h-3 w-3 mr-1" />
+                      Sign Up for More
+                    </Button>
+                  </div>
+                </div>
+              )}
               <header className="text-center mb-8 fade-in-bottom">
                 <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
                   AI Content Generator

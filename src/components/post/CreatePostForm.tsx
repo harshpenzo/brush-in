@@ -61,9 +61,9 @@ export const CreatePostForm = ({ onGenerate, isGenerating, showPreview = true }:
     },
   });
 
-  // Watch form values for live preview
+  // Watch form values for live preview (increased debounce for better performance)
   const formValues = form.watch();
-  const debouncedValues = useDebounce(formValues, 500);
+  const debouncedValues = useDebounce(formValues, 1200);
   
   // Generate preview with cached query
   const { data: preview, isLoading: isPreviewLoading } = useGeneratePost({

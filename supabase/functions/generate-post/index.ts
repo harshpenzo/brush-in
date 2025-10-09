@@ -136,6 +136,9 @@ serve(async (req) => {
   try {
     console.log('Edge function called, processing request...');
     
+    // Note: This function supports anonymous usage for "try before you buy" feature
+    // Usage tracking is handled on the client side via localStorage
+    
     const requestBody = await req.json();
     console.log('Request body received:', JSON.stringify({
       action: requestBody.action,
