@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -6,6 +5,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import PostForm from "@/components/PostForm";
 import PostPreview from "@/components/PostPreview";
+import { PostVariations } from "@/components/post/PostVariations";
 import Tips from "@/components/Tips";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAnonymousGeneration } from "@/hooks/useAnonymousGeneration";
 import { canCreatePost, incrementPostCount } from "@/services/usageService";
 import { useGeneratePostMutation, useOptimizePostMutation, useGenerateHashtags } from "@/hooks/usePostQueries";
+import { PostVariation } from "@/types/post";
 import SEOMetaTags from "@/components/SEOMetaTags";
 import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
 import AdvancedSEO from "@/components/AdvancedSEO";
@@ -31,6 +32,7 @@ import { Sparkles, Lock } from "lucide-react";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
+  const [postVariations, setPostVariations] = useState<PostVariation[]>([]);
   const [showPostCreator, setShowPostCreator] = useState(false);
   const [activeOption, setActiveOption] = useState<"create" | "optimize" | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -103,40 +105,40 @@ const Index = () => {
       setCurrentTone(values.tone);
       setCurrentIndustry(values.industry);
       
-      // Use cached mutation for better performance
-      const generatedPost = await generatePostMutation.mutateAsync(values);
-      
-      // Calculate enhanced readability score based on content analysis
-      const calculateReadabilityScore = (text: string) => {
-        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-        const words = text.split(/\s+/).filter(w => w.length > 0);
-        const avgWordsPerSentence = words.length / sentences.length;
-        const avgCharsPerWord = text.replace(/\s/g, '').length / words.length;
-        
-        // LinkedIn-optimized scoring (shorter sentences = better)
-        let score = 100;
-        if (avgWordsPerSentence > 20) score -= 15;
-        else if (avgWordsPerSentence > 15) score -= 10;
-        if (avgCharsPerWord > 6) score -= 10;
-        else if (avgCharsPerWord > 5) score -= 5;
-        if (text.length > 1000) score -= 10;
-        else if (text.length > 600) score -= 5;
-        
-        return Math.max(70, Math.min(100, score));
-      };
-      
-      const calculatedScore = calculateReadabilityScore(generatedPost);
-      setReadabilityScore(calculatedScore);
-      
-      // Generate related hashtags with Multi-AI approach
-      const generatedHashtags = await generateMultiAIHashtags({
-        topic: values.topic, 
-        industry: values.industry, 
-        keywords: values.keywords || ""
+      // Generate multiple variations using the enhanced system
+      const result = await generateMultiAIPost({
+        topic: values.topic,
+        tone: values.tone,
+        keywords: values.keywords || "",
+        description: values.description || "",
+        contentStyle: values.contentStyle,
+        postLength: values.postLength,
+        industry: values.industry,
+        targetAudience: values.targetAudience,
+        postObjective: values.postObjective,
+        generateVariations: true
       });
-      setHashtags(generatedHashtags);
       
-      setGeneratedPost(generatedPost);
+      // Handle variations response
+      if (result && result.variations && Array.isArray(result.variations)) {
+        setPostVariations(result.variations);
+        setGeneratedPost(""); // Clear single post
+        
+        toast({
+          title: "Success!",
+          description: `Generated ${result.variations.length} post variations for you.`,
+        });
+      } else {
+        // Fallback to single post if variations failed
+        const singlePost = typeof result === 'string' ? result : result.content || '';
+        setGeneratedPost(singlePost);
+        setPostVariations([]);
+        
+        toast({
+          title: "Success!",
+          description: "Your LinkedIn post has been generated.",
+        });
+      }
 
       // Handle usage tracking
       if (!isAuthenticated) {
@@ -389,20 +391,30 @@ const Index = () => {
               </div>
               
               <div className="lg:flex lg:flex-col lg:space-y-4 fade-in-bottom order-first lg:order-last perspective-1000" style={{ animationDelay: "200ms" }}>
-                <div className="mb-4 lg:flex-grow transition-transform duration-500 hover:scale-105">
-                  <PostPreview 
-                    post={generatedPost} 
-                    hashtags={hashtags}
-                    readabilityScore={readabilityScore}
-                    topic={currentTopic}
-                    tone={currentTone}
-                    industry={currentIndustry}
-                  />
-                </div>
-                
-                <div className="h-auto transition-transform duration-500 hover:translate-y-[-5px]">
-                  <Tips />
-                </div>
+                {postVariations.length > 0 && (
+                  <PostVariations variations={postVariations} isLoading={isGenerating} />
+                )}
+              </div>
+              
+              <div className="lg:col-span-3">
+                {generatedPost && (
+                  <>
+                    <div className="mb-4 lg:flex-grow transition-transform duration-500 hover:scale-105">
+                      <PostPreview 
+                        post={generatedPost} 
+                        hashtags={hashtags}
+                        readabilityScore={readabilityScore}
+                        topic={currentTopic}
+                        tone={currentTone}
+                        industry={currentIndustry}
+                      />
+                    </div>
+                    
+                    <div className="h-auto transition-transform duration-500 hover:translate-y-[-5px]">
+                      <Tips />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             </div>

@@ -11,8 +11,11 @@ export const generateOpenAIPost = async (
   description: string,
   contentStyle: string,
   postLength: string,
-  industry: string
-): Promise<string> => {
+  industry: string,
+  targetAudience?: string,
+  postObjective?: string,
+  generateVariations?: boolean
+): Promise<string | any> => {
   console.log('Calling generate-post edge function with OpenAI');
   
   const { data, error } = await supabase.functions.invoke('generate-post', {
@@ -24,13 +27,21 @@ export const generateOpenAIPost = async (
       description,
       contentStyle,
       postLength,
-      industry
+      industry,
+      targetAudience,
+      postObjective,
+      generateVariations
     }
   });
 
   if (error) {
     console.error('Edge function error:', error);
     throw new Error('Connection to AI service failed. Please try again.');
+  }
+
+  // Handle variations response
+  if (generateVariations && data?.variations) {
+    return data; // Return full response with variations array
   }
 
   if (!data?.content) {

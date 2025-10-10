@@ -125,6 +125,9 @@ interface PostGenerationOptions {
   contentStyle: string;
   postLength: string;
   industry: string;
+  targetAudience?: string;
+  postObjective?: string;
+  generateVariations?: boolean;
 }
 
 interface OptimizationOptions {
@@ -142,9 +145,13 @@ interface HashtagOptions {
  * Generate a LinkedIn post using the best available AI service
  * Tries OpenAI first (GPT-5), then falls back to Gemini if needed
  * Enhanced with retry logic and proper error handling
+ * Can return a single post or multiple variations
  */
-export const generateMultiAIPost = async (options: PostGenerationOptions): Promise<string> => {
-  const { topic, tone, keywords, description, contentStyle, postLength, industry } = options;
+export const generateMultiAIPost = async (options: PostGenerationOptions): Promise<string | any> => {
+  const { 
+    topic, tone, keywords, description, contentStyle, postLength, industry,
+    targetAudience, postObjective, generateVariations 
+  } = options;
   
   console.log('Multi-AI post generation started with enhanced error handling');
   
@@ -154,10 +161,16 @@ export const generateMultiAIPost = async (options: PostGenerationOptions): Promi
     const openAIResult = await retryWithBackoff(
       async () => {
         const result = await generateOpenAIPost(
-          topic, tone, keywords, description, contentStyle, postLength, industry
+          topic, tone, keywords, description, contentStyle, postLength, industry,
+          targetAudience, postObjective, generateVariations
         );
         
-        if (!result || result.trim().length < 50) {
+        // If variations, result is an object; otherwise it's a string
+        if (generateVariations) {
+          if (!result || !result.variations || result.variations.length === 0) {
+            throw new Error('OpenAI variations result empty or invalid');
+          }
+        } else if (!result || result.trim().length < 50) {
           throw new Error('OpenAI result too short or empty');
         }
         
@@ -178,12 +191,13 @@ export const generateMultiAIPost = async (options: PostGenerationOptions): Promi
     });
     
     try {
-      // Fallback: Use Gemini Pro with retry logic
+      // Fallback: Use Gemini Pro with retry logic (no variations support)
       console.log('Attempting generation with Gemini Pro...');
       const geminiResult = await retryWithBackoff(
         async () => {
           const result = await generateGeminiPost(
-            topic, tone, keywords, description, contentStyle, postLength, industry
+            topic, tone, keywords, description, contentStyle, postLength, industry,
+            targetAudience, postObjective
           );
           
           if (!result || result.trim().length < 50) {

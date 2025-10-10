@@ -35,6 +35,8 @@ const createPostSchema = z.object({
   postLength: z.string().default("medium"),
   keywords: z.string().optional(),
   industry: z.string().default("technology"),
+  targetAudience: z.string().default("general"),
+  postObjective: z.string().default("engagement"),
   humanize: z.boolean().default(true),
 });
 
@@ -57,6 +59,8 @@ export const CreatePostForm = ({ onGenerate, isGenerating, showPreview = true }:
       postLength: "medium",
       keywords: "",
       industry: "technology",
+      targetAudience: "general",
+      postObjective: "engagement",
       humanize: true,
     },
   });
@@ -138,8 +142,12 @@ export const CreatePostForm = ({ onGenerate, isGenerating, showPreview = true }:
                   <SelectContent>
                     <SelectItem value="professional">Professional</SelectItem>
                     <SelectItem value="casual">Casual</SelectItem>
+                    <SelectItem value="conversational">Conversational</SelectItem>
                     <SelectItem value="inspirational">Inspirational</SelectItem>
+                    <SelectItem value="authoritative">Authoritative</SelectItem>
                     <SelectItem value="educational">Educational</SelectItem>
+                    <SelectItem value="storytelling">Storytelling</SelectItem>
+                    <SelectItem value="bold">Bold/Contrarian</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -161,9 +169,12 @@ export const CreatePostForm = ({ onGenerate, isGenerating, showPreview = true }:
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="default">Standard</SelectItem>
-                    <SelectItem value="storytelling">Storytelling</SelectItem>
-                    <SelectItem value="listicle">Listicle</SelectItem>
+                    <SelectItem value="storytelling">Personal Story</SelectItem>
+                    <SelectItem value="listicle">List/Tips</SelectItem>
                     <SelectItem value="question-based">Question-based</SelectItem>
+                    <SelectItem value="data-driven">Data-driven</SelectItem>
+                    <SelectItem value="case-study">Case Study</SelectItem>
+                    <SelectItem value="problem-solution">Problem-Solution</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -214,7 +225,67 @@ export const CreatePostForm = ({ onGenerate, isGenerating, showPreview = true }:
                     <SelectItem value="finance">Finance</SelectItem>
                     <SelectItem value="healthcare">Healthcare</SelectItem>
                     <SelectItem value="education">Education</SelectItem>
-                    <SelectItem value="general">General</SelectItem>
+                    <SelectItem value="sales">Sales</SelectItem>
+                    <SelectItem value="entrepreneurship">Entrepreneurship</SelectItem>
+                    <SelectItem value="hr">Human Resources</SelectItem>
+                    <SelectItem value="consulting">Consulting</SelectItem>
+                    <SelectItem value="general">General Business</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="targetAudience"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-slate-900 dark:text-slate-300 font-medium mb-1 block">Target Audience</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                      <SelectValue placeholder="Select audience" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="general">General Professionals</SelectItem>
+                    <SelectItem value="executives">C-Level Executives</SelectItem>
+                    <SelectItem value="entrepreneurs">Entrepreneurs</SelectItem>
+                    <SelectItem value="managers">Managers</SelectItem>
+                    <SelectItem value="developers">Developers/Engineers</SelectItem>
+                    <SelectItem value="marketers">Marketers</SelectItem>
+                    <SelectItem value="sales">Sales Professionals</SelectItem>
+                    <SelectItem value="job-seekers">Job Seekers</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="postObjective"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-slate-900 dark:text-slate-300 font-medium mb-1 block">Post Objective</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-md focus:border-sky-500 dark:focus:border-sky-500 focus:ring focus:ring-sky-500/20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                      <SelectValue placeholder="Select objective" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="engagement">Drive Engagement</SelectItem>
+                    <SelectItem value="awareness">Build Awareness</SelectItem>
+                    <SelectItem value="thought-leadership">Thought Leadership</SelectItem>
+                    <SelectItem value="lead-generation">Lead Generation</SelectItem>
+                    <SelectItem value="education">Educate Audience</SelectItem>
+                    <SelectItem value="networking">Networking</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

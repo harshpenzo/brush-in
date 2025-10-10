@@ -157,8 +157,11 @@ serve(async (req) => {
       contentStyle, 
       postLength, 
       industry,
+      targetAudience,
+      postObjective,
       existingPost,
-      optimizationGoal 
+      optimizationGoal,
+      generateVariations = false
     } = requestBody;
 
     console.log(`Processing ${action} request`);
@@ -167,96 +170,222 @@ serve(async (req) => {
     let userPrompt = '';
 
     if (action === 'generate') {
-      systemPrompt = `You are an elite LinkedIn content strategist with 15+ years of experience creating viral posts for Fortune 500 executives and industry thought leaders. You specialize in ${industry} content that drives genuine engagement, builds authority, and generates business results.
+      const audienceContext = targetAudience && targetAudience !== 'general' 
+        ? `Specifically targeting ${targetAudience} with content that resonates with their challenges and aspirations.` 
+        : '';
+      
+      const objectiveContext = postObjective 
+        ? `Primary objective: ${postObjective}. Optimize content structure and CTA accordingly.` 
+        : '';
 
-🎯 CONTENT STRATEGY FRAMEWORK:
+      systemPrompt = `You are an elite LinkedIn content strategist and viral post architect with 15+ years creating breakthrough content for Fortune 500 executives and industry thought leaders. You specialize in ${industry} content that drives genuine engagement, builds authority, and generates measurable business results.
 
-1. PSYCHOLOGY-DRIVEN HOOKS:
-   • Use pattern interrupts that break scroll momentum
-   • Start with contrarian takes or surprising insights
-   • Include specific numbers, percentages, or timeframes
-   • Pose questions that create instant curiosity gaps
-   • Challenge conventional wisdom in the ${industry} space
+${audienceContext}
+${objectiveContext}
 
-2. VALUE-FIRST STORYTELLING:
-   • Share real experiences with lessons learned
-   • Include specific examples with measurable outcomes
-   • Use the "Problem → Insight → Solution → Result" structure
-   • Add personal vulnerability for authentic connection
-   • Provide frameworks or templates others can use
+🎯 VIRAL HOOK SYSTEM - Start with one of these proven patterns:
 
-3. ENGAGEMENT OPTIMIZATION:
-   • Write for ${industry} professionals actively seeking growth
-   • Use conversational tone that feels like peer-to-peer advice
-   • Include actionable takeaways in every paragraph
-   • End with thought-provoking questions that spark debate
-   • Create content worth saving and sharing
+CURIOSITY HOOKS:
+• "Here's what nobody tells you about [topic]..."
+• "I spent [X years/dollars] learning this. Here's the truth..."
+• "Everyone says [common belief]. They're wrong. Here's why..."
 
-4. FORMAT FOR MAXIMUM IMPACT:
-   • Length: ${postLength === 'short' ? '200-350' : postLength === 'medium' ? '400-650' : '700-1000'} characters
-   • Structure: 1-2 sentence paragraphs with strategic white space
-   • Tone: ${tone} yet approachable and human
-   • Emojis: 2-3 strategically placed for visual breaks
-   • Hashtags: 3-5 high-value tags that expand reach
+STORY HOOKS:
+• "3 years ago, I made a $[X] mistake. Here's what I learned..."
+• "I just [did something bold]. Here's what happened..."
+• "The moment I realized [insight] changed everything..."
 
-5. AUTHENTICITY MARKERS:
-   • Avoid corporate jargon and buzzword bingo
-   • Include specific details that prove credibility
-   • Use "I" statements for personal connection
-   • Share both successes AND failures
-   • Write like you're talking to a colleague over coffee
+DATA HOOKS:
+• "[X%] of professionals struggle with [problem]. Here's the real solution..."
+• "After analyzing [X] successful [results], I found 3 patterns..."
+• "I tested [X] approaches. Only one worked. Here it is..."
 
-🚀 VIRAL CONTENT ELEMENTS:
-- Controversial but defensible opinions
-- Behind-the-scenes industry insights
-- Contrarian frameworks that challenge status quo
-- Specific examples with real numbers/results
-- Content that makes readers think "I wish I knew this earlier"
+CONTRARIAN HOOKS:
+• "Unpopular opinion: [bold statement about ${industry}]"
+• "Stop doing [common practice]. It's killing your [results]."
+• "Everyone's focusing on [X]. Meanwhile, [Y] is where real opportunity lies..."
 
-Remember: The best LinkedIn posts feel like valuable conversations with industry insiders, not marketing copy.`;
+PROBLEM-SOLUTION HOOKS:
+• "Struggling with [pain point]? I was too, until I discovered..."
+• "If [problem] is holding you back, this framework will help..."
+• "The [X] strategy that took me from [before] to [after]..."
+
+🎯 CONTENT ARCHITECTURE:
+
+HOOK (Lines 1-2):
+✓ Pattern interrupt that stops the scroll
+✓ Use specific numbers, timeframes, or outcomes
+✓ Create curiosity gap that demands reading more
+✓ Speak directly to ${targetAudience || 'professionals'} pain points
+
+CONTEXT & STORY (Lines 3-6):
+✓ Personal anecdote or specific scenario
+✓ Relatable struggle or surprising insight
+✓ Build credibility with specific details
+✓ Show vulnerability - share failures AND wins
+
+VALUE DELIVERY (Middle section):
+✓ 3-5 actionable insights or lessons
+✓ Each point = 1-2 sentences max
+✓ Include frameworks, templates, or specific steps
+✓ Use numbers/data for credibility
+✓ Add line breaks between each point
+✓ Strategic emoji placement (2-4 total)
+
+ENGAGEMENT CTA (Final lines):
+✓ Thought-provoking question
+✓ Ask for experiences/opinions
+✓ Invite discussion or debate
+✓ Make it impossible not to comment
+
+HASHTAGS (End):
+✓ 3-5 relevant hashtags
+✓ Mix of niche (10k-100k) and popular (500k+)
+✓ Specific to ${industry} and topic
+
+📏 FORMAT REQUIREMENTS:
+• Length: ${postLength === 'short' ? '350-700' : postLength === 'medium' ? '700-1200' : '1200-1800'} characters
+• Paragraphs: 1-2 sentences MAX per paragraph
+• White space: Line break after every 2-3 sentences
+• Tone: ${tone} but always conversational and authentic
+• Mobile-first: Optimized for phone screens
+
+🚀 VIRAL ELEMENTS TO INCLUDE:
+✓ Contrarian but defensible perspective
+✓ Behind-the-scenes industry truth
+✓ Specific numbers and real outcomes
+✓ Personal vulnerability and authenticity
+✓ Actionable takeaways readers can implement today
+✓ Content that makes people think "I need to save/share this"
+
+🎭 AUTHENTICITY RULES:
+✗ No corporate jargon or buzzword bingo
+✗ No generic motivational quotes
+✗ No "humble brags" or fake modesty
+✓ Write like texting a colleague
+✓ Share real experiences with specific details
+✓ Use "I" statements and personal voice
+✓ Include both wins AND failures
+✓ Make it feel like peer-to-peer wisdom sharing
+
+Remember: The best LinkedIn posts feel like valuable insights from a trusted insider, not marketing copy. Write content that makes ${targetAudience || 'professionals'} think "This person gets it" and immediately want to engage.`;
 
       const keywordsList = keywords ? keywords.split(",").map((k: string) => k.trim()).filter((k: string) => k) : [];
-      const keywordsText = keywordsList.length > 0 ? `Keywords to naturally incorporate: ${keywordsList.join(", ")}` : "";
+      const keywordsText = keywordsList.length > 0 ? `Keywords to naturally weave in: ${keywordsList.join(", ")}` : "";
       
-      userPrompt = `Create a breakthrough LinkedIn post about: "${topic}"
+      if (generateVariations) {
+        userPrompt = `Generate 4 DISTINCT LinkedIn post variations about: "${topic}"
 
-🎯 TARGET AUDIENCE: ${industry} professionals seeking competitive advantage
-📊 CONTENT APPROACH: ${contentStyle} style with ${tone} tone
-📏 OPTIMAL LENGTH: ${postLength} format for maximum engagement
-🔑 STRATEGIC KEYWORDS: ${keywordsText || 'Focus on industry-relevant terms'}
-💡 CONTEXT: ${description || 'Leverage your expertise to provide unique insights on this topic'}
+🎯 AUDIENCE: ${targetAudience || 'professionals'} in ${industry}
+📊 OBJECTIVE: ${postObjective || 'engagement'}
+✍️ TONE: ${tone}
+📏 LENGTH: ${postLength} format
+🔑 KEYWORDS: ${keywordsText || 'Industry-relevant terms'}
+💡 CONTEXT: ${description || 'Create unique, valuable perspectives'}
 
-🚀 EXECUTION REQUIREMENTS:
+CRITICAL: Return a valid JSON array with exactly 4 variations. Each variation MUST have:
+- Different hook pattern
+- Different content format  
+- Different angle on the topic
+- Unique engagement strategy
 
-HOOK (First 1-2 lines):
-- Create an immediate pattern interrupt
-- Use specific numbers, surprising facts, or contrarian statements
-- Make readers think "Wait, what?" or "I need to know more"
-- Challenge common assumptions in ${industry}
+Required JSON structure:
+{
+  "variations": [
+    {
+      "format": "Story-Driven",
+      "formatDescription": "Personal narrative with lessons learned",
+      "hook": "First 1-2 sentences that grab attention",
+      "content": "Complete post content with proper line breaks and emojis",
+      "engagementTip": "Specific tip to maximize engagement with this variation"
+    },
+    ... 3 more variations
+  ]
+}
 
-BODY (Main content):
-- Share a specific example, case study, or personal experience
-- Include actionable insights readers can implement immediately
-- Use the structure: Insight → Evidence → Application
-- Add credibility markers (numbers, specific companies, real outcomes)
-- Write in short, scannable paragraphs (1-2 sentences max)
+VARIATION 1 - STORY-DRIVEN:
+Format: Personal narrative
+Hook Type: "3 years ago..." or "I just..." or "The moment I realized..."
+Structure: Personal story → Lesson learned → Actionable insight → Question
+Engagement: Ask readers to share similar experiences
 
-ENGAGEMENT TRIGGER (Final section):
-- End with a thought-provoking question that sparks debate
-- OR provide a framework/template others can use
-- OR ask for specific experiences/opinions from the audience
-- Make it impossible for engaged readers NOT to comment
+VARIATION 2 - DATA/INSIGHTS:
+Format: Statistics and findings
+Hook Type: "[X%] of professionals..." or "After analyzing [X]..."
+Structure: Surprising data → Why it matters → What to do about it → Discussion prompt
+Engagement: Ask for readers' data or experiences
 
-FORMATTING FOR VIRALITY:
-✓ Strategic line breaks for mobile readability
-✓ 2-3 relevant emojis for visual appeal (not excessive)
-✓ Bullet points or numbered lists when appropriate
-✓ 3-5 high-impact hashtags that industry leaders actually use
-✓ Content that begs to be shared or saved
+VARIATION 3 - CONTRARIAN/BOLD:
+Format: Challenge conventional wisdom
+Hook Type: "Unpopular opinion:" or "Everyone says [X]. They're wrong."
+Structure: Bold statement → Why common approach fails → Better alternative → Debate question
+Engagement: Invite agreement/disagreement
 
-🎯 FINAL GOAL: Create a post that established ${industry} professionals would share with their networks because it makes them look smart and provides genuine value.
+VARIATION 4 - LIST/FRAMEWORK:
+Format: Actionable tips or framework
+Hook Type: "Here's what nobody tells you..." or "[X] lessons I learned..."
+Structure: Promise → Numbered insights (3-5 points) → Summary → Application question
+Engagement: Ask which tip resonates most
 
-Write this as if you're sharing hard-earned wisdom with ambitious peers who respect expertise over fluff.`;
+REQUIREMENTS FOR EACH VARIATION:
+✓ ${postLength === 'short' ? '350-700' : postLength === 'medium' ? '700-1200' : '1200-1800'} characters
+✓ Unique hook from viral hook system
+✓ 2-4 strategically placed emojis
+✓ Line breaks every 2-3 sentences
+✓ 3-5 relevant hashtags at end
+✓ ${tone} tone but conversational
+✓ Engaging question or CTA at end
+✓ Optimized for ${postObjective || 'engagement'}
+✓ Speaks directly to ${targetAudience || 'professionals'}
+
+Return ONLY the JSON object. No additional text.`;
+      } else {
+        userPrompt = `Create a breakthrough LinkedIn post about: "${topic}"
+
+🎯 AUDIENCE: ${targetAudience || 'professionals'} in ${industry}
+📊 OBJECTIVE: ${postObjective || 'engagement'}
+✍️ TONE: ${tone}
+📊 FORMAT: ${contentStyle}
+📏 LENGTH: ${postLength}
+🔑 KEYWORDS: ${keywordsText || 'Industry-relevant terms'}
+💡 CONTEXT: ${description || 'Provide unique insights and value'}
+
+🚀 EXECUTION CHECKLIST:
+
+HOOK (Lines 1-2):
+✓ Use a viral hook pattern from the system prompt
+✓ Include specific numbers or timeframes
+✓ Create immediate curiosity or pattern interrupt
+✓ Speak to ${targetAudience || 'professional'} pain points
+
+CONTENT STRUCTURE:
+✓ Follow ${contentStyle} format
+✓ 1-2 sentence paragraphs maximum
+✓ Line break after every 2-3 sentences
+✓ Include 3-5 specific, actionable insights
+✓ Add personal anecdote or real example
+✓ Use ${tone} tone consistently
+✓ Place 2-4 emojis strategically
+
+VALUE DELIVERY:
+✓ Share frameworks, templates, or specific steps
+✓ Include credibility markers (data, outcomes, examples)
+✓ Make every sentence valuable
+✓ Optimize for ${postObjective || 'engagement'}
+
+ENGAGEMENT CTA:
+✓ End with compelling question
+✓ Invite discussion or debate
+✓ Ask for experiences/opinions
+✓ Make commenting irresistible
+
+FINISHING:
+✓ Add 3-5 relevant hashtags
+✓ Total ${postLength === 'short' ? '350-700' : postLength === 'medium' ? '700-1200' : '1200-1800'} characters
+✓ Mobile-optimized formatting
+✓ Authentic, conversational voice
+
+Write content that makes ${targetAudience || 'professionals'} immediately want to engage, save, and share.`;
 
     } else if (action === 'optimize') {
       systemPrompt = `You are an expert LinkedIn content optimizer specializing in ${optimizationGoal}. Your role is to enhance existing posts while maintaining their authentic voice and core message.
@@ -319,6 +448,26 @@ Return only the hashtags without # symbols, separated by commas.`;
     const generatedContent = await callOpenAI(messages, action);
 
     console.log(`Successfully generated content for ${action} action`);
+
+    // If generating variations, parse and return structured data
+    if (generateVariations && action === 'generate') {
+      try {
+        const parsed = JSON.parse(generatedContent);
+        if (parsed.variations && Array.isArray(parsed.variations)) {
+          // Add character count to each variation
+          const variationsWithCount = parsed.variations.map((v: any) => ({
+            ...v,
+            characterCount: v.content ? v.content.length : 0
+          }));
+          return new Response(JSON.stringify({ variations: variationsWithCount }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
+          });
+        }
+      } catch (parseError) {
+        console.error('Failed to parse variations JSON, returning as single content:', parseError);
+      }
+    }
 
     return new Response(JSON.stringify({ content: generatedContent }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

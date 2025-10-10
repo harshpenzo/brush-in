@@ -107,7 +107,9 @@ export const generateGeminiPost = async (
   description: string,
   contentStyle: string,
   postLength: string,
-  industry: string
+  industry: string,
+  targetAudience?: string,
+  postObjective?: string
 ): Promise<string> => {
   if (!GEMINI_API_KEY) {
     console.error("Gemini API key is missing. Falling back to local generation.");
