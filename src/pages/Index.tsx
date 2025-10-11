@@ -3,21 +3,16 @@ import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import PostForm from "@/components/PostForm";
 import PostPreview from "@/components/PostPreview";
-import { PostVariations } from "@/components/post/PostVariations";
+import { SmartPostCreator } from "@/components/post/SmartPostCreator";
 import Tips from "@/components/Tips";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
-import { CreatePostFormValues } from "@/components/post/CreatePostForm";
-import { OptimizePostFormValues } from "@/components/post/OptimizePostForm";
-import { generateMultiAIPost, optimizeMultiAIPost, generateMultiAIHashtags } from "@/services/multiAIService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useAnonymousGeneration } from "@/hooks/useAnonymousGeneration";
 import { canCreatePost, incrementPostCount } from "@/services/usageService";
-import { useGeneratePostMutation, useOptimizePostMutation, useGenerateHashtags } from "@/hooks/usePostQueries";
-import { PostVariation } from "@/types/post";
+import { supabase } from "@/integrations/supabase/client";
 import SEOMetaTags from "@/components/SEOMetaTags";
 import KeywordOptimizedContent from "@/components/KeywordOptimizedContent";
 import AdvancedSEO from "@/components/AdvancedSEO";
@@ -28,19 +23,12 @@ import InternalLinkingHub from "@/components/InternalLinkingHub";
 import AdvancedTechnicalSEO from "@/components/AdvancedTechnicalSEO";
 import SocialProofSEO from "@/components/SocialProofSEO";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Lock } from "lucide-react";
+import { Sparkles, Lock, Zap } from "lucide-react";
 
 const Index = () => {
   const [generatedPost, setGeneratedPost] = useState("");
-  const [postVariations, setPostVariations] = useState<PostVariation[]>([]);
   const [showPostCreator, setShowPostCreator] = useState(false);
-  const [activeOption, setActiveOption] = useState<"create" | "optimize" | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [hashtags, setHashtags] = useState<string[]>([]);
-  const [readabilityScore, setReadabilityScore] = useState<number | null>(null);
-  const [currentTopic, setCurrentTopic] = useState("");
-  const [currentTone, setCurrentTone] = useState("");
-  const [currentIndustry, setCurrentIndustry] = useState("");
   
   const featuresRef = useRef<HTMLDivElement>(null);
   const postCreatorRef = useRef<HTMLDivElement>(null);
@@ -48,23 +36,20 @@ const Index = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const anonymousGeneration = useAnonymousGeneration();
-  
-  // React Query mutations for better caching and error handling
-  const generatePostMutation = useGeneratePostMutation();
-  const optimizePostMutation = useOptimizePostMutation();
 
-  // Allow users to try without authentication (2 free generations)
-  const checkAuthAndProceed = (option: "create" | "optimize") => {
-    // Always allow to proceed - auth check happens during generation
-    setActiveOption(option);
+  const startCreating = () => {
     setShowPostCreator(true);
     setTimeout(() => {
       postCreatorRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
 
-  const handleGeneratePost = async (values: CreatePostFormValues) => {
-    // Check anonymous usage limit for non-authenticated users
+  const handleSmartGenerate = async (
+    topic: string, 
+    referencePosts: string[], 
+    context: string
+  ) => {
+    // Check authentication and limits
     if (!isAuthenticated) {
       if (!anonymousGeneration.canGenerate) {
         toast({
@@ -84,7 +69,6 @@ const Index = () => {
         return;
       }
     } else {
-      // Check usage limits for authenticated users
       const { canCreate, usage } = await canCreatePost(user!.id);
       if (!canCreate) {
         toast({
@@ -100,163 +84,52 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      // Save values for post metadata
-      setCurrentTopic(values.topic);
-      setCurrentTone(values.tone);
-      setCurrentIndustry(values.industry);
+      console.log('Generating smart post:', { topic, referencesCount: referencePosts.length });
       
-      // Generate multiple variations using the enhanced system
-      const result = await generateMultiAIPost({
-        topic: values.topic,
-        tone: values.tone,
-        keywords: values.keywords || "",
-        description: values.description || "",
-        contentStyle: values.contentStyle,
-        postLength: values.postLength,
-        industry: values.industry,
-        targetAudience: values.targetAudience,
-        postObjective: values.postObjective,
-        generateVariations: true
+      const { data, error } = await supabase.functions.invoke('smart-post-generation', {
+        body: {
+          topic,
+          referencePosts,
+          context
+        }
       });
-      
-      // Handle variations response
-      if (result && result.variations && Array.isArray(result.variations)) {
-        setPostVariations(result.variations);
-        setGeneratedPost(""); // Clear single post
-        
-        toast({
-          title: "Success!",
-          description: `Generated ${result.variations.length} post variations for you.`,
-        });
-      } else {
-        // Fallback to single post if variations failed
-        const singlePost = typeof result === 'string' ? result : result.content || '';
-        setGeneratedPost(singlePost);
-        setPostVariations([]);
-        
-        toast({
-          title: "Success!",
-          description: "Your LinkedIn post has been generated.",
-        });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Failed to generate post');
       }
 
-      // Handle usage tracking
+      if (!data || !data.content) {
+        throw new Error('No content generated');
+      }
+
+      setGeneratedPost(data.content);
+
+      // Track usage
       if (!isAuthenticated) {
         anonymousGeneration.incrementUsage();
         
-        if (anonymousGeneration.remainingGenerations === 1) {
-          toast({
-            title: "Last Free Generation!",
-            description: "This is your last free post. Sign up to generate unlimited posts!",
-            action: (
-              <Button
-                size="sm"
-                onClick={() => navigate('/auth')}
-                className="bg-primary hover:bg-primary/90"
-              >
-                Sign Up Free
-              </Button>
-            ),
-          });
-        } else {
-          toast({
-            title: "Post generated successfully",
-            description: `Your LinkedIn post has been created with AI. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
-          });
-        }
-      } else {
-        // Increment usage count for authenticated users
-        await incrementPostCount(user!.id);
         toast({
-          title: "Post generated successfully",
-          description: "Your LinkedIn post has been created with AI.",
+          title: "✨ Smart Post Created!",
+          description: referencePosts.length > 0 
+            ? `Generated using patterns from ${referencePosts.length} reference post${referencePosts.length > 1 ? 's' : ''}. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`
+            : `Generated using proven best practices. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
+        });
+      } else {
+        await incrementPostCount(user!.id);
+        
+        toast({
+          title: "✨ Smart Post Created!",
+          description: referencePosts.length > 0 
+            ? `AI learned from ${referencePosts.length} reference post${referencePosts.length > 1 ? 's' : ''} to create your personalized content.`
+            : "Generated using proven LinkedIn best practices.",
         });
       }
     } catch (error) {
-      console.error("Error generating post:", error);
+      console.error("Error generating smart post:", error);
       toast({
         title: "Generation failed",
         description: error instanceof Error ? error.message : "There was an error generating your post. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleOptimizePost = async (values: OptimizePostFormValues) => {
-    if (!user?.id) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to optimize posts",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Check usage limits before optimizing
-    const { canCreate, usage } = await canCreatePost(user.id);
-    if (!canCreate) {
-      toast({
-        title: "Usage limit reached",
-        description: `You've reached your monthly limit of ${usage?.monthly_limit || 50} posts. Upgrade for unlimited access!`,
-        variant: "destructive"
-      });
-      navigate("/pricing");
-      return;
-    }
-
-    setIsGenerating(true);
-    
-    try {
-      // Extract basic topic from post for metadata
-      const words = values.existingPost.split(/\s+/).slice(0, 5).join(" ");
-      setCurrentTopic(words);
-      setCurrentTone(values.optimizationGoal);
-      setCurrentIndustry("general");
-      
-      // Use cached mutation for better performance
-      const optimizedPost = await optimizePostMutation.mutateAsync(values);
-      
-      // Calculate enhanced readability score
-      const calculateReadabilityScore = (text: string) => {
-        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-        const words = text.split(/\s+/).filter(w => w.length > 0);
-        const avgWordsPerSentence = words.length / sentences.length;
-        
-        let score = 100;
-        if (avgWordsPerSentence > 20) score -= 15;
-        else if (avgWordsPerSentence > 15) score -= 10;
-        
-        // Optimized posts should score higher
-        return Math.max(80, Math.min(100, score + 5));
-      };
-      
-      const calculatedScore = calculateReadabilityScore(optimizedPost);
-      setReadabilityScore(calculatedScore);
-      
-      // Generate related hashtags
-      const generatedHashtags = await generateMultiAIHashtags({
-        topic: words, 
-        industry: "general", 
-        keywords: ""
-      });
-      setHashtags(generatedHashtags);
-      
-      setGeneratedPost(optimizedPost);
-
-      // Increment usage count after successful optimization
-      await incrementPostCount(user.id);
-      
-      toast({
-        title: "Post optimized successfully",
-        description: `Your LinkedIn post has been enhanced for better ${values.optimizationGoal} using AI.`,
-      });
-    } catch (error) {
-      console.error("Error optimizing post:", error);
-      toast({
-        title: "Optimization failed",
-        description: error instanceof Error ? error.message : "There was an error optimizing your post. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -319,23 +192,23 @@ const Index = () => {
         <section aria-label="Hero section">
           <Hero 
             onScrollToFeatures={scrollToFeatures} 
-            onSelectOption={checkAuthAndProceed} 
+            onSelectOption={startCreating} 
           />
         </section>
         
         <section ref={featuresRef} className="scroll-mt-16" aria-label="Features section">
-          <Features onSelectOption={checkAuthAndProceed} />
+          <Features onSelectOption={startCreating} />
         </section>
       
         {showPostCreator && (
-          <section ref={postCreatorRef} className="py-16 bg-slate-800 relative overflow-hidden scroll-mt-16" aria-label="Post creation section">
+          <section ref={postCreatorRef} className="py-16 bg-slate-800 relative overflow-hidden scroll-mt-16" aria-label="Smart post creation section">
             {/* Animated background elements */}
             <div className="absolute -top-[300px] -right-[300px] w-[600px] h-[600px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none"></div>
             <div className="absolute -bottom-[200px] -left-[200px] w-[400px] h-[400px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
             
             <div className="container mx-auto px-4 relative z-10">
               {!isAuthenticated && (
-                <div className="mb-6 max-w-2xl mx-auto p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="mb-6 max-w-3xl mx-auto p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-blue-500 rounded-full">
@@ -361,62 +234,50 @@ const Index = () => {
                   </div>
                 </div>
               )}
+              
               <header className="text-center mb-8 fade-in-bottom">
-                <span className="inline-block px-4 py-2 bg-sky-500/20 text-sky-400 rounded-full text-sm font-medium mb-4">
-                  AI Content Generator
-                </span>
-                <h2 className="text-3xl font-bold text-white mb-3 relative">
-                  {activeOption === "create" 
-                    ? "Create Your LinkedIn Post with AI" 
-                    : "Optimize Your LinkedIn Post with AI"}
-                  <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse" aria-hidden="true">🤖</div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-sky-500/20 to-purple-500/20 text-sky-300 rounded-full text-sm font-medium mb-4">
+                  <Zap className="h-4 w-4" />
+                  Smart AI Post Generator
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 relative">
+                  Create Personalized LinkedIn Posts
+                  <div className="absolute -top-8 -right-8 text-7xl text-brand-400/10 animate-pulse" aria-hidden="true">✨</div>
                 </h2>
                 <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-                  {activeOption === "create"
-                    ? "Generate authentic, engaging LinkedIn content powered by AI."
-                    : "Enhance your existing post for maximum engagement using AI-driven optimization."}
+                  AI learns from your favorite LinkedIn posts and creates humanized content that sounds like you.
                 </p>
               </header>
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              <div className="lg:col-span-2 space-y-6 fade-in-bottom perspective-1000" style={{ animationDelay: "100ms" }}>
-                <div className="perspective-child transition-transform duration-500 hover:rotate-y-1 transform-style-3d">
-                  <PostForm 
-                    onGenerate={handleGeneratePost} 
-                    onOptimize={handleOptimizePost} 
-                    initialMode={activeOption || "create"}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+                <div className="space-y-6 fade-in-bottom">
+                  <SmartPostCreator 
+                    onGenerate={handleSmartGenerate}
                     isGenerating={isGenerating}
                   />
                 </div>
-              </div>
-              
-              <div className="lg:flex lg:flex-col lg:space-y-4 fade-in-bottom order-first lg:order-last perspective-1000" style={{ animationDelay: "200ms" }}>
-                {postVariations.length > 0 && (
-                  <PostVariations variations={postVariations} isLoading={isGenerating} />
-                )}
-              </div>
-              
-              <div className="lg:col-span-3">
-                {generatedPost && (
-                  <>
-                    <div className="mb-4 lg:flex-grow transition-transform duration-500 hover:scale-105">
+                
+                <div className="space-y-6 fade-in-bottom" style={{ animationDelay: "100ms" }}>
+                  {generatedPost && (
+                    <div className="transition-all duration-500">
                       <PostPreview 
-                        post={generatedPost} 
-                        hashtags={hashtags}
-                        readabilityScore={readabilityScore}
-                        topic={currentTopic}
-                        tone={currentTone}
-                        industry={currentIndustry}
+                        post={generatedPost}
+                        hashtags={[]}
+                        readabilityScore={null}
+                        topic=""
+                        tone=""
+                        industry=""
                       />
                     </div>
-                    
-                    <div className="h-auto transition-transform duration-500 hover:translate-y-[-5px]">
-                      <Tips />
-                    </div>
-                  </>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
+
+              {generatedPost && (
+                <div className="mt-8 max-w-6xl mx-auto fade-in-bottom" style={{ animationDelay: "200ms" }}>
+                  <Tips />
+                </div>
+              )}
             </div>
           </section>
         )}
