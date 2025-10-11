@@ -386,6 +386,7 @@ FINISHING:
 ✓ Authentic, conversational voice
 
 Write content that makes ${targetAudience || 'professionals'} immediately want to engage, save, and share.`;
+      }
 
     } else if (action === 'optimize') {
       systemPrompt = `You are an expert LinkedIn content optimizer specializing in ${optimizationGoal}. Your role is to enhance existing posts while maintaining their authentic voice and core message.
