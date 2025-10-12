@@ -59,8 +59,5 @@ content_path = "./supabase/templates/confirmation.html"
 enable_signup = false
 enable_confirmations = false
 
-[functions.generate-post]
-verify_jwt = false
-
-[functions.smart-post-generation]
+[functions.trend-aware-post]
 verify_jwt = false

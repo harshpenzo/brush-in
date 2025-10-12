@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import PostPreview from "@/components/PostPreview";
-import { SmartPostCreator } from "@/components/post/SmartPostCreator";
+import { TrendAwarePostCreator } from "@/components/post/TrendAwarePostCreator";
 import Tips from "@/components/Tips";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CtaSection from "@/components/CtaSection";
@@ -44,10 +44,10 @@ const Index = () => {
     }, 100);
   };
 
-  const handleSmartGenerate = async (
+  const handleTrendAwareGenerate = async (
     topic: string, 
-    referencePosts: string[], 
-    context: string
+    context: string,
+    industry: string
   ) => {
     // Check authentication and limits
     if (!isAuthenticated) {
@@ -84,13 +84,13 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      console.log('Generating smart post:', { topic, referencesCount: referencePosts.length });
+      console.log('Generating trend-aware post:', { topic, industry });
       
-      const { data, error } = await supabase.functions.invoke('smart-post-generation', {
+      const { data, error } = await supabase.functions.invoke('trend-aware-post', {
         body: {
           topic,
-          referencePosts,
-          context
+          context,
+          industry
         }
       });
 
@@ -110,23 +110,19 @@ const Index = () => {
         anonymousGeneration.incrementUsage();
         
         toast({
-          title: "✨ Smart Post Created!",
-          description: referencePosts.length > 0 
-            ? `Generated using patterns from ${referencePosts.length} reference post${referencePosts.length > 1 ? 's' : ''}. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`
-            : `Generated using proven best practices. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
+          title: "✨ Post Created!",
+          description: `AI-powered post generated with live trends. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
         });
       } else {
         await incrementPostCount(user!.id);
         
         toast({
-          title: "✨ Smart Post Created!",
-          description: referencePosts.length > 0 
-            ? `AI learned from ${referencePosts.length} reference post${referencePosts.length > 1 ? 's' : ''} to create your personalized content.`
-            : "Generated using proven LinkedIn best practices.",
+          title: "✨ Post Created!",
+          description: "Your trend-aware, humanized post is ready!",
         });
       }
     } catch (error) {
-      console.error("Error generating smart post:", error);
+      console.error("Error generating post:", error);
       toast({
         title: "Generation failed",
         description: error instanceof Error ? error.message : "There was an error generating your post. Please try again.",
@@ -251,10 +247,10 @@ const Index = () => {
             
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
                 <div className="space-y-6 fade-in-bottom">
-                  <SmartPostCreator 
-                    onGenerate={handleSmartGenerate}
-                    isGenerating={isGenerating}
-                  />
+          <TrendAwarePostCreator
+            onGenerate={handleTrendAwareGenerate}
+            isGenerating={isGenerating}
+          />
                 </div>
                 
                 <div className="space-y-6 fade-in-bottom" style={{ animationDelay: "100ms" }}>
