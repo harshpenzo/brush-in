@@ -1,10 +1,19 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const inputSchema = z.object({
+  topic: z.string().trim().min(1, 'Topic is required').max(500, 'Topic must be less than 500 characters'),
+  context: z.string().trim().max(2000, 'Context must be less than 2000 characters').optional().default(''),
+  industry: z.string().trim().max(100, 'Industry must be less than 100 characters').optional().default(''),
+});
 
 // Web search function to get trending content
 async function searchTrends(topic: string, industry: string): Promise<string> {
@@ -32,7 +41,44 @@ serve(async (req) => {
   try {
     console.log('Trend-aware post generation called');
     
-    const { topic, context = '', industry = '' } = await req.json();
+    // Initialize Supabase client for rate limiting
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Rate limiting: 10 requests per hour for unauthenticated users
+    const identifier = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    console.log('Rate limit check for:', identifier);
+    
+    const { data: rateLimitCheck, error: rateLimitError } = await supabase.rpc('check_rate_limit', {
+      _identifier: identifier,
+      _endpoint: 'trend-aware-post',
+      _max_requests: 10,
+      _window_minutes: 60,
+    });
+
+    if (rateLimitError) {
+      console.error('Rate limit check error:', rateLimitError);
+    }
+
+    if (rateLimitCheck === false) {
+      console.log('Rate limit exceeded for:', identifier);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Rate limit exceeded. Please try again later or sign in for higher limits.' 
+        }), 
+        { 
+          status: 429, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Validate and sanitize input
+    const rawInput = await req.json();
+    const validatedInput = inputSchema.parse(rawInput);
+    const { topic, context, industry } = validatedInput;
+    
     console.log('Topic:', topic);
     console.log('Industry:', industry);
     console.log('Context provided:', !!context);
@@ -227,6 +273,22 @@ Go beyond the user's input—research the topic deeply, add surprising insights,
 
   } catch (error) {
     console.error('Error in trend-aware post generation:', error);
+    
+    // Handle validation errors specifically
+    if (error instanceof z.ZodError) {
+      console.error('Validation error:', error.errors);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input', 
+          details: error.errors.map(e => `${e.path.join('.')}: ${e.message}`) 
+        }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ 
         error: error.message || 'Post generation failed',
