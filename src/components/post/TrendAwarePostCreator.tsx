@@ -3,10 +3,17 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, Sparkles, Search } from 'lucide-react';
 
 interface TrendAwarePostCreatorProps {
-  onGenerate: (topic: string, context: string, industry: string) => void;
+  onGenerate: (data: {
+    topic: string;
+    context: string;
+    industry: string;
+    tone: string;
+    writingStyle: string;
+  }) => void;
   isGenerating: boolean;
 }
 
@@ -14,11 +21,13 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
   const [topic, setTopic] = useState('');
   const [context, setContext] = useState('');
   const [industry, setIndustry] = useState('');
+  const [tone, setTone] = useState('professional');
+  const [writingStyle, setWritingStyle] = useState('informative');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (topic.trim()) {
-      onGenerate(topic, context, industry);
+      onGenerate({ topic, context, industry, tone, writingStyle });
     }
   };
 
@@ -27,11 +36,11 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
       <div className="bg-gradient-to-br from-primary/5 via-background to-secondary/5 rounded-2xl p-8 border border-primary/10 shadow-lg">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-primary/10 rounded-xl">
-            <Sparkles className="w-6 h-6 text-primary" />
+            <Search className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground">AI Writer</h2>
-            <p className="text-sm text-muted-foreground">Connected to live trends & research</p>
+            <h2 className="text-2xl font-bold text-foreground">AI Research Writer</h2>
+            <p className="text-sm text-muted-foreground">Powered by live web research & citations</p>
           </div>
         </div>
 
@@ -48,6 +57,44 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
               className="text-base h-12"
               required
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="tone" className="text-base font-semibold">
+                Tone
+              </Label>
+              <Select value={tone} onValueChange={setTone}>
+                <SelectTrigger id="tone" className="h-12">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="professional">Professional</SelectItem>
+                  <SelectItem value="casual">Casual</SelectItem>
+                  <SelectItem value="inspirational">Inspirational</SelectItem>
+                  <SelectItem value="humorous">Humorous</SelectItem>
+                  <SelectItem value="thought-provoking">Thought-provoking</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="writingStyle" className="text-base font-semibold">
+                Writing Style
+              </Label>
+              <Select value={writingStyle} onValueChange={setWritingStyle}>
+                <SelectTrigger id="writingStyle" className="h-12">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="informative">Informative</SelectItem>
+                  <SelectItem value="storytelling">Storytelling</SelectItem>
+                  <SelectItem value="listicle">Listicle</SelectItem>
+                  <SelectItem value="question-based">Question-based</SelectItem>
+                  <SelectItem value="case-study">Case Study</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -84,12 +131,12 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
             {isGenerating ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Researching trends & writing...
+                Researching web & writing with citations...
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5" />
-                Generate Post
+                <Search className="w-5 h-5" />
+                Research & Generate Post
               </>
             )}
           </Button>
@@ -97,9 +144,9 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
 
         <div className="mt-6 p-4 bg-muted/30 rounded-xl border border-border/50">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            <strong className="text-foreground">How it works:</strong> Our AI researches current trends, 
-            analyzes successful LinkedIn posts, and writes in a natural, human voice that matches your 
-            industry and topic—going beyond your input to create engaging, authentic content.
+            <strong className="text-foreground">How it works:</strong> Our AI searches the web for the latest 
+            information on your topic, analyzes credible sources, and crafts a compelling LinkedIn post with 
+            citations—tailored to your preferred tone and writing style.
           </p>
         </div>
       </div>

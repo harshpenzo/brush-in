@@ -44,11 +44,13 @@ const Index = () => {
     }, 100);
   };
 
-  const handleTrendAwareGenerate = async (
-    topic: string, 
-    context: string,
-    industry: string
-  ) => {
+  const handleTrendAwareGenerate = async (data: {
+    topic: string;
+    context: string;
+    industry: string;
+    tone: string;
+    writingStyle: string;
+  }) => {
     // Check authentication and limits
     if (!isAuthenticated) {
       if (!anonymousGeneration.canGenerate) {
@@ -84,14 +86,10 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      console.log('Generating trend-aware post:', { topic, industry });
+      console.log('Generating research-based post:', data);
       
-      const { data, error } = await supabase.functions.invoke('trend-aware-post', {
-        body: {
-          topic,
-          context,
-          industry
-        }
+      const { data: responseData, error } = await supabase.functions.invoke('research-post', {
+        body: data
       });
 
       if (error) {
@@ -99,11 +97,11 @@ const Index = () => {
         throw new Error(error.message || 'Failed to generate post');
       }
 
-      if (!data || !data.content) {
+      if (!responseData || !responseData.content) {
         throw new Error('No content generated');
       }
 
-      setGeneratedPost(data.content);
+      setGeneratedPost(responseData.content);
 
       // Track usage
       if (!isAuthenticated) {
@@ -111,14 +109,14 @@ const Index = () => {
         
         toast({
           title: "✨ Post Created!",
-          description: `AI-powered post generated with live trends. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
+          description: `Research-backed post with citations created. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
         });
       } else {
         await incrementPostCount(user!.id);
         
         toast({
           title: "✨ Post Created!",
-          description: "Your trend-aware, humanized post is ready!",
+          description: "Your research-backed post with citations is ready!",
         });
       }
     } catch (error) {
