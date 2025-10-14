@@ -178,12 +178,7 @@ TREND AWARENESS:
 - Stay authentic while being timely
 
 INDUSTRY ADAPTATION:
-${industry ? `- Tailor voice and examples to ${industry} professionals
-- Use industry-relevant terminology naturally (not jargon)
-- Reference ${industry}-specific challenges and trends
-- Speak the language of ${industry} insiders` : '- Use universal business language
-- Make content relatable across industries
-- Focus on human experiences over technical details'}
+${industry ? '- Tailor voice and examples to ' + industry + ' professionals\n- Use industry-relevant terminology naturally (not jargon)\n- Reference ' + industry + '-specific challenges and trends\n- Speak the language of ' + industry + ' insiders' : '- Use universal business language\n- Make content relatable across industries\n- Focus on human experiences over technical details'}
 
 OUTPUT REQUIREMENTS:
 - 700-1,300 characters
