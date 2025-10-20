@@ -119,7 +119,7 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-slate-900 dark:text-white">My Dashboard</h1>
-                <p className="text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-muted-foreground mt-1">
                   Manage all your LinkedIn posts in one place
                 </p>
               </div>
@@ -155,7 +155,7 @@ const Dashboard = () => {
                 </div>
                 <Button 
                   onClick={() => navigate("/")} 
-                  className="bg-sky-600 hover:bg-sky-700 text-white"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   Create New Post
                 </Button>
@@ -173,7 +173,7 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Button 
                         onClick={() => navigate("/")} 
-                        className="bg-sky-600 hover:bg-sky-700 text-white h-12"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 h-12"
                       >
                         Create New Post
                       </Button>
@@ -254,14 +254,14 @@ const Dashboard = () => {
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="flex-1 text-amber-600 dark:text-amber-500 border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950"
+                            className="flex-1 text-foreground border-border hover:bg-accent hover:text-accent-foreground"
                           >
                             <Edit className="h-4 w-4 mr-1" /> Edit
                           </Button>
                           <Button 
                             variant="outline" 
                             size="icon" 
-                            className="text-red-600 dark:text-red-500 border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950" 
+                            className="text-destructive border-destructive/50 hover:bg-destructive hover:text-destructive-foreground" 
                             onClick={() => post.id && handleDelete(post.id)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -292,7 +292,7 @@ const Dashboard = () => {
                   <p className="text-slate-500 dark:text-slate-400 text-center mb-4">
                     Create your first LinkedIn post to get started
                   </p>
-                  <Button onClick={() => navigate("/")} className="bg-sky-600 hover:bg-sky-700 text-white">
+                  <Button onClick={() => navigate("/")} className="bg-primary text-primary-foreground hover:bg-primary/90">
                     Create New Post
                   </Button>
                 </div>

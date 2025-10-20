@@ -202,17 +202,17 @@ const Index = () => {
             
             <div className="container mx-auto px-4 relative z-10">
               {!isAuthenticated && (
-                <div className="mb-6 max-w-3xl mx-auto p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="mb-6 max-w-3xl mx-auto p-4 bg-accent/50 backdrop-blur-sm rounded-lg border border-border">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-500 rounded-full">
-                        <Sparkles className="h-4 w-4 text-white" />
+                      <div className="p-2 bg-primary rounded-full">
+                        <Sparkles className="h-4 w-4 text-primary-foreground" />
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        <p className="text-sm font-semibold text-foreground">
                           Try Before You Sign Up!
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-muted-foreground">
                           {anonymousGeneration.remainingGenerations} free {anonymousGeneration.remainingGenerations === 1 ? 'generation' : 'generations'} remaining
                         </p>
                       </div>
@@ -220,7 +220,7 @@ const Index = () => {
                     <Button
                       size="sm"
                       onClick={() => navigate('/auth')}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
                     >
                       <Lock className="h-3 w-3 mr-1" />
                       Sign Up for More
