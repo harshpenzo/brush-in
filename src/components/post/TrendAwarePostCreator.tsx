@@ -46,7 +46,7 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="topic" className="text-base font-semibold">
+            <Label htmlFor="topic" className="text-base font-semibold text-white">
               What do you want to write about?
             </Label>
             <Input
@@ -61,7 +61,7 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="tone" className="text-base font-semibold">
+              <Label htmlFor="tone" className="text-base font-semibold text-white">
                 Tone
               </Label>
               <Select value={tone} onValueChange={setTone}>
@@ -79,7 +79,7 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="writingStyle" className="text-base font-semibold">
+              <Label htmlFor="writingStyle" className="text-base font-semibold text-white">
                 Writing Style
               </Label>
               <Select value={writingStyle} onValueChange={setWritingStyle}>
@@ -111,7 +111,7 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="context" className="text-base font-semibold">
+            <Label htmlFor="context" className="text-base font-semibold text-white">
               Additional Context <span className="text-muted-foreground font-normal">(optional)</span>
             </Label>
             <Textarea
