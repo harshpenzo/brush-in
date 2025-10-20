@@ -98,7 +98,7 @@ export const TrendAwarePostCreator = ({ onGenerate, isGenerating }: TrendAwarePo
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="industry" className="text-base font-semibold">
+            <Label htmlFor="industry" className="text-base font-semibold text-white">
               Your Industry <span className="text-muted-foreground font-normal">(optional)</span>
             </Label>
             <Input
