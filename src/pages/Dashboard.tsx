@@ -169,7 +169,7 @@ const Dashboard = () => {
               <div className="lg:col-span-3">
                 <Card className="border-slate-200 dark:border-slate-700">
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h3>
+                    <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Button 
                         onClick={() => navigate("/")} 
