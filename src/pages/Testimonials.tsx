@@ -168,6 +168,7 @@ const Testimonials = () => {
                         src={testimonial.avatar} 
                         alt={testimonial.name} 
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 rounded-full border-2 border-brand-400/30 group-hover:border-brand-400 transition-all"></div>
                     </div>

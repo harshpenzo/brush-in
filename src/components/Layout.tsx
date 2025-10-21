@@ -3,6 +3,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PageTransition from "./PageTransition";
+import InternalLinkingHub from "./InternalLinkingHub";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ const Layout = ({ children, onScrollToFeatures }: LayoutProps) => {
         </main>
       </PageTransition>
       <Footer />
+      <InternalLinkingHub />
     </div>
   );
 };

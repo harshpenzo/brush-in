@@ -1,6 +1,6 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
+import SEOMetaTags from "@/components/SEOMetaTags";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -95,6 +95,12 @@ const Profile = () => {
 
   return (
     <Layout>
+      <SEOMetaTags
+        title="Profile - Brushin.in | Manage Your LinkedIn Content Account"
+        description="Manage your Brushin.in profile and LinkedIn content creation settings. View your account details, posts, and preferences for AI-powered LinkedIn post generation."
+        keywords="profile, account settings, LinkedIn content creator profile, Brushin.in account, user dashboard"
+        url="https://brushin.in/profile"
+      />
       <div className="py-16 bg-slate-900 text-white min-h-screen">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">

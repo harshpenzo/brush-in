@@ -20,6 +20,7 @@ const AboutTeam = ({ onSectionRef }: AboutTeamProps) => {
             src="/lovable-uploads/b8e604ac-f3db-4533-aced-9c52956891a7.png"
             alt="Harsh Batheja - Founder & CEO"
             className="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-4 border-sky-500/30"
+            loading="lazy"
           />
           <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">Harsh Batheja</h3>
           <p className="text-sky-500 mb-4 font-medium">Founder & CEO</p>

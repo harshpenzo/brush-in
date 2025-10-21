@@ -286,6 +286,7 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
                   src="/images/satya-nadella.jpg" 
                   alt="Satya Nadella profile photo" 
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-sky-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-shrink-0"
+                  loading="lazy"
                 />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-white text-sm sm:text-base truncate">Satya Nadella</p>
@@ -303,9 +304,9 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
               
               <div className="flex justify-between items-center pt-2 border-t border-slate-700">
                 <div className="flex -space-x-1 sm:-space-x-2">
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
-                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer"/>
+                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer" loading="lazy" />
+                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer" loading="lazy" />
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop" alt="LinkedIn engagement avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer" loading="lazy" />
                   <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-slate-700 text-slate-300 text-xs flex items-center justify-center border-2 border-slate-800 hover:scale-110 transition-transform cursor-pointer">+124</div>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-400 font-medium truncate">2.5K reactions</p>
