@@ -219,7 +219,7 @@ const Dashboard = () => {
                       <CardContent className="p-5">
                         <div className="flex justify-between items-start mb-3">
                           <div>
-                            <div className="text-lg font-semibold text-slate-900 dark:text-white line-clamp-1">
+                            <div className="text-lg font-semibold text-white line-clamp-1">
                               {post.topic || "Untitled Post"}
                             </div>
                             <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 space-x-2">
@@ -288,7 +288,7 @@ const Dashboard = () => {
                       <path d="M3 14v1"></path>
                     </svg>
                   </div>
-                  <h3 className="text-xl font-medium text-slate-900 dark:text-white mb-2">No posts yet</h3>
+                  <h3 className="text-xl font-medium text-white mb-2">No posts yet</h3>
                   <p className="text-slate-500 dark:text-slate-400 text-center mb-4">
                     Create your first LinkedIn post to get started
                   </p>
