@@ -57,7 +57,7 @@ const UsageTracker = () => {
     return (
       <Card className="border-slate-200 dark:border-slate-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
+          <CardTitle className="flex items-center gap-2 text-white">
             <BarChart3 className="h-5 w-5" />
             Usage Overview
           </CardTitle>
@@ -79,7 +79,7 @@ const UsageTracker = () => {
   return (
     <Card className="border-slate-200 dark:border-slate-700">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
+        <CardTitle className="flex items-center gap-2 text-white">
           <BarChart3 className="h-5 w-5" />
           Usage Overview
         </CardTitle>
