@@ -160,12 +160,10 @@ const Blog = () => {
                         ))}
                       </div>
                       
-                      <Button variant="ghost" className="p-0 h-auto font-semibold group-hover:text-primary transition-colors" asChild>
-                        <Link to={`/blog/${post.slug}`}>
-                          Read Full Article
-                          <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                      </Button>
+                      <Link to={`/blog/${post.slug}`} className="inline-flex items-center gap-2 font-semibold text-sm group-hover:text-primary transition-colors">
+                        Read Full Article
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
                     </CardContent>
                   </Card>
                 ))}
@@ -228,12 +226,10 @@ const Blog = () => {
                       ))}
                     </div>
                     
-                    <Button variant="ghost" className="p-0 h-auto font-semibold group-hover:text-primary transition-colors" asChild>
-                      <Link to={`/blog/${post.slug}`}>
-                        Read Article
-                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Button>
+                    <Link to={`/blog/${post.slug}`} className="inline-flex items-center gap-2 font-semibold text-sm group-hover:text-primary transition-colors">
+                      Read Article
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
