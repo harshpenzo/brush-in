@@ -4,7 +4,7 @@ import SEOMetaTags from '@/components/SEOMetaTags';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { blogPosts, getFeaturedPosts } from '@/data/blogPosts';
 import { Search, Clock, User, Calendar, ArrowRight, TrendingUp } from 'lucide-react';
 
@@ -281,9 +281,12 @@ const Blog = () => {
             <p className="text-lg text-muted-foreground mb-8">
               Use our AI-powered LinkedIn post generator to create engaging content based on these proven strategies.
             </p>
-            <Button size="lg" className="text-lg px-8 py-6" asChild>
-              <Link to="/dashboard">Start Creating Content</Link>
-            </Button>
+            <Link
+              to="/dashboard"
+              className={buttonVariants({ size: "lg", className: "text-lg px-8 py-6" })}
+            >
+              Start Creating Content
+            </Link>
           </div>
         </section>
       </main>
