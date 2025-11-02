@@ -149,6 +149,14 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
             About
           </Link>
           <Link 
+            to="/blog" 
+            className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
+              isActive('/blog') || location.pathname.startsWith('/blog/') ? 'text-sky-400' : ''
+            }`}
+          >
+            Blog
+          </Link>
+          <Link 
             to="/testimonials" 
             className={`text-slate-300 hover:text-sky-400 transition-smooth font-medium text-sm ${
               isActive('/testimonials') ? 'text-sky-400' : ''
@@ -231,6 +239,14 @@ const Header = ({ onScrollToFeatures }: HeaderProps) => {
               }`}
             >
               About
+            </Link>
+            <Link 
+              to="/blog" 
+              className={`text-slate-300 hover:text-sky-400 py-3 px-4 rounded-lg transition-smooth font-medium hover:bg-slate-800/50 ${
+                isActive('/blog') || location.pathname.startsWith('/blog/') ? 'bg-slate-800/70 text-sky-400' : ''
+              }`}
+            >
+              Blog
             </Link>
             <Link 
               to="/testimonials" 
