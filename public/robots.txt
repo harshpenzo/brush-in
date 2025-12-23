@@ -1,5 +1,7 @@
+# robots.txt for Brushin.in - AI LinkedIn Post Generator
+# Last updated: 2025-12-23
+# Website: https://brushin.in
 
-# Brushin.in AI LinkedIn Post Generator Robots.txt
 User-agent: *
 Allow: /
 
@@ -9,9 +11,13 @@ Allow: /pricing
 Allow: /testimonials
 Allow: /faq
 Allow: /contact
-Allow: /linkedin-post-generator
-Allow: /ai-content-creator
-Allow: /viral-linkedin-posts
+Allow: /blog
+Allow: /blog/
+Allow: /resources
+Allow: /linkedin-hashtag-generator
+Allow: /linkedin-engagement-calculator
+Allow: /linkedin-post-templates
+Allow: /linkedin-writing-tips
 
 # Block admin and auth pages from indexing but allow crawling
 Disallow: /auth/
