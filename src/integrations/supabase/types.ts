@@ -163,7 +163,9 @@ export type Database = {
         }
         Returns: boolean
       }
-      increment_post_count: { Args: { user_uuid: string }; Returns: boolean }
+      increment_post_count:
+        | { Args: never; Returns: boolean }
+        | { Args: { user_uuid: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
