@@ -70,12 +70,12 @@ export const canCreatePost = async (userId: string): Promise<{ canCreate: boolea
 
 /**
  * Increment user's post count after successful post creation
+ * Note: The function now uses auth.uid() internally for security - no parameter needed
  */
-export const incrementPostCount = async (userId: string): Promise<boolean> => {
+export const incrementPostCount = async (): Promise<boolean> => {
   try {
-    const { data, error } = await supabase.rpc('increment_post_count', {
-      user_uuid: userId
-    });
+    // Function uses auth.uid() internally - no user_uuid parameter needed
+    const { data, error } = await supabase.rpc('increment_post_count');
 
     if (error) {
       console.error('Error incrementing post count:', error);

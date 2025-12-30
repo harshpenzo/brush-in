@@ -112,7 +112,7 @@ const Index = () => {
           description: `Research-backed post with citations created. ${anonymousGeneration.remainingGenerations - 1} free generations remaining.`,
         });
       } else {
-        await incrementPostCount(user!.id);
+        await incrementPostCount();
         
         toast({
           title: "✨ Post Created!",
