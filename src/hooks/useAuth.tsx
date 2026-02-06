@@ -8,8 +8,7 @@ import { getAndClearRedirectDestination } from './useAuthGuard';
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
 }
@@ -139,128 +138,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [initAuth, location.pathname, navigate]);
 
-  const login = async (email: string, password: string) => {
+  const signInWithGoogle = async () => {
     try {
       setLoading(true);
       
       // Clean up existing state first
       cleanupAuthState();
       
-      // Try global sign out to ensure clean state
-      try {
-        await supabase.auth.signOut({ scope: 'global' });
-      } catch (err) {
-        // Continue even if this fails
-      }
+      // Store intended destination before redirecting
+      const currentDestination = sessionStorage.getItem('redirectAfterAuth') || '/dashboard';
+      sessionStorage.setItem('redirectAfterAuth', currentDestination);
       
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) {
-        // Handle email not confirmed error specially
-        if (error.message.toLowerCase().includes('email not confirmed')) {
-          toast({
-            title: "Email not confirmed",
-            description: "Please check your email for a confirmation link. Click resend to get a new confirmation email.",
-            variant: "destructive",
-          });
-          
-          // Attempt to resend confirmation email
-          const { error: resendError } = await supabase.auth.resend({
-            type: 'signup',
-            email,
-            options: {
-              emailRedirectTo: `${window.location.origin}/auth`,
-            },
-          });
-          
-          if (!resendError) {
-            toast({
-              title: "Confirmation email sent",
-              description: "Please check your inbox for the confirmation link.",
-            });
-          }
-        } else {
-          toast({
-            title: "Authentication failed",
-            description: error.message,
-            variant: "destructive"
-          });
-        }
-        throw error;
-      }
-
-      if (data.user) {
-        toast({
-          title: "Welcome back!",
-          description: "You've successfully signed in",
-        });
-        
-        // Navigate to intended destination or dashboard
-        const destination = getAndClearRedirectDestination();
-        navigate(destination, { replace: true });
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signUp = async (email: string, password: string, name: string) => {
-    try {
-      setLoading(true);
-      
-      // Clean up existing state first
-      cleanupAuthState();
-      
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
         options: {
-          data: {
-            name
-          }
-        }
+          redirectTo: `${window.location.origin}/auth`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
       });
 
       if (error) {
         toast({
-          title: "Registration failed",
+          title: "Authentication failed",
           description: error.message,
           variant: "destructive"
         });
         throw error;
       }
-
-      if (data?.user) {
-        // Check if email confirmation is required
-        if (data.user.identities && data.user.identities.length === 0) {
-          toast({
-            title: "Account already exists",
-            description: "An account with this email already exists. Please log in instead.",
-          });
-          return;
-        } else {
-          toast({
-            title: "Account created successfully!",
-            description: "You can now sign in with your credentials.",
-          });
-          
-          // Navigate to intended destination or dashboard
-          const destination = getAndClearRedirectDestination();
-          navigate(destination, { replace: true });
-        }
-      }
+      
+      // Note: OAuth flow will redirect, so we don't need to handle navigation here
     } catch (error) {
-      console.error('Signup error:', error);
-    } finally {
+      console.error('Google sign in error:', error);
       setLoading(false);
     }
   };
-
 
   const logout = async () => {
     try {
@@ -295,7 +209,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, signUp, logout, loading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, signInWithGoogle, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
