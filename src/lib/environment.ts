@@ -12,10 +12,11 @@ export const supabaseConfig = {
     : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkaGphY3ZibHN4cHpzaGt3c3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNjg1NjAsImV4cCI6MjA2MDc0NDU2MH0.bWAFpRmDOOHEbW824DvWl4LnVLF0othCDu_zb7LxsKg"
 };
 
-// API configuration
+// API configuration - API keys are now handled server-side via edge functions
+// VITE_ prefixed keys are removed for security - they were exposed in client bundles
 export const apiConfig = {
-  geminiApiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
-  openaiApiKey: import.meta.env.VITE_OPENAI_API_KEY || "",
+  // Deprecated: API keys are no longer stored client-side
+  // Use edge functions (gemini-generate, research-post) for AI features
 };
 
 // App configuration

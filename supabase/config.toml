@@ -61,3 +61,6 @@ enable_confirmations = false
 
 [functions.research-post]
 verify_jwt = false
+
+[functions.gemini-generate]
+verify_jwt = false
