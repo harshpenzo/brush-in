@@ -76,18 +76,8 @@ const Auth = () => {
     return <Navigate to={destination} replace />;
   }
 
-  // Render the AuthForm with animated background to match home page
-  return (
-    <div className="min-h-screen bg-slate-900 relative overflow-hidden">
-      {/* Animated background elements similar to home page */}
-      <div className="absolute -top-[300px] -right-[300px] w-[600px] h-[600px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none"></div>
-      <div className="absolute -bottom-[200px] -left-[200px] w-[400px] h-[400px] bg-brand-500/5 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
-      
-      <div className="container mx-auto px-4 py-16">
-        <AuthForm />
-      </div>
-    </div>
-  );
+  // Render the AuthForm - the Layout component provides the consistent theme
+  return <AuthForm />;
 };
 
 export default Auth;
