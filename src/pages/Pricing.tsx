@@ -41,8 +41,8 @@ const Pricing = () => {
   return (
     <>
       <SEOMetaTags 
-        title="Pricing Plans - LinkedIn AI Content Creator | Brushin.in"
-        description="Choose the perfect plan for your LinkedIn content needs. Free tier available with 10 posts/month. Pro and Business plans for unlimited AI-generated LinkedIn posts. Start free today!"
+        title="Brushin.in Pricing - Free LinkedIn Post Generator Plans"
+        description="Transparent pricing for every need. Start free, upgrade anytime. Create unlimited LinkedIn posts with our AI-powered tool. No credit card required."
         keywords="LinkedIn content creator pricing, AI writing tool cost, LinkedIn post generator plans, social media tool pricing, content creation subscription"
         url="https://brushin.in/pricing"
         schemaMarkup={pricingSchema}

@@ -13,8 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary SEO Meta Tags -->
-    <title>Brushin.in - #1 AI LinkedIn Post Generator | Create Viral LinkedIn Content Instantly</title>
-    <meta name="description" content="Brushin.in - The premier AI LinkedIn post generator trusted by 10,000+ professionals. Create viral LinkedIn posts, boost engagement 500%, dominate your LinkedIn presence. Free LinkedIn AI posts + premium features. Start with Brushin today!" />
+    <title>Brushin.in - Free AI LinkedIn Post Generator | Create Viral Posts</title>
+    <meta name="description" content="Generate engaging LinkedIn posts instantly with AI. Free LinkedIn post creator with templates, hashtags, and viral content ideas. Try now - no credit card required." />
     <meta name="keywords" content="Brushin.in, Brushin, brushin ai, brushin linkedin, AI LinkedIn post generator, linkedin post generator, viral LinkedIn posts, LinkedIn AI tools, linkedin content creator, professional content generator, LinkedIn engagement, LinkedIn marketing, AI content generator, LinkedIn automation, social media AI, LinkedIn growth tool, linkedin post maker, viral post generator, linkedin ai writer, brushin generator, linkedin content ai, professional branding, LinkedIn optimization, social selling, B2B marketing, thought leadership, LinkedIn influencer tools, linkedin post creator, ai social media, content creation AI" />
     <meta name="author" content="Brushin.in Team" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -102,14 +102,40 @@
     <link rel="preconnect" href="https://api.openai.com">
     <link rel="preconnect" href="https://www.google-analytics.com">
     <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://images.unsplash.com">
     
     <!-- DNS Prefetch for performance -->
     <link rel="dns-prefetch" href="//linkedin.com">
     <link rel="dns-prefetch" href="//twitter.com">
     <link rel="dns-prefetch" href="//facebook.com">
+    <link rel="dns-prefetch" href="//images.unsplash.com">
     
-    <!-- Font imports with display=swap for performance -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Preload hero/above-the-fold image -->
+    <link rel="preload" as="image" href="/images/satya-nadella.jpg" type="image/jpeg">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" as="font" href="https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2" type="font/woff2" crossorigin>
+    <link rel="preload" as="font" href="https://fonts.gstatic.com/s/montserrat/v29/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Hw5aXp-p7K4KLg.woff2" type="font/woff2" crossorigin>
+    
+    <!-- Font imports with display=swap for performance (non-blocking) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Critical inline CSS for above-the-fold content -->
+    <style>
+      /* Critical CSS: Hero section, header, and primary CTA */
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;background-color:#0f172a;color:#f1f5f9;-webkit-font-smoothing:antialiased}
+      #root{width:100%}
+      .flex{display:flex}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}
+      .min-h-screen{min-height:100vh}.w-full{width:100%}.relative{position:relative}.fixed{position:fixed}
+      /* Prevent FOIT - use system fonts as fallback */
+      h1,h2,h3,h4,h5,h6{font-family:'Montserrat',ui-sans-serif,system-ui,sans-serif;font-weight:600}
+      /* Loading spinner */
+      @keyframes spin{to{transform:rotate(360deg)}}
+      .loading-spinner{width:40px;height:40px;border:4px solid rgba(14,165,233,0.3);border-top-color:#0ea5e9;border-radius:50%;animation:spin 0.8s linear infinite}
+    </style>
     
     <!-- Enhanced JSON-LD Structured Data -->
     <script type="application/ld+json">
