@@ -173,9 +173,9 @@ const Index = () => {
 
   return (
     <>
-      <SEOMetaTags 
-        title="Brushin.in - #1 AI LinkedIn Post Generator | Create Viral LinkedIn Content in Minutes"
-        description="Transform your LinkedIn presence with Brushin.in - the premier AI LinkedIn post generator. Create viral LinkedIn posts, boost engagement by 500%, and build your professional brand. Helped 10,000+ professionals worldwide. Get 10 free LinkedIn posts monthly!"
+       <SEOMetaTags 
+        title="Brushin.in - Free AI LinkedIn Post Generator | Create Viral Posts in Seconds"
+        description="Generate engaging LinkedIn posts instantly with AI. Free LinkedIn post creator with templates, hashtags, and viral content ideas. Try now - no credit card required."
         keywords="Brushin.in, Brushin, brushin ai, AI LinkedIn post generator, linkedin post generator, viral LinkedIn content, LinkedIn post creator, professional content generator, LinkedIn AI tools, social media automation, LinkedIn engagement, viral LinkedIn posts, LinkedIn marketing, content creation AI, LinkedIn optimization, professional branding, LinkedIn growth tool, linkedin content creator, ai content generator, linkedin ai, brushin linkedin, linkedin post maker, viral post generator"
         schemaMarkup={structuredData}
       />

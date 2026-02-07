@@ -115,9 +115,12 @@ const TestimonialsSection = () => {
                 <div className="relative overflow-hidden rounded-full w-14 h-14 mr-4 border-2 border-brand-400/30 group-hover:border-brand-400/80 transition-colors">
                   <img 
                     src={testimonial.avatarUrl} 
-                    alt={testimonial.name} 
+                    alt={testimonial.name}
+                    width={150}
+                    height={150}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 rounded-full shadow-inner"></div>
                 </div>

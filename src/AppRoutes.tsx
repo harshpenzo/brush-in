@@ -2,6 +2,7 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { AuthProvider } from "@/hooks/useAuth";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Lazy load all pages for code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -24,7 +25,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const AppRoutes = () => {
   return (
     <AuthProvider>
-      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
