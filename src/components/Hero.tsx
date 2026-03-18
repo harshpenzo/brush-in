@@ -289,7 +289,6 @@ const Hero = ({ onScrollToFeatures, onSelectOption }: HeroProps) => {
                   height={48}
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-sky-400/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-shrink-0"
                   loading="eager"
-                  fetchPriority="high"
                 />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-white text-sm sm:text-base truncate">Satya Nadella</p>

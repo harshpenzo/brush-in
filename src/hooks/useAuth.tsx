@@ -9,21 +9,20 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
 }
 
-// Helper function to clean up auth state to prevent weird auth state issues
+// Helper function to clean up auth state
 const cleanupAuthState = () => {
-  // Remove standard auth tokens
   localStorage.removeItem('supabase.auth.token');
-  // Remove all Supabase auth keys from localStorage
   Object.keys(localStorage).forEach((key) => {
     if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
       localStorage.removeItem(key);
     }
   });
-  // Remove from sessionStorage if in use
   Object.keys(sessionStorage || {}).forEach((key) => {
     if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
       sessionStorage.removeItem(key);
@@ -42,22 +41,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Handle auth state initialization and change detection
   const initAuth = useCallback(async () => {
     try {
-      console.log('Initializing auth state...');
       setLoading(true);
       
-      // Check if we're coming from an auth redirect
       const isAuthRedirect = location.hash && 
-        (location.hash.includes('access_token') || 
-         location.hash.includes('error'));
+        (location.hash.includes('access_token') || location.hash.includes('error'));
 
-      if (isAuthRedirect) {
-        console.log('Auth redirect detected, hash:', location.hash);
-      }
-
-      // First get the session directly to handle redirects and initial loading
       const { data, error } = await supabase.auth.getSession();
       
       if (error) {
@@ -67,27 +57,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data?.session) {
-        console.log('Session found during initialization:', !!data.session);
         setSession(data.session);
         setUser(data.session.user);
         setIsAuthenticated(true);
         
-        // If this was an auth redirect, redirect to intended destination
         if (isAuthRedirect && location.pathname === '/auth') {
           const destination = getAndClearRedirectDestination();
-          console.log('Redirecting after successful auth to:', destination);
           navigate(destination, { replace: true });
         }
       } else if (isAuthRedirect && !data?.session) {
-        // Auth redirect with error
-        console.error('Auth redirect detected but no session found');
         toast({
           title: "Authentication failed",
           description: "Failed to authenticate. Please try again.",
           variant: "destructive"
         });
       } else {
-        console.log('No session found during initialization');
         setIsAuthenticated(false);
         setUser(null);
       }
@@ -99,25 +83,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [location.hash, location.pathname, navigate, toast]);
 
   useEffect(() => {
-    console.log('Setting up auth state listener...');
-    
-    // Set up auth state change listener
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, currentSession: Session | null) => {
-        console.log('Auth state changed:', event, !!currentSession);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setIsAuthenticated(!!currentSession?.user);
         
-        // Handle sign out event specifically
         if (event === 'SIGNED_OUT') {
-          console.log('User signed out, cleaning up auth state...');
           cleanupAuthState();
-        } 
-        // Handle sign in event
-        else if (event === 'SIGNED_IN' && currentSession) {
-          console.log('User signed in, redirecting if on auth page...');
-          // Use a timeout to avoid potential deadlocks with Supabase client
+        } else if (event === 'SIGNED_IN' && currentSession) {
           setTimeout(() => {
             if (location.pathname === '/auth') {
               const destination = getAndClearRedirectDestination();
@@ -128,12 +102,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     );
 
-    // Initialize auth state
     initAuth();
 
-    // Clean up subscription
     return () => {
-      console.log('Cleaning up auth listener...');
       authListener.subscription.unsubscribe();
     };
   }, [initAuth, location.pathname, navigate]);
@@ -141,11 +112,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInWithGoogle = async () => {
     try {
       setLoading(true);
-      
-      // Clean up existing state first
       cleanupAuthState();
       
-      // Store intended destination before redirecting
       const currentDestination = sessionStorage.getItem('redirectAfterAuth') || '/dashboard';
       sessionStorage.setItem('redirectAfterAuth', currentDestination);
       
@@ -168,19 +136,76 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
         throw error;
       }
-      
-      // Note: OAuth flow will redirect, so we don't need to handle navigation here
     } catch (error) {
       console.error('Google sign in error:', error);
       setLoading(false);
     }
   };
 
-  const logout = async () => {
+  const signInWithEmail = async (email: string, password: string) => {
     try {
       setLoading(true);
       
-      // Clean up auth state first
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.session) {
+        toast({
+          title: "Welcome back!",
+          description: "You've been signed in successfully.",
+        });
+      }
+    } catch (error: any) {
+      console.error('Email sign in error:', error);
+      setLoading(false);
+      throw error;
+    }
+  };
+
+  const signUpWithEmail = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // If email confirmation is required, user won't have a session yet
+      if (data?.user && !data?.session) {
+        setLoading(false);
+        return; // Let the caller show the "check email" toast
+      }
+
+      if (data?.session) {
+        toast({
+          title: "Account created!",
+          description: "Welcome to BrushIn!",
+        });
+      }
+    } catch (error: any) {
+      console.error('Email sign up error:', error);
+      setLoading(false);
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      setLoading(true);
       cleanupAuthState();
       
       const { error } = await supabase.auth.signOut({ scope: 'global' });
@@ -199,7 +224,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: "You've been successfully signed out",
       });
       
-      // Navigate programmatically rather than refreshing the page
       navigate('/', { replace: true });
     } catch (error) {
       console.error('Logout error:', error);
@@ -209,7 +233,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signInWithGoogle, logout, loading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, signInWithGoogle, signInWithEmail, signUpWithEmail, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

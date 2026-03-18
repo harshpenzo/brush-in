@@ -118,7 +118,7 @@ export const generateOpenAIHashtags = async (
 ): Promise<string[]> => {
   console.log('Calling hashtags generation with OpenAI');
   
-  const { data, error } = await supabase.functions.invoke('generate-post', {
+  const { data, error } = await supabase.functions.invoke('gemini-generate', {
     body: {
       action: 'hashtags',
       topic,
