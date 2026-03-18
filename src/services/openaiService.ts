@@ -18,7 +18,7 @@ export const generateOpenAIPost = async (
 ): Promise<string | any> => {
   console.log('Calling generate-post edge function with OpenAI');
   
-  const { data, error } = await supabase.functions.invoke('generate-post', {
+  const { data, error } = await supabase.functions.invoke('gemini-generate', {
     body: {
       action: 'generate',
       topic,
