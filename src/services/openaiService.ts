@@ -18,7 +18,7 @@ export const generateOpenAIPost = async (
 ): Promise<string | any> => {
   console.log('Calling generate-post edge function with OpenAI');
   
-  const { data, error } = await supabase.functions.invoke('generate-post', {
+  const { data, error } = await supabase.functions.invoke('gemini-generate', {
     body: {
       action: 'generate',
       topic,
@@ -74,7 +74,7 @@ export const optimizeOpenAIPost = async (
 ): Promise<string> => {
   console.log('Calling optimize-post edge function with OpenAI');
   
-  const { data, error } = await supabase.functions.invoke('generate-post', {
+  const { data, error } = await supabase.functions.invoke('gemini-generate', {
     body: {
       action: 'optimize',
       existingPost: post,
@@ -118,7 +118,7 @@ export const generateOpenAIHashtags = async (
 ): Promise<string[]> => {
   console.log('Calling hashtags generation with OpenAI');
   
-  const { data, error } = await supabase.functions.invoke('generate-post', {
+  const { data, error } = await supabase.functions.invoke('gemini-generate', {
     body: {
       action: 'hashtags',
       topic,
